@@ -1,0 +1,59 @@
+body {
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    font-size: 14px;
+    line-height: 1.42857;
+    color: black;
+
+    padding: 0;
+    margin: 0;
+}
+
+.navigation {
+    background-color: #2C5700;
+    height: 40px;
+    position: fixed;
+    z-index: 1030;
+    left: 0;
+    right: 0;
+    margin-top: -60px;
+}
+.navigation .content {
+    padding-top: 8px;
+}
+.navigation .content, .navigation .content a {
+    color: #AFD775;
+}
+
+.main {
+    margin-top: 60px;
+}
+
+.content {
+	margin-left: auto;
+	margin-right: auto;
+	padding-left: 15px;
+	padding-right: 15px;
+}
+@media (min-width: 768px) {
+.content {
+    width: 750px;
+}
+}
+@media (min-width: 992px) {
+.content {
+    width: 970px;
+}
+}
+@media (min-width: 1200px) {
+.content {
+    width: 1170px;
+}
+}
+
+a {
+	text-decoration: none;
+    color: black;
+}
+a:hover {
+    color: gray;
+}
