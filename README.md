@@ -1,7 +1,10 @@
-chat
+Chat
 ====
 
 websocket chat api, server and client
+
+The vision is to create a performant, cross platform (server and client), multi purpose chat system.
+The chat will initially be profided as a website. Later on clients will be created for other systems and maybe included in projects (e.g. ingame chat).
 
 API
 ===
