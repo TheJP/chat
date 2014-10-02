@@ -3,6 +3,7 @@
 
 #include <QJsonObject>
 #include <QObject>
+#include <QSharedPointer>
 #include "ikeyvaluewriter.h"
 
 class JsonWriter : public QObject, public IKeyValueWriter
@@ -13,9 +14,9 @@ private:
     QSharedPointer<QJsonObject> writer;
 public:
     explicit JsonWriter(QSharedPointer<QJsonObject> writer, QObject *parent = 0);
-    virtual void writeInt(QString & key, int value) const;
-    virtual void writeDouble(QString & key, double value) const;
-    virtual void writeString(QString & key, QString & value) const;
+    void writeInt(QString & key, int value) override;
+    void writeDouble(QString & key, double value) override;
+    void writeString(QString & key, QString & value) override   ;
 signals:
 
 public slots:

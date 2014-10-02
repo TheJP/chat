@@ -14,9 +14,9 @@ private:
     QSharedPointer<QJsonObject> reader;
 public:
     explicit JsonReader(QSharedPointer<QJsonObject> reader, QObject *parent = 0);
-    virtual int readInt(QString & key) const;
-    virtual double readDouble(QString & key) const;
-    virtual QSharedPointer<QString> readString(QString & key) const;
+    int readInt(QString & key) override;
+    double readDouble(QString & key) override;
+    QSharedPointer<QString> readString(QString & key) override;
 signals:
 
 public slots:

@@ -5,15 +5,19 @@
 #-------------------------------------------------
 
 QT       += core
-
 QT       -= gui
 
 TARGET = qtserver
 CONFIG   += console
 CONFIG   -= app_bundle
 
-#Try
+#Enable c++11
 CONFIG   += c++11
+
+#Only include tests in the debug builds
+debug {
+    include(test/test.pri)
+}
 
 TEMPLATE = app
 
