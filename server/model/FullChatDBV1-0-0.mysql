@@ -1,0 +1,364 @@
+-- phpMyAdmin SQL Dump
+-- version 4.1.12
+-- http://www.phpmyadmin.net
+--
+-- Host: 127.0.0.1
+-- Erstellungszeit: 09. Okt 2014 um 20:49
+-- Server Version: 5.6.16
+-- PHP-Version: 5.5.11
+
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+SET time_zone = "+00:00";
+
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8 */;
+
+--
+-- Datenbank: `qtchat`
+--
+
+-- --------------------------------------------------------
+
+--
+-- Tabellenstruktur für Tabelle `conversation`
+--
+
+DROP TABLE IF EXISTS `conversation`;
+CREATE TABLE IF NOT EXISTS `conversation` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `title` varchar(50) COLLATE latin1_general_ci NOT NULL,
+  `topic` varchar(100) COLLATE latin1_general_ci NOT NULL,
+  `description` text COLLATE latin1_general_ci NOT NULL,
+  `root` tinyint(1) NOT NULL DEFAULT '0' COMMENT 'conv tree root marker',
+  `parent_id` int(10) unsigned DEFAULT NULL COMMENT 'conv tree parent',
+  PRIMARY KEY (`id`),
+  KEY `parent_id` (`parent_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci AUTO_INCREMENT=2 ;
+
+--
+-- Daten für Tabelle `conversation`
+--
+
+INSERT INTO `conversation` (`id`, `title`, `topic`, `description`, `root`, `parent_id`) VALUES
+(1, 'MainTopic', 'Le random talk', 'Talk about everything that comes up...', 1, NULL);
+
+-- --------------------------------------------------------
+
+--
+-- Tabellenstruktur für Tabelle `conversation_permission`
+--
+
+DROP TABLE IF EXISTS `conversation_permission`;
+CREATE TABLE IF NOT EXISTS `conversation_permission` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `permission` varchar(100) COLLATE latin1_general_ci NOT NULL,
+  `user_default` tinyint(1) NOT NULL DEFAULT '0',
+  `owner_default` tinyint(1) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci AUTO_INCREMENT=10 ;
+
+--
+-- Daten für Tabelle `conversation_permission`
+--
+
+INSERT INTO `conversation_permission` (`id`, `permission`, `user_default`, `owner_default`) VALUES
+(1, 'ReadMessages', 1, 1),
+(2, 'WriteMessages', 1, 1),
+(3, 'InviteUser', 0, 1),
+(4, 'KickUser', 0, 1),
+(5, 'ChangeTitle', 0, 1),
+(6, 'ChangeTopic', 0, 1),
+(7, 'ChangeDescription', 0, 1),
+(8, 'DeleteConversation', 0, 1),
+(9, 'LeaveConversation', 1, 1);
+
+-- --------------------------------------------------------
+
+--
+-- Tabellenstruktur für Tabelle `conversation_user`
+--
+
+DROP TABLE IF EXISTS `conversation_user`;
+CREATE TABLE IF NOT EXISTS `conversation_user` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `joined` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `conversation_id` int(10) unsigned NOT NULL,
+  `user_id` int(10) unsigned NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `conversation_id` (`conversation_id`),
+  KEY `user_id` (`user_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci AUTO_INCREMENT=3 ;
+
+--
+-- Daten für Tabelle `conversation_user`
+--
+
+INSERT INTO `conversation_user` (`id`, `joined`, `conversation_id`, `user_id`) VALUES
+(1, '2014-10-09 18:43:19', 1, 1),
+(2, '2014-10-09 18:43:19', 1, 2);
+
+--
+-- Trigger `conversation_user`
+--
+DROP TRIGGER IF EXISTS `conversation_user_insert`;
+DELIMITER //
+CREATE TRIGGER `conversation_user_insert` BEFORE INSERT ON `conversation_user`
+ FOR EACH ROW SET New.joined = NOW()
+//
+DELIMITER ;
+
+-- --------------------------------------------------------
+
+--
+-- Tabellenstruktur für Tabelle `conversation_user_permission`
+--
+
+DROP TABLE IF EXISTS `conversation_user_permission`;
+CREATE TABLE IF NOT EXISTS `conversation_user_permission` (
+  `conversation_user_id` int(10) unsigned NOT NULL,
+  `conversation_permission_id` int(10) unsigned NOT NULL,
+  `cangive` tinyint(1) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`conversation_user_id`,`conversation_permission_id`),
+  KEY `conversation_permission_id` (`conversation_permission_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;
+
+--
+-- Daten für Tabelle `conversation_user_permission`
+--
+
+INSERT INTO `conversation_user_permission` (`conversation_user_id`, `conversation_permission_id`, `cangive`) VALUES
+(1, 1, 1),
+(1, 2, 1),
+(1, 3, 1),
+(1, 4, 1),
+(1, 5, 1),
+(1, 6, 1),
+(1, 7, 1),
+(1, 8, 1),
+(1, 9, 1),
+(2, 1, 1),
+(2, 2, 1),
+(2, 3, 1),
+(2, 4, 1),
+(2, 5, 1),
+(2, 6, 1),
+(2, 7, 1),
+(2, 8, 1),
+(2, 9, 1);
+
+-- --------------------------------------------------------
+
+--
+-- Tabellenstruktur für Tabelle `message`
+--
+
+DROP TABLE IF EXISTS `message`;
+CREATE TABLE IF NOT EXISTS `message` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `message` varchar(500) COLLATE latin1_general_ci NOT NULL,
+  `time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `conversation_id` int(10) unsigned NOT NULL,
+  `user_id` int(10) unsigned NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `conversation_id` (`conversation_id`),
+  KEY `user_id` (`user_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci AUTO_INCREMENT=2 ;
+
+--
+-- Daten für Tabelle `message`
+--
+
+INSERT INTO `message` (`id`, `message`, `time`, `conversation_id`, `user_id`) VALUES
+(1, 'Welcome to the chat!', '2014-10-09 18:47:07', 1, 1);
+
+--
+-- Trigger `message`
+--
+DROP TRIGGER IF EXISTS `message_insert`;
+DELIMITER //
+CREATE TRIGGER `message_insert` BEFORE INSERT ON `message`
+ FOR EACH ROW SET NEW.time = NOW()
+//
+DELIMITER ;
+
+-- --------------------------------------------------------
+
+--
+-- Tabellenstruktur für Tabelle `permission`
+--
+
+DROP TABLE IF EXISTS `permission`;
+CREATE TABLE IF NOT EXISTS `permission` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `permission` varchar(100) COLLATE latin1_general_ci NOT NULL,
+  `user_default` tinyint(1) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci AUTO_INCREMENT=13 ;
+
+--
+-- Daten für Tabelle `permission`
+--
+
+INSERT INTO `permission` (`id`, `permission`, `user_default`) VALUES
+(1, 'Login', 1),
+(2, 'JoinPublicConversation', 1),
+(3, 'JoinPrivateConversation', 1),
+(4, 'CreatePublicConversation', 0),
+(5, 'CreatePrivateConversation', 1),
+(6, 'WritePublicMessage', 1),
+(7, 'WritePrivateMessage', 1),
+(8, 'ChangeOwnStatus', 1),
+(9, 'ChangeOwnDescription', 1),
+(10, 'ChangeOwnPassword', 1),
+(11, 'ChangeOtherStatus', 0),
+(12, 'ChangeOtherDescription', 0);
+
+-- --------------------------------------------------------
+
+--
+-- Tabellenstruktur für Tabelle `session`
+--
+
+DROP TABLE IF EXISTS `session`;
+CREATE TABLE IF NOT EXISTS `session` (
+  `sid` varchar(256) COLLATE latin1_general_ci NOT NULL,
+  `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `expire` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `user_id` int(10) unsigned NOT NULL,
+  PRIMARY KEY (`sid`),
+  KEY `user_id` (`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;
+
+--
+-- Trigger `session`
+--
+DROP TRIGGER IF EXISTS `session_insert`;
+DELIMITER //
+CREATE TRIGGER `session_insert` BEFORE INSERT ON `session`
+ FOR EACH ROW SET New.created = NOW()
+//
+DELIMITER ;
+
+-- --------------------------------------------------------
+
+--
+-- Tabellenstruktur für Tabelle `user`
+--
+
+DROP TABLE IF EXISTS `user`;
+CREATE TABLE IF NOT EXISTS `user` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `username` varchar(24) COLLATE latin1_general_ci NOT NULL,
+  `email` varchar(254) COLLATE latin1_general_ci NOT NULL COMMENT 'len=254 @rfc3696',
+  `salt` varchar(64) COLLATE latin1_general_ci NOT NULL,
+  `password` varchar(64) COLLATE latin1_general_ci NOT NULL,
+  `status` varchar(256) COLLATE latin1_general_ci NOT NULL,
+  `description` text COLLATE latin1_general_ci NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `username` (`username`,`email`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci AUTO_INCREMENT=3 ;
+
+--
+-- Daten für Tabelle `user`
+--
+
+INSERT INTO `user` (`id`, `username`, `email`, `salt`, `password`, `status`, `description`) VALUES
+(1, 'JP', 'jp@example.com', '6d9181c28df2131228da96550a29fca23f3ddaddac8ae4e8726a17ec53831392', '9b364f7c39151cb9f95ba11acaf8ef10009c360c046b10e8a8bc15cb4030b95b', '', ''),
+(2, 'Admin', 'admin@example.com', '6d9181c28df2131228da96550a29fca23f3ddaddac8ae4e8726a17ec53831392', '9b364f7c39151cb9f95ba11acaf8ef10009c360c046b10e8a8bc15cb4030b95b', '', '');
+
+-- --------------------------------------------------------
+
+--
+-- Tabellenstruktur für Tabelle `user_permission`
+--
+
+DROP TABLE IF EXISTS `user_permission`;
+CREATE TABLE IF NOT EXISTS `user_permission` (
+  `user_id` int(10) unsigned NOT NULL,
+  `permission_id` int(10) unsigned NOT NULL,
+  `cangive` tinyint(1) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`user_id`,`permission_id`),
+  KEY `user_id` (`user_id`),
+  KEY `permission_id` (`permission_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;
+
+--
+-- Daten für Tabelle `user_permission`
+--
+
+INSERT INTO `user_permission` (`user_id`, `permission_id`, `cangive`) VALUES
+(1, 1, 1),
+(1, 2, 1),
+(1, 3, 1),
+(1, 4, 1),
+(1, 5, 1),
+(1, 6, 1),
+(1, 7, 1),
+(1, 8, 1),
+(1, 9, 1),
+(1, 10, 1),
+(1, 11, 1),
+(1, 12, 1),
+(2, 1, 1),
+(2, 2, 1),
+(2, 3, 1),
+(2, 4, 1),
+(2, 5, 1),
+(2, 6, 1),
+(2, 7, 1),
+(2, 8, 1),
+(2, 9, 1),
+(2, 10, 1),
+(2, 11, 1),
+(2, 12, 1);
+
+--
+-- Constraints der exportierten Tabellen
+--
+
+--
+-- Constraints der Tabelle `conversation`
+--
+ALTER TABLE `conversation`
+  ADD CONSTRAINT `conversation_ibfk_1` FOREIGN KEY (`parent_id`) REFERENCES `conversation` (`id`);
+
+--
+-- Constraints der Tabelle `conversation_user`
+--
+ALTER TABLE `conversation_user`
+  ADD CONSTRAINT `conversation_user_ibfk_1` FOREIGN KEY (`conversation_id`) REFERENCES `conversation` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `conversation_user_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints der Tabelle `conversation_user_permission`
+--
+ALTER TABLE `conversation_user_permission`
+  ADD CONSTRAINT `conversation_user_permission_ibfk_2` FOREIGN KEY (`conversation_permission_id`) REFERENCES `conversation_permission` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `conversation_user_permission_ibfk_1` FOREIGN KEY (`conversation_user_id`) REFERENCES `conversation_user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints der Tabelle `message`
+--
+ALTER TABLE `message`
+  ADD CONSTRAINT `message_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `message_ibfk_1` FOREIGN KEY (`conversation_id`) REFERENCES `conversation` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints der Tabelle `session`
+--
+ALTER TABLE `session`
+  ADD CONSTRAINT `session_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints der Tabelle `user_permission`
+--
+ALTER TABLE `user_permission`
+  ADD CONSTRAINT `user_permission_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `user_permission_ibfk_2` FOREIGN KEY (`permission_id`) REFERENCES `permission` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
