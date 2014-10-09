@@ -6,6 +6,7 @@
 
 QT       += core
 QT       -= gui
+QT       += sql
 
 TARGET = qtserver
 CONFIG   += console

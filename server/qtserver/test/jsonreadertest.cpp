@@ -20,13 +20,16 @@ void JsonReaderTest::cleanup(){
 
 void JsonReaderTest::readIntTest(){
     QVERIFY(this->classUnderTest->readInt(QStringLiteral("test01")) == 5);
+    QVERIFY(this->classUnderTest->readInt(QStringLiteral("none")) == 0);
 }
 
 void JsonReaderTest::readDoubleTest(){
     QVERIFY(this->classUnderTest->readDouble(QStringLiteral("test02.01")) == 5.6);
     QVERIFY(this->classUnderTest->readDouble(QStringLiteral("test02.02")) == -1.337);
+    QVERIFY(this->classUnderTest->readDouble(QStringLiteral("none")) == 0.0);
 }
 
 void JsonReaderTest::readStringTest(){
     QVERIFY(QStringLiteral("hallo") == *this->classUnderTest->readString(QStringLiteral("test03")));
+    QVERIFY(0 == *this->classUnderTest->readString(QStringLiteral("none")));
 }

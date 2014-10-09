@@ -4,7 +4,10 @@
 #include <QJsonDocument>
 #include <QFile>
 #include <QIODevice>
-#include "ikeyvaluereader.h"
+#include <QSqlDatabase>
+#include <QSqlError>
+#include <QSqlDriver>
+#include <QTextStream>
 #include "jsonreader.h"
 
 #ifdef QT_DEBUG
@@ -25,12 +28,24 @@ int main(int argc, char *argv[])
     //** Read Config **//
     {
         //Open file
+        cout << QStringLiteral("Read configuration...\t");
         QFile settingFile(QStringLiteral("../settings.json"));
-        if(!settingFile.open(QIODevice::ReadOnly)){ qFatal("Could not open settings file 'settings.json'"); return 0; }
+        if(!settingFile.open(QIODevice::ReadOnly)){ qFatal("Could not open settings file 'settings.json'"); }
         QJsonDocument settingDoc(QJsonDocument::fromJson(settingFile.readAll()));
         JsonReader reader(QSharedPointer<QJsonObject>(new QJsonObject(settingDoc.object())));
-        //Read config
-        cout << *reader.readString(QStringLiteral("db")) << endl;
+        cout << QStringLiteral("[success]") << endl;
+
+        //Initialize Database
+        cout << QStringLiteral("Initializing database...\t");
+        QSqlDatabase db = QSqlDatabase::addDatabase(*reader.readString(QStringLiteral("driver")));
+        db.setHostName(*reader.readString(QStringLiteral("host")));
+        db.setDatabaseName(*reader.readString(QStringLiteral("db")));
+        db.setUserName(*reader.readString(QStringLiteral("user")));
+        db.setPassword(*reader.readString(QStringLiteral("password")));
+        bool ok = db.open();
+        cout << (ok ? QStringLiteral("[success]") : QStringLiteral("[failed]")) << endl;
+        if(!ok){ qFatal(db.lastError().text().toLatin1()); }
     }
     return a.exec();
+    cout << "ende" << endl;
 }
