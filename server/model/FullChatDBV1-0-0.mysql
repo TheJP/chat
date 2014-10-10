@@ -266,8 +266,8 @@ CREATE TABLE IF NOT EXISTS `user` (
 --
 
 INSERT INTO `user` (`id`, `username`, `email`, `salt`, `password`, `status`, `description`) VALUES
-(1, 'JP', 'jp@example.com', '6d9181c28df2131228da96550a29fca23f3ddaddac8ae4e8726a17ec53831392', '9b364f7c39151cb9f95ba11acaf8ef10009c360c046b10e8a8bc15cb4030b95b', '', ''),
-(2, 'Admin', 'admin@example.com', '6d9181c28df2131228da96550a29fca23f3ddaddac8ae4e8726a17ec53831392', '9b364f7c39151cb9f95ba11acaf8ef10009c360c046b10e8a8bc15cb4030b95b', '', '');
+(1, 'JP', 'jp@example.com', '', '', '', ''),
+(2, 'Admin', 'admin@example.com', '', '', '', '');
 
 -- --------------------------------------------------------
 
