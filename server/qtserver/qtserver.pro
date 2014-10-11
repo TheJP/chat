@@ -4,9 +4,10 @@
 #
 #-------------------------------------------------
 
-QT       += core
-QT       -= gui
-QT       += sql
+QT += core
+QT -= gui
+QT += sql
+QT += websockets
 
 TARGET = qtserver
 CONFIG   += console
@@ -27,7 +28,8 @@ SOURCES += main.cpp \
     streamreader.cpp \
     streamwriter.cpp \
     jsonreader.cpp \
-    jsonwriter.cpp
+    jsonwriter.cpp \
+    server.cpp
 
 HEADERS += \
     streamreader.h \
@@ -36,4 +38,5 @@ HEADERS += \
     ikeyvaluewriter.h \
     streamwriter.h \
     jsonreader.h \
-    jsonwriter.h
+    jsonwriter.h \
+    server.h
