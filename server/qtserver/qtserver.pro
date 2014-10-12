@@ -29,7 +29,8 @@ SOURCES += main.cpp \
     streamwriter.cpp \
     jsonreader.cpp \
     jsonwriter.cpp \
-    server.cpp
+    server.cpp \
+    protocol.cpp
 
 HEADERS += \
     streamreader.h \
@@ -39,4 +40,5 @@ HEADERS += \
     streamwriter.h \
     jsonreader.h \
     jsonwriter.h \
-    server.h
+    server.h \
+    protocol.h

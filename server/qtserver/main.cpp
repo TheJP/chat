@@ -50,6 +50,7 @@ int main(int argc, char *argv[])
         //Initialize Websocket Server
         cout << QStringLiteral("Initializing websocket server...\t");
         Server *server = new Server(reader.readInt(QStringLiteral("ws-port")));
+        server->start();
         cout << QStringLiteral("[success]") << endl;
 
         //Test lookup

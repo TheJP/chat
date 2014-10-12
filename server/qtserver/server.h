@@ -12,11 +12,13 @@ class Server : public QObject
     Q_OBJECT
 
 private:
+    quint16 port;
     QWebSocketServer *websocketServer;
     QList<QWebSocket *> clients;
 public:
     explicit Server(quint16 port, QObject *parent = 0);
     ~Server();
+    void start();
 signals:
     void closed();
 private slots:
