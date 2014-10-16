@@ -1,5 +1,7 @@
 HEADERS += \
-    msgs/login.h
+    msgs/login.h \
+    $$PWD/logout.h
 
 SOURCES += \
-    msgs/login.cpp
+    msgs/login.cpp \
+    $$PWD/logout.cpp
