@@ -14,7 +14,7 @@ public:
     void read(IKeyValueReader & stream) override;
     void write(IKeyValueWriter & stream) override;
     QSharedPointer<IChatMsg> create() override;
-    QSharedPointer<IChatMsg> handle(ServiceManager manager) override;
+    QSharedPointer<IChatMsg> handle(const ServiceManager & manager) override;
 
 signals:
 

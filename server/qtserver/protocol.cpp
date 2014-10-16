@@ -13,10 +13,14 @@ QSharedPointer<IChatMsg> & Protocol::operator[](const int & index){
 }
 
 void Protocol::initDefault(){
-    set(RequestType::Login, QSharedPointer<IChatMsg>(new Login()));
-    set(RequestType::Logout, QSharedPointer<IChatMsg>(new Logout()));
+    set(RequestType::Login, QSharedPointer<Login>(new Login()));
+    set(RequestType::Logout, QSharedPointer<Logout>(new Logout()));
 }
 
 void Protocol::set(RequestType request, const QSharedPointer<IChatMsg> & msg){
     msgs[static_cast<int>(request)] = msg;
+}
+
+QSharedPointer<IChatMsg> Protocol::createRequest(RequestType request) const {
+    return msgs[static_cast<int>(request)]->create();
 }

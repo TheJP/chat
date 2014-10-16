@@ -1,5 +1,7 @@
 HEADERS += \
-    services/servicemanager.h
+    services/servicemanager.h \
+    $$PWD/userservice.h
 
 SOURCES += \
-    services/servicemanager.cpp
+    services/servicemanager.cpp \
+    $$PWD/userservice.cpp

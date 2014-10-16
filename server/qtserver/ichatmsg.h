@@ -2,9 +2,11 @@
 #define ICHATMSG_H
 
 #include <QSharedPointer>
-#include "services/servicemanager.h"
 #include "IKeyValueReader.h"
 #include "IKeyValueWriter.h"
+
+class ServiceManager; //resolve cyclic include
+//#include "services/servicemanager.h"
 
 class IChatMsg
 {
@@ -17,7 +19,7 @@ class IChatMsg
         virtual QSharedPointer<IChatMsg> create() = 0;
         //Handles the message by calling the correct service methods
         //Returns an other message or a null message as a reply
-        virtual QSharedPointer<IChatMsg> handle(ServiceManager manager) = 0;
+        virtual QSharedPointer<IChatMsg> handle(const ServiceManager & manager) = 0;
 };
 Q_DECLARE_INTERFACE(IChatMsg, "JP.IChatMsg/1.0")
 

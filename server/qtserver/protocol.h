@@ -7,6 +7,7 @@
 #include <QSharedPointer>
 #include "ichatmsg.h"
 
+#include "msgs/login.h"
 enum class RequestType {
     //User Operations
     Login = 11,
@@ -51,6 +52,7 @@ public:
     QSharedPointer<IChatMsg> & operator[](const int & index);
     void initDefault();
     void set(RequestType request, const QSharedPointer<IChatMsg> & msg);
+    QSharedPointer<IChatMsg> createRequest(RequestType request) const;
 signals:
 
 public slots:

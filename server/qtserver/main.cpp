@@ -10,6 +10,7 @@
 #include <QTextStream>
 #include "jsonreader.h"
 #include "server.h"
+#include "protocol.h"
 
 #ifdef QT_DEBUG
     #include "test/testmain.h"
@@ -53,6 +54,8 @@ int main(int argc, char *argv[])
         server->start();
         cout << QStringLiteral("[success]") << endl;
 
+        Protocol protocol;
+        protocol.initDefault();
         //Test lookup
         /*QSqlQuery query;
         ok = query.exec("SELECT username FROM user");

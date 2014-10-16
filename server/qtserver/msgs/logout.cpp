@@ -14,9 +14,10 @@ void Logout::write(IKeyValueWriter & stream){
 }
 
 QSharedPointer<IChatMsg> Logout::create(){
-    return QSharedPointer<IChatMsg>(new Logout());
+    return QSharedPointer<Logout>(new Logout());
 }
 
-QSharedPointer<IChatMsg> Logout::handle(ServiceManager manager){
-    return QSharedPointer<IChatMsg>();
+QSharedPointer<IChatMsg> Logout::handle(const ServiceManager & manager){
+    Q_UNUSED(manager);
+    return QSharedPointer<Logout>();
 }

@@ -6,17 +6,19 @@ Login::Login(QObject *parent) :
 }
 
 void Login::read(IKeyValueReader & stream){
-    Q_UNUSED(stream);
+    username = stream.readString(QStringLiteral("username"));
+    password = stream.readString(QStringLiteral("password"));
 }
 
 void Login::write(IKeyValueWriter & stream){
-    Q_UNUSED(stream);
+    stream.writeString(QStringLiteral("username"), *username);
+    stream.writeString(QStringLiteral("password"), *password);
 }
 
 QSharedPointer<IChatMsg> Login::create(){
-    return QSharedPointer<IChatMsg>(new Login());
+    return QSharedPointer<Login>(new Login());
 }
 
-QSharedPointer<IChatMsg> Login::handle(ServiceManager manager){
-    return QSharedPointer<IChatMsg>();
+QSharedPointer<IChatMsg> Login::handle(const ServiceManager & manager){
+    return manager.getUserService().login(*username, *password);
 }
