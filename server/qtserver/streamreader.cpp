@@ -4,6 +4,7 @@ StreamReader::StreamReader(QSharedPointer<QDataStream> reader, QObject *parent) 
 
 template<class T>
 T StreamReader::read(QString & key) const {
+    Q_UNUSED(key);
     T value; (*reader) >> value;
     return value;
 }
@@ -17,6 +18,7 @@ double StreamReader::readDouble(QString & key) const {
 }
 
 QSharedPointer<QString> StreamReader::readString(QString & key) const {
+    Q_UNUSED(key);
     QSharedPointer<QString> value(new QString());
     (*reader) >> *value;
     return value;

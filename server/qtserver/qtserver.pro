@@ -16,6 +16,10 @@ CONFIG   -= app_bundle
 #Enable c++11
 CONFIG   += c++11
 
+#include subprojects
+include(msgs/msgs.pri)
+include(services/services.pri)
+
 #Only include tests in the debug builds
 debug {
     include(test/test.pri)
@@ -30,7 +34,8 @@ SOURCES += main.cpp \
     jsonreader.cpp \
     jsonwriter.cpp \
     server.cpp \
-    protocol.cpp
+    protocol.cpp \
+    notificationsender.cpp
 
 HEADERS += \
     streamreader.h \
@@ -41,4 +46,5 @@ HEADERS += \
     jsonreader.h \
     jsonwriter.h \
     server.h \
-    protocol.h
+    protocol.h \
+    notificationsender.h
