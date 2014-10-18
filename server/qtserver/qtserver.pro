@@ -35,7 +35,8 @@ SOURCES += main.cpp \
     jsonwriter.cpp \
     server.cpp \
     protocol.cpp \
-    notificationsender.cpp
+    notificationsender.cpp \
+    jsonformat.cpp
 
 HEADERS += \
     streamreader.h \
@@ -47,4 +48,6 @@ HEADERS += \
     jsonwriter.h \
     server.h \
     protocol.h \
-    notificationsender.h
+    notificationsender.h \
+    iformat.h \
+    jsonformat.h

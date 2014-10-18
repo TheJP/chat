@@ -6,6 +6,11 @@
 #include <QByteArray>
 #include <QWebSocket>
 #include <QWebSocketServer>
+#include <QSharedPointer>
+#include "services/servicemanager.h"
+#include "notificationsender.h"
+#include "protocol.h"
+#include "iformat.h"
 
 class Server : public QObject
 {
@@ -13,16 +18,21 @@ class Server : public QObject
 
 private:
     quint16 port;
-    QWebSocketServer *websocketServer;
+    QWebSocketServer * websocketServer;
     QList<QWebSocket *> clients;
+    QSharedPointer<Protocol> protocol;
+    QSharedPointer<IFormat> format;
+    QSharedPointer<ServiceManager> manager;
 public:
-    explicit Server(quint16 port, QObject *parent = 0);
+    explicit Server(const quint16 & port, const QSharedPointer<Protocol> & protocol, const QSharedPointer<IFormat> & format,
+        const QSharedPointer<ServiceManager> & manager, QObject *parent = 0);
     ~Server();
     void start();
 signals:
     void closed();
 private slots:
     void onNewConnection();
+    void onNewNotification(const IChatMsg & msg, const QList<int> & sessions);
     void processTextMessage(QString message);
     void processBinaryMessage(QByteArray message);
     void socketDisconnected();

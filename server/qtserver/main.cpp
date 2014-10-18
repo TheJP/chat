@@ -8,9 +8,15 @@
 #include <QSqlError>
 #include <QSqlDriver>
 #include <QTextStream>
+#include <QSharedPointer>
+#include <QObject>
 #include "jsonreader.h"
 #include "server.h"
 #include "protocol.h"
+#include "iformat.h"
+#include "jsonformat.h"
+#include "services/servicemanager.h"
+#include "notificationsender.h"
 
 #ifdef QT_DEBUG
     #include "test/testmain.h"
@@ -29,7 +35,7 @@ int main(int argc, char *argv[])
     QCoreApplication a(argc, argv);
     //** Read Config **//
     {
-        //Open file
+        //Open Configuration File
         cout << QStringLiteral("Read configuration...\t\t");
         QFile settingFile(QStringLiteral("../settings.json"));
         if(!settingFile.open(QIODevice::ReadOnly)){ qFatal("Could not open settings file 'settings.json'"); }
@@ -48,14 +54,39 @@ int main(int argc, char *argv[])
         cout << (ok ? QStringLiteral("[success]") : QStringLiteral("[failed]")) << endl;
         if(!ok){ qFatal(db.lastError().text().toLatin1()); }
 
+        //** Dependency Injection **//
+
+        //Initialize Server Protocol
+        cout << QStringLiteral("Initializing server protocol...\t");
+        QSharedPointer<Protocol> protocol(new Protocol());
+        protocol->initDefault();
+        cout << QStringLiteral("[success]") << endl;
+
+        //Initialize Server Formats
+        cout << QStringLiteral("Initializing server formats...\t");
+        QSharedPointer<JsonFormat> format(new JsonFormat());
+        cout << QStringLiteral("[success]") << endl;
+
+        //Initialize Notification Sender
+        cout << QStringLiteral("Initializing notification sender...\t");
+        QSharedPointer<NotificationSender> notifier(new NotificationSender());
+        cout << QStringLiteral("[success]") << endl;
+
+        //Initialize Service Manager
+        cout << QStringLiteral("Initializing service manager...\t");
+        QSharedPointer<ServiceManager> manager(new ServiceManager(notifier));
+        cout << QStringLiteral("[success]") << endl;
+
         //Initialize Websocket Server
         cout << QStringLiteral("Initializing websocket server...\t");
-        Server *server = new Server(reader.readInt(QStringLiteral("ws-port")));
+        Server * server = new Server(reader.readInt(QStringLiteral("ws-port")), protocol, format, manager);
         server->start();
         cout << QStringLiteral("[success]") << endl;
 
-        Protocol protocol;
-        protocol.initDefault();
+
+
+
+
         //Test lookup
         /*QSqlQuery query;
         ok = query.exec("SELECT username FROM user");

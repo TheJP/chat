@@ -1,16 +1,22 @@
 #include "server.h"
 
-Server::Server(quint16 port, QObject *parent) :
+Server::Server(const quint16 & port, const QSharedPointer<Protocol> & protocol, const QSharedPointer<IFormat> & format,
+               const QSharedPointer<ServiceManager> & manager, QObject *parent) :
     port(port),
+    protocol(protocol),
+    format(format),
+    manager(manager),
     QObject(parent),
     websocketServer(new QWebSocketServer(QStringLiteral("Chat Server"), QWebSocketServer::NonSecureMode, this)),
     clients()
 {
+    connect(manager->getNotificationSender().data(), &NotificationSender::newNotification, this, &Server::onNewNotification);
 }
 
 Server::~Server(){
     websocketServer->close();
     qDeleteAll(clients.begin(), clients.end());
+    delete websocketServer;
 }
 
 void Server::start(){
@@ -28,6 +34,11 @@ void Server::onNewConnection(){
     connect(pSocket, &QWebSocket::disconnected, this, &Server::socketDisconnected);
 
     clients.append(pSocket);
+}
+
+void Server::onNewNotification(const IChatMsg & msg, const QList<int> & sessions){
+    Q_UNUSED(msg);
+    Q_UNUSED(sessions);
 }
 
 void Server::processTextMessage(QString message){
