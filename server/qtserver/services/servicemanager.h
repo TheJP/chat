@@ -14,7 +14,7 @@ private:
     //Services
     UserService user;
 public:
-    explicit ServiceManager(const QSharedPointer<NotificationSender> & sender, QObject *parent = 0);
+    explicit ServiceManager(const QSharedPointer<NotificationSender> & sender, const QString & applicationSalt, QObject *parent = 0);
     const UserService & getUserService() const;
     QSharedPointer<NotificationSender> getNotificationSender() const;
 signals:

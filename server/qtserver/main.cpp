@@ -10,6 +10,7 @@
 #include <QTextStream>
 #include <QSharedPointer>
 #include <QObject>
+#include <QTime>
 #include "jsonreader.h"
 #include "server.h"
 #include "protocol.h"
@@ -35,6 +36,12 @@ int main(int argc, char *argv[])
     QCoreApplication a(argc, argv);
     //** Read Config **//
     {
+        //Initialize Random Number Generator
+        QTime time = QTime::currentTime();
+        qsrand((uint)time.msec());
+        for(int i = 0; i < 100; ++i){ qrand(); } //For better randomness: Generate first 100 itterations
+        //If there's a good CPRNG algorithm in qt/c++ ..let me know please
+
         //Open Configuration File
         cout << QStringLiteral("Read configuration...\t\t");
         QFile settingFile(QStringLiteral("../settings.json"));
@@ -74,7 +81,7 @@ int main(int argc, char *argv[])
 
         //Initialize Service Manager
         cout << QStringLiteral("Initializing service manager...\t");
-        QSharedPointer<ServiceManager> manager(new ServiceManager(notifier));
+        QSharedPointer<ServiceManager> manager(new ServiceManager(notifier, *reader.readString(QStringLiteral("salt"))));
         cout << QStringLiteral("[success]") << endl;
 
         //Initialize Websocket Server
@@ -82,19 +89,6 @@ int main(int argc, char *argv[])
         Server * server = new Server(reader.readInt(QStringLiteral("ws-port")), protocol, format, manager);
         server->start();
         cout << QStringLiteral("[success]") << endl;
-
-
-
-
-
-        //Test lookup
-        /*QSqlQuery query;
-        ok = query.exec("SELECT username FROM user");
-        if(!ok){ qFatal(db.lastError().text().toLatin1()); }
-        while(query.next()){
-            cout << query.value(0).toString() << endl;
-        }*/
-
     }
     return a.exec();
 }

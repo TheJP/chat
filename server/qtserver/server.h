@@ -7,6 +7,7 @@
 #include <QWebSocket>
 #include <QWebSocketServer>
 #include <QSharedPointer>
+#include "ichatmsg.h"
 #include "services/servicemanager.h"
 #include "notificationsender.h"
 #include "protocol.h"

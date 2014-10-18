@@ -3,13 +3,19 @@
 
 #include <QObject>
 #include <QSharedPointer>
+#include <QSqlQuery>
+#include <QCryptographicHash>
 #include "../ichatmsg.h"
 
 class UserService : public QObject
 {
     Q_OBJECT
+private:
+    QString applicationSalt;
+    char * letters;
 public:
-    explicit UserService(QObject *parent = 0);
+    explicit UserService(const QString & applicationSalt, QObject *parent = 0);
+    ~UserService();
     QSharedPointer<IChatMsg> login(const QString & username, const QString & password) const;
 signals:
 

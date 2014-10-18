@@ -1,7 +1,7 @@
 #include "servicemanager.h"
 
-ServiceManager::ServiceManager(const QSharedPointer<NotificationSender> & sender, QObject *parent) :
-    sender(sender), QObject(parent)
+ServiceManager::ServiceManager(const QSharedPointer<NotificationSender> & sender, const QString & applicationSalt, QObject *parent) :
+    sender(sender), user(applicationSalt), QObject(parent)
 {
 }
 
