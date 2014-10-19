@@ -21,18 +21,20 @@ QSharedPointer<IChatMsg> UserService::login(const QString & username, const QStr
     qDebug() << "[UserService] username: " << username << " ";
 
     //** Check authentification **//
+    unsigned int userId;
     bool ok;
     QSqlQuery query;
     ok = query.prepare(
-        "SELECT salt, password "
+        "SELECT id, salt, password "
         "FROM user "
         "WHERE username = :username");
     query.bindValue(":username", username);
     ok = ok && query.exec();
     if(!ok){ /* TODO: Internal error */ }
     else if(query.next()){
-        QString dbSalt = query.value(0).toString();
-        QString dbPassword = query.value(1).toString();
+        userId = query.value(0).toUInt();
+        QString dbSalt = query.value(1).toString();
+        QString dbPassword = query.value(2).toString();
         QCryptographicHash sha256Password(QCryptographicHash::Sha256);
         sha256Password.addData(password.toUtf8());
         QCryptographicHash sha256(QCryptographicHash::Sha256);
@@ -44,6 +46,8 @@ QSharedPointer<IChatMsg> UserService::login(const QString & username, const QStr
             ok = false;
         }
     }
+
+    //** Create Session **//
     if(!ok){ /* TODO: Response fail */ }
     else {
         QByteArray sid;
@@ -51,6 +55,17 @@ QSharedPointer<IChatMsg> UserService::login(const QString & username, const QStr
             sid.append(letters[qrand()%36]);
         }
         qDebug() << "session: " << sid << endl;
+        QSqlQuery querySession;
+        ok = querySession.prepare(
+            "INSERT INTO session (`sid`, `expire`, `user_id`) "
+            "VALUES (:sid, DATE_ADD(NOW(), INTERVAL 7 DAY), :user_id);");
+        querySession.bindValue(":sid", sid);
+        querySession.bindValue(":user_id", userId);
+        ok = ok && querySession.exec();
+    }
+    if(!ok){ /* TODO: Internal error */ }
+    else {
+        /* TODO: return session id */
     }
 
     return QSharedPointer<IChatMsg>();
