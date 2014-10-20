@@ -1,6 +1,8 @@
 #ifndef ICHATMSG_H
 #define ICHATMSG_H
 
+#define KEY_MSG_TYPE QStringLiteral("t")
+
 #include <QSharedPointer>
 #include "IKeyValueReader.h"
 #include "IKeyValueWriter.h"

@@ -44,18 +44,24 @@ void Server::onNewNotification(const IChatMsg & msg, const QList<int> & sessions
 void Server::processTextMessage(QString message){
     QWebSocket *pClient = qobject_cast<QWebSocket *>(sender());
     if (pClient) {
-        /*QString answer(message.size());
-        int i = message.size();
-        for(auto & c : message){ answer[--i] = c; }
-        pClient->sendTextMessage(answer);*/
+        //Get reader for this message
         QSharedPointer<IKeyValueReader> reader = format->getReader(message.toUtf8());
-        int type = reader->readInt(QStringLiteral("t"));
+        //Handle message
+        int type = reader->readInt(KEY_MSG_TYPE);
         if(type != 0){
             QSharedPointer<IChatMsg> msg = protocol->createRequest(static_cast<RequestType>(type));
             msg->read(*reader);
             QSharedPointer<IChatMsg> result = msg->handle(*manager);
+            //Send return message to client
             if(!result.isNull()){
-                //TODO: result->write();
+                //Write to json
+                QSharedPointer<QJsonObject> json(new QJsonObject());
+                JsonWriter writer(json);
+                writer.writeInt(KEY_MSG_TYPE, static_cast<int>(ResponseType::Response));
+                result->write(writer);
+                //Write to stream
+                QJsonDocument document(*json);
+                pClient->sendTextMessage(QString::fromUtf8(document.toJson()));
             }
         }
     }
