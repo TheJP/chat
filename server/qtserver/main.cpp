@@ -81,7 +81,7 @@ int main(int argc, char *argv[])
 
         //Initialize Service Manager
         cout << QStringLiteral("Initializing service manager...\t");
-        QSharedPointer<ServiceManager> manager(new ServiceManager(notifier, *reader.readString(QStringLiteral("salt"))));
+        QSharedPointer<ServiceManager> manager(new ServiceManager(notifier, protocol, *reader.readString(QStringLiteral("salt"))));
         cout << QStringLiteral("[success]") << endl;
 
         //Initialize Websocket Server

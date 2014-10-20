@@ -10,7 +10,7 @@ Server::Server(const quint16 & port, const QSharedPointer<Protocol> & protocol, 
     websocketServer(new QWebSocketServer(QStringLiteral("Chat Server"), QWebSocketServer::NonSecureMode, this)),
     clients()
 {
-    connect(manager->getNotificationSender().data(), &NotificationSender::newNotification, this, &Server::onNewNotification);
+    connect(&manager->getNotificationSender(), &NotificationSender::newNotification, this, &Server::onNewNotification);
 }
 
 Server::~Server(){

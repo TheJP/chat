@@ -6,17 +6,22 @@
 #include "userservice.h"
 #include "../notificationsender.h"
 
+class Protocol; //resolve cyclic reference
+//#include "../protocol.h"
+
 class ServiceManager : public QObject
 {
     Q_OBJECT
 private:
     QSharedPointer<NotificationSender> sender;
+    QSharedPointer<Protocol> protocol;
     //Services
     UserService user;
 public:
-    explicit ServiceManager(const QSharedPointer<NotificationSender> & sender, const QString & applicationSalt, QObject *parent = 0);
+    explicit ServiceManager(const QSharedPointer<NotificationSender> & sender, const QSharedPointer<Protocol> & protocol, const QString & applicationSalt, QObject *parent = 0);
     const UserService & getUserService() const;
-    QSharedPointer<NotificationSender> getNotificationSender() const;
+    const NotificationSender & getNotificationSender() const;
+    const Protocol & getProtocol() const;
 signals:
 
 public slots:

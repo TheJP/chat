@@ -1,16 +1,18 @@
 #include "userservice.h"
+#include "servicemanager.h"
+#include "../protocol.h"
 
 //TODO: remove
 #include <QDebug>
 
-UserService::UserService(const QString & applicationSalt, QObject *parent) :
-    applicationSalt(applicationSalt), QObject(parent)
+UserService::UserService(ServiceManager * manager, const QString & applicationSalt, QObject *parent) :
+    manager(manager), applicationSalt(applicationSalt), QObject(parent)
 {
     //Prepare letters for session id calculation
-    letters = new char[36];
+    letters = new char[USERSERVICE_COUNT_LETTERS];
     int i;
-    for(i = 0; i <= 9; ++i){ letters[i] = i+'0'; }
-    for(i = 0; i < 26; ++i){ letters[i+10] = i+'a'; }
+    for(i = 0; i <= 9; ++i){ letters[i] = i+'0'; } //'0'-'9'
+    for(i = 0; i < 26; ++i){ letters[i+10] = i+'a'; } //'a'-'z'
 }
 
 UserService::~UserService(){
@@ -21,7 +23,7 @@ QSharedPointer<IChatMsg> UserService::login(const QString & username, const QStr
     qDebug() << "[UserService] username: " << username << " ";
 
     //** Check authentification **//
-    unsigned int userId;
+    quint32 userId = 0, numSid = 0;
     bool ok;
     QSqlQuery query;
     ok = query.prepare(
@@ -48,25 +50,24 @@ QSharedPointer<IChatMsg> UserService::login(const QString & username, const QStr
     }
 
     //** Create Session **//
+    QSharedPointer<QString> sid(new QString());
     if(!ok){ /* TODO: Response fail */ }
     else {
-        QByteArray sid;
-        for(int i = 0; i < 256; ++i){
-            sid.append(letters[qrand()%36]);
+        for(int i = 0; i < USERSERVICE_SID_LENGTH; ++i){
+            sid->append(letters[qrand()%USERSERVICE_COUNT_LETTERS]);
         }
-        qDebug() << "session: " << sid << endl;
+        qDebug() << "session: " << *sid << endl;
         QSqlQuery querySession;
         ok = querySession.prepare(
             "INSERT INTO session (`sid`, `expire`, `user_id`) "
             "VALUES (:sid, DATE_ADD(NOW(), INTERVAL 7 DAY), :user_id);");
-        querySession.bindValue(":sid", sid);
+        querySession.bindValue(":sid", *sid);
         querySession.bindValue(":user_id", userId);
         ok = ok && querySession.exec();
+        numSid = querySession.lastInsertId().toInt();
     }
     if(!ok){ /* TODO: Internal error */ }
-    else {
-        /* TODO: return session id */
-    }
+    else { return manager->getProtocol().createResponseSession(RequestType::Login, true, numSid, sid); }
 
     return QSharedPointer<IChatMsg>();
 }

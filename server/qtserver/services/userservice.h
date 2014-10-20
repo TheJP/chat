@@ -7,14 +7,18 @@
 #include <QCryptographicHash>
 #include "../ichatmsg.h"
 
+#define USERSERVICE_COUNT_LETTERS 36
+#define USERSERVICE_SID_LENGTH 256
+
 class UserService : public QObject
 {
     Q_OBJECT
 private:
+    ServiceManager * manager;
     QString applicationSalt;
     char * letters;
 public:
-    explicit UserService(const QString & applicationSalt, QObject *parent = 0);
+    explicit UserService(ServiceManager * manager, const QString & applicationSalt, QObject *parent = 0);
     ~UserService();
     QSharedPointer<IChatMsg> login(const QString & username, const QString & password) const;
 signals:

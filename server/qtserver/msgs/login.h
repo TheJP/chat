@@ -6,7 +6,7 @@
 #include "../ichatmsg.h"
 #include "../services/servicemanager.h"
 
-class Login : public QObject, public IChatMsg
+class Login final : public QObject, public IChatMsg
 {
     Q_OBJECT
     Q_INTERFACES(IChatMsg)

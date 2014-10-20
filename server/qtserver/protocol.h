@@ -53,6 +53,8 @@ public:
     void initDefault();
     void set(RequestType request, const QSharedPointer<IChatMsg> & msg);
     QSharedPointer<IChatMsg> createRequest(RequestType request) const;
+    QSharedPointer<IChatMsg> createResponse(RequestType request, bool success) const;
+    QSharedPointer<IChatMsg> createResponseSession(RequestType request, bool success, quint32 numSid, const QSharedPointer<QString> & sid) const;
 signals:
 
 public slots:
