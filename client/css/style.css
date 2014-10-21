@@ -1,3 +1,18 @@
+/*
+ * Author: JP
+ * Project: github.com/TheJP/chat
+ *
+ * Content:
+ * ========
+ * 01. Basic style
+ * 02. Navigation
+ * 03. Content Div
+ *
+ */
+
+/*********************/
+/** 01. Basic style **/
+/*********************/
 body {
     font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
     font-size: 14px;
@@ -7,27 +22,56 @@ body {
     padding: 0;
     margin: 0;
 }
+a {
+	text-decoration: none;
+    color: black;
+}
+a:hover, a:focus, a.active {
+    color: gray;
+}
+.pull-right {
+    float: right;
+}
 
+/********************/
+/** 02. Navigation **/
+/********************/
 .navigation {
     background-color: #2C5700;
-    height: 40px;
+    height: 60px;
     position: fixed;
     z-index: 1030;
     left: 0;
     right: 0;
-    margin-top: -60px;
+    top: 0;
 }
-.navigation .content {
-    padding-top: 8px;
-}
-.navigation .content, .navigation .content a {
+.navigation .content span, .navigation .content a {
+    display: inline-block;
+    height: 45px;
+    font-size: 24px;
     color: #AFD775;
+    padding-top: 15px;
+    padding-right: 15px;
+}
+.navigation .content a {
+    padding-left: 15px;
+}
+.navigation .content a:hover,
+.navigation .content a:focus,
+.navigation .content a.active {
+    color: #D0FF8B;
+}
+.navigation .content a.active {
+    background-color: #408000;
+    background: linear-gradient(to bottom, #333 0%, #333 10%, #408000 10%, #408000 100%);
 }
 
+/*********************/
+/** 03. Content Div **/
+/*********************/
 .main {
-    margin-top: 60px;
+    margin-top: 80px;
 }
-
 .content {
 	margin-left: auto;
 	margin-right: auto;
@@ -48,12 +92,4 @@ body {
 .content {
     width: 1170px;
 }
-}
-
-a {
-	text-decoration: none;
-    color: black;
-}
-a:hover {
-    color: gray;
 }
