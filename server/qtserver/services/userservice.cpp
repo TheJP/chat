@@ -42,9 +42,9 @@ QSharedPointer<IChatMsg> UserService::login(const QString & username, const QStr
         QCryptographicHash sha256(QCryptographicHash::Sha256);
         sha256.addData(applicationSalt.toUtf8() + sha256Password.result().toHex() + dbSalt.toUtf8());
         if(sha256.result().toHex() == dbPassword){
-            qDebug() << "[correct]" << endl;
+            qDebug() << "[correct]";
         }else{
-            qDebug() << "[wrong]" << endl;
+            qDebug() << "[wrong]";
             ok = false;
         }
     }
@@ -60,7 +60,7 @@ QSharedPointer<IChatMsg> UserService::login(const QString & username, const QStr
         QSqlQuery querySession;
         ok = querySession.prepare(
             "INSERT INTO session (`sid`, `expire`, `user_id`) "
-            "VALUES (:sid, DATE_ADD(NOW(), INTERVAL 7 DAY), :user_id);");
+            "VALUES (:sid, DATE_ADD(NOW(), INTERVAL 1 YEAR), :user_id);");
         querySession.bindValue(":sid", *sid);
         querySession.bindValue(":user_id", userId);
         ok = ok && querySession.exec();

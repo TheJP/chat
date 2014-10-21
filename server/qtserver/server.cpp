@@ -1,5 +1,8 @@
 #include "server.h"
 
+//TODO: remove
+#include <QDebug>
+
 Server::Server(const quint16 & port, const QSharedPointer<Protocol> & protocol, const QSharedPointer<IFormat> & format,
                const QSharedPointer<ServiceManager> & manager, QObject *parent) :
     port(port),
@@ -28,6 +31,7 @@ void Server::start(){
 }
 
 void Server::onNewConnection(){
+    qDebug() << "New connection" << endl;
     QWebSocket *pSocket = websocketServer->nextPendingConnection();
 
     connect(pSocket, &QWebSocket::textMessageReceived, this, &Server::processTextMessage);
@@ -80,6 +84,7 @@ void Server::processBinaryMessage(QByteArray message){
 }
 
 void Server::socketDisconnected(){
+    qDebug() << "Client dc, start remove..";
     QWebSocket *pClient = qobject_cast<QWebSocket *>(sender());
     if (pClient) {
         clients.removeAll(pClient);
@@ -92,4 +97,5 @@ void Server::socketDisconnected(){
         }
         pClient->deleteLater();
     }
+    qDebug() << "..end remove" << endl;
 }
