@@ -8,7 +8,8 @@ Server::Server(const quint16 & port, const QSharedPointer<Protocol> & protocol, 
     manager(manager),
     QObject(parent),
     websocketServer(new QWebSocketServer(QStringLiteral("Chat Server"), QWebSocketServer::NonSecureMode, this)),
-    clients()
+    clients(),
+    sessions()
 {
     connect(&manager->getNotificationSender(), &NotificationSender::newNotification, this, &Server::onNewNotification);
 }
@@ -62,6 +63,9 @@ void Server::processTextMessage(QString message){
                 //Write to stream
                 QJsonDocument document(*json);
                 pClient->sendTextMessage(QString::fromUtf8(document.toJson()));
+                //Store session id
+                ResponseSession * session = qobject_cast<ResponseSession *>(static_cast<Response *>(result.data())); //Direct qobject_cast not possible
+                if(session != NULL){ sessions.insert(session->getNumSid(), pClient); }
             }
         }
     }
@@ -79,6 +83,13 @@ void Server::socketDisconnected(){
     QWebSocket *pClient = qobject_cast<QWebSocket *>(sender());
     if (pClient) {
         clients.removeAll(pClient);
+        //Linear search to remove clients from sessions
+        //TODO: better performance
+        auto itr = sessions.begin();
+        while(itr != sessions.end()){
+            if(pClient == itr.value()){ itr = sessions.erase(itr); }
+            else { ++itr; }
+        }
         pClient->deleteLater();
     }
 }

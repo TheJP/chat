@@ -25,3 +25,7 @@ QSharedPointer<IChatMsg> ResponseSession::handle(const ServiceManager & manager)
     Q_UNUSED(manager);
     return QSharedPointer<ResponseSession>();
 }
+
+quint32 ResponseSession::getNumSid() const {
+    return numSid;
+}

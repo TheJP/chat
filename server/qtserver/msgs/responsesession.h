@@ -20,6 +20,7 @@ public:
     void write(IKeyValueWriter & stream) override;
     QSharedPointer<IChatMsg> create() override;
     QSharedPointer<IChatMsg> handle(const ServiceManager & manager) override;
+    quint32 getNumSid() const;
 signals:
 
 public slots:

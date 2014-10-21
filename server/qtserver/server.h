@@ -15,6 +15,7 @@
 #include "notificationsender.h"
 #include "protocol.h"
 #include "iformat.h"
+#include "msgs/responsesession.h"
 
 class Server : public QObject
 {
@@ -24,6 +25,7 @@ private:
     quint16 port;
     QWebSocketServer * websocketServer;
     QList<QWebSocket *> clients;
+    QMultiHash<quint32, QWebSocket *> sessions;
     QSharedPointer<Protocol> protocol;
     QSharedPointer<IFormat> format;
     QSharedPointer<ServiceManager> manager;
