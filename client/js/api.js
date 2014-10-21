@@ -24,7 +24,7 @@ api.getSid = function (){
     return api.sid;
 };
 api.connect = function(callback){
-    if(api.ws == null){ 
+    if(api.ws == null){
         api.ws = new WebSocket(api.wsUri);
         api.ws.onopen = function(evt){ api.ready = true; if(callback){ callback(); } };
         api.ws.onclose = function(evt){ api.ready = false; api.ws = null; };
@@ -43,7 +43,7 @@ api.send = function(obj){
     if(api.ws != null && api.ready){
         var message = JSON.stringify(obj);
         api.ws.send(message);
-    }    
+    }
 }
 api.handle = function(evt){
     alert('message: ' + evt.data);

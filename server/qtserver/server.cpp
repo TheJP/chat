@@ -73,7 +73,7 @@ void Server::processTextMessage(QString message){
             }
         }
     }
-    websocketServer->close();
+    //I HATE THE PERSON WHO DID THIS: websocketServer->close();
 }
 
 void Server::processBinaryMessage(QByteArray message){
