@@ -9,6 +9,22 @@
         <script src="js/index.js"></script>
     </head>
     <body>
+        <section class="login">
+            <div class="content">
+                <div class="input-group">
+                    <label for="username">Username / Mail</label>
+                    <input type="text" id="username" name="username" auto-complete="false" />
+                </div>
+                <div class="input-group">
+                    <label for="password">Password </label>
+                    <input type="password" id="password" name="password" auto-complete="false" />
+                </div>
+                <div class="input-group">
+                    <button type="button" id="cancel">Cancel</button>
+                    <button type="submit" id="login">Login</button>
+                </div>
+            </div>
+        </section>
         <nav class="navigation">
             <div class="content">
                 <span class="brand">Logo</span>
@@ -18,11 +34,11 @@
                 <a href="#" class="pull-right">Login / Logout</a>
             </div>
         </nav>
-        <div class="content main">
+        <section class="content main">
             <script>
                 //Example content until real content is added
                 for(var i = 0; i < 200; i++){ document.write('Content<br>'); }
             </script>
-        </div>
+        </section>
     </body>
 </html>

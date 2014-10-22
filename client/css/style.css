@@ -6,7 +6,8 @@
  * ========
  * 01. Basic style
  * 02. Navigation
- * 03. Content Div
+ * 03. Login
+ * 04. Content Div
  *
  */
 
@@ -43,7 +44,7 @@ a:hover, a:focus, a.active {
     z-index: 1030;
     left: 0;
     right: 0;
-    top: 0;
+    top: 120px;
 }
 .navigation .content span, .navigation .content a {
     display: inline-block;
@@ -66,8 +67,56 @@ a:hover, a:focus, a.active {
     background: linear-gradient(to bottom, #333 0%, #333 10%, #408000 10%, #408000 100%);
 }
 
+/***************/
+/** 03. Login **/
+/***************/
+.login {
+    background-color: #408000;
+    padding-top: 10px;
+    height: 110px;
+    position: fixed;
+    z-index: 1030;
+    left: 0;
+    right: 0;
+    top: 0;
+}
+.login .input-group {
+    display: block;
+    height: 25px;
+    margin: 5px 0;
+    color: #D0FF8B;
+    font-size: 18px;
+}
+.login .input-group label{
+    display: inline-block;
+    width: 150px;
+    text-align: right;
+    margin-right: 20px;
+}
+.login .input-group input{
+    display: inline-block;
+    width: 150px;
+    border-radius: 5px;
+    height: 23px;
+    border: 1px solid #333;
+}
+.login .input-group button {
+    display: inline-block;
+    font-size: 18px;
+    padding: 5px 10px;
+    border-radius: 5px;
+    border: 1px solid #333;
+    color: #AFD775;
+    background: linear-gradient(to bottom, #2C5700 0%, #2C5700 20%, #397100 100%);
+}
+.login .input-group button:hover,
+.login .input-group button:focus {
+    color: #D0FF8B;
+    background: linear-gradient(to bottom, #333 0%, #333 15%, #408000 15%, #408000 30%, #56ad00 100%);
+}
+
 /*********************/
-/** 03. Content Div **/
+/** 04. Content Div **/
 /*********************/
 .main {
     margin-top: 80px;
