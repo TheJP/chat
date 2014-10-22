@@ -1,3 +1,35 @@
+var ApiRequest = {
+    //User Operations
+    Login : 11,
+    Logout : 12,
+    Register : 13,
+    ChangePassword : 14,
+    ChangeProfile : 15,
+    ContinueSession : 16,
+
+    //Chat Operations
+    SendMessage : 31,
+    OpenConversation : 32,
+    CloseConversation : 33,
+    GetMessagesOlder : 34,
+    CreateConversation : 35,
+    DeleteConversation : 36,
+    ChangeConversation : 37,
+    InviteConversation : 38,
+    ChangeConversationPermission : 39,
+    GetConversations : 40,
+
+    //Admin Operations
+    Mute : 51,
+    Ban : 52,
+    ChangePermission : 53
+};
+var ApiResponse = {
+    //1 client request to 1 server response
+    Response : 1,
+    //1 client request to n server responses
+    Notify : 2
+};
 var api = {
     wsUri : 'ws://127.0.0.1:8080', //Testing environment
     sid : null,
