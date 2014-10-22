@@ -18,8 +18,6 @@ public:
     explicit ResponseSession(quint32 numSid, const QSharedPointer<QString> & sid, RequestType request, bool success, QObject *parent = 0);
     void read(IKeyValueReader & stream) override;
     void write(IKeyValueWriter & stream) override;
-    QSharedPointer<IChatMsg> create() override;
-    QSharedPointer<IChatMsg> handle(const ServiceManager & manager) override;
     quint32 getNumSid() const;
 signals:
 

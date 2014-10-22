@@ -32,8 +32,11 @@ QSharedPointer<IChatMsg> UserService::login(const QString & username, const QStr
         "WHERE username = :username");
     query.bindValue(":username", username);
     ok = ok && query.exec();
-    if(!ok){ /* TODO: Internal error */ }
-    else if(query.next()){
+    if(!ok){ return manager->getProtocol().createResponse(RequestType::Login, ErrorType::Internal, QStringLiteral("")); }
+    else if(!query.next()){
+        qDebug() << "[wrong username]";
+        ok = false; //Unkown username
+    } else {
         userId = query.value(0).toUInt();
         QString dbSalt = query.value(1).toString();
         QString dbPassword = query.value(2).toString();
@@ -44,14 +47,14 @@ QSharedPointer<IChatMsg> UserService::login(const QString & username, const QStr
         if(sha256.result().toHex() == dbPassword){
             qDebug() << "[correct]";
         }else{
-            qDebug() << "[wrong]";
-            ok = false;
+            qDebug() << "[wrong password]";
+            ok = false; //Wrong password
         }
     }
 
     //** Create Session **//
     QSharedPointer<QString> sid(new QString());
-    if(!ok){ /* TODO: Response fail */ }
+    if(!ok){ return manager->getProtocol().createResponse(RequestType::Login, ErrorType::Custom, QStringLiteral("Unkown username or password")); }
     else {
         for(int i = 0; i < USERSERVICE_SID_LENGTH; ++i){
             sid->append(letters[qrand()%USERSERVICE_COUNT_LETTERS]);
@@ -66,7 +69,7 @@ QSharedPointer<IChatMsg> UserService::login(const QString & username, const QStr
         ok = ok && querySession.exec();
         numSid = querySession.lastInsertId().toInt();
     }
-    if(!ok){ /* TODO: Internal error */ }
+    if(!ok){ return manager->getProtocol().createResponse(RequestType::Login, ErrorType::Internal, QStringLiteral("")); }
     else { return manager->getProtocol().createResponseSession(RequestType::Login, true, numSid, sid); }
 
     return QSharedPointer<IChatMsg>();

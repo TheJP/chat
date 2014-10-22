@@ -15,17 +15,6 @@ void ResponseSession::write(IKeyValueWriter & stream){
     stream.writeString(QStringLiteral("sid"), *sid);
 }
 
-//Invalid for this specific type
-QSharedPointer<IChatMsg> ResponseSession::create(){
-    return QSharedPointer<ResponseSession>();
-}
-
-//Invalid for this specific type
-QSharedPointer<IChatMsg> ResponseSession::handle(const ServiceManager & manager){
-    Q_UNUSED(manager);
-    return QSharedPointer<ResponseSession>();
-}
-
 quint32 ResponseSession::getNumSid() const {
     return numSid;
 }

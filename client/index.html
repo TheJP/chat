@@ -11,17 +11,19 @@
     <body>
         <section class="login">
             <div class="content">
+                <form action="#" method="POST" id="login-form">
                 <div class="input-group">
-                    <label for="username">Username / Mail</label><input type="text" id="username" name="username" auto-complete="false" placeholder="Username" />
+                    <label for="username">Username / Mail</label><input type="text" id="username" name="username" autocomplete="false" placeholder="Username" />
                 </div>
                 <div class="input-group">
-                    <label for="password">Password</label><input type="password" id="password" name="password" auto-complete="false" placeholder="Password" />
+                    <label for="password">Password</label><input type="password" id="password" name="password" autocomplete="false" placeholder="Password" />
                 </div>
                 <div class="input-group command-group">
-                    <button type="button" id="cancel-login">Cancel</button>
-                    <button type="submit" id="login">Login</button><br />
+                    <button type="submit" id="login">Login</button>
+                    <button type="button" id="cancel-login">Cancel</button><br />
                     <a href="#" id="register">Create new account...</a>
                 </div>
+                </form>
             </div>
         </section>
         <nav class="navigation">
@@ -31,6 +33,7 @@
                 <a href="#">Link 2</a>
                 <a href="#">Link 3</a>
                 <a href="#" class="pull-right" id="toggle-login">Login</a>
+                <a href="#" class="pull-right hidden" id="nav-user">[USER]</a>
             </div>
         </nav>
         <section class="content main">

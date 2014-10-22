@@ -41,6 +41,14 @@ enum class ResponseType {
     //1 client request to n server responses
     Notify = 2 //Sent with the Request Type
 };
+enum class ErrorType {
+    None = 0,
+    Forbidden = 403, //Access denied
+    NotFound = 404,
+    ImATeapot = 418,
+    Internal = 500,
+    Custom = 600
+};
 
 class Protocol : public QObject
 {
@@ -54,6 +62,7 @@ public:
     void set(RequestType request, const QSharedPointer<IChatMsg> & msg);
     QSharedPointer<IChatMsg> createRequest(RequestType request) const;
     QSharedPointer<IChatMsg> createResponse(RequestType request, bool success) const;
+    QSharedPointer<IChatMsg> createResponse(RequestType request, ErrorType error, const QString & errorText) const;
     QSharedPointer<IChatMsg> createResponseSession(RequestType request, bool success, quint32 numSid, const QSharedPointer<QString> & sid) const;
 signals:
 

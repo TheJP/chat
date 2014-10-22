@@ -1,3 +1,6 @@
+env = {
+    debug : true
+};
 var ApiRequest = {
     //User Operations
     Login : 11,
@@ -35,8 +38,7 @@ var api = {
     sid : null,
     ws : null,
     ready : false,
-    callbacks : [],
-    user : { login, logout }
+    callbacks : []
 };
 api.setSid = function(sid){
     api.sid = sid;
@@ -73,19 +75,38 @@ api.disconnect = function(){
         api.ws = null;
     }
 };
-api.send = function(obj){
+api.send = function(type, obj){
+    obj.t = type;
     if(api.ws != null && api.ready){
         var message = JSON.stringify(obj);
         api.ws.send(message);
     }
 };
 api.handle = function(evt){
-    console.log('message: ' + evt.data);
-    /*if(evt.data && evt.data.t){
-    
-    }*/
-}
-
-//Api functions
-api.user.login = function(username, password){
+    if(evt.data){
+        if(env.debug){ console.log('message: ' + evt.data); }
+        var obj = JSON.parse(evt.data);
+        if(obj.r){
+            var r = parseInt(obj.r);
+            if(r in api.callbacks && $.isArray(api.callbacks[r])){
+                //Execute callbacks
+                var key;
+                for(key in api.callbacks[r]){
+                    api.callbacks[r][key](obj);
+                }
+            }
+        }
+    }
 };
+api.register = function(type, callback){
+    if(type && callback){
+        if(!(type in api.callbacks)){ api.callbacks[type] = [callback]; }
+        else { api.callbacks[type].push(callback); }
+    }
+}
+//Predefined callback handler
+api.callbacks[ApiRequest.Login] = [function(data){
+    if(data.s){
+        api.setSid(data.sid);
+    }
+}];
