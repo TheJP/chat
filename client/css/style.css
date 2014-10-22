@@ -14,6 +14,17 @@
 /*********************/
 /** 01. Basic style **/
 /*********************/
+* {
+    outline: none;
+}
+/* Remove ugly dotted outline */
+button::-moz-focus-inner,
+input[type="reset"]::-moz-focus-inner,
+input[type="button"]::-moz-focus-inner,
+input[type="submit"]::-moz-focus-inner,
+input[type="file"] > input[type="button"]::-moz-focus-inner {
+    border: none;
+}
 body {
     font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
     font-size: 14px;
@@ -44,7 +55,7 @@ a:hover, a:focus, a.active {
     z-index: 1030;
     left: 0;
     right: 0;
-    top: 120px;
+    top: 0;
 }
 .navigation .content span, .navigation .content a {
     display: inline-block;
@@ -71,48 +82,73 @@ a:hover, a:focus, a.active {
 /** 03. Login **/
 /***************/
 .login {
-    background-color: #408000;
-    padding-top: 10px;
-    height: 110px;
+    background-color: #aaa;
+    padding-top: 5px;
+    height: 135px;
     position: fixed;
     z-index: 1030;
     left: 0;
     right: 0;
-    top: 0;
+    top: -140px;
 }
 .login .input-group {
     display: block;
-    height: 25px;
+    height: 28px;
     margin: 5px 0;
-    color: #D0FF8B;
+    color: #2C5700;
     font-size: 18px;
 }
 .login .input-group label{
     display: inline-block;
+    height: 100%;
     width: 150px;
     text-align: right;
-    margin-right: 20px;
+    margin-right: 15px;
+    vertical-align: middle;
 }
 .login .input-group input{
     display: inline-block;
-    width: 150px;
+    width: 200px;
     border-radius: 5px;
-    height: 23px;
-    border: 1px solid #333;
+    height: 20px;
+    padding: 3px 10px;
+    border: 1px solid #2C5700;
+}
+.login .input-group input:focus{
+    border: 1px solid #50a200;
 }
 .login .input-group button {
     display: inline-block;
     font-size: 18px;
     padding: 5px 10px;
     border-radius: 5px;
-    border: 1px solid #333;
-    color: #AFD775;
-    background: linear-gradient(to bottom, #2C5700 0%, #2C5700 20%, #397100 100%);
+    border: none;
+    color: #fafafa;
+    background-color: #408000;
+    cursor: pointer;
 }
-.login .input-group button:hover,
 .login .input-group button:focus {
-    color: #D0FF8B;
-    background: linear-gradient(to bottom, #333 0%, #333 15%, #408000 15%, #408000 30%, #56ad00 100%);
+    background-color: #50a200;
+    background: linear-gradient(to bottom, #50a200 15%, #50a200 30%, #408000 100%);
+}
+.login .input-group button:hover {
+    background: linear-gradient(to bottom, #333 0%, #333 15%, #50a200 15%, #50a200 30%, #408000 100%);
+}
+.login .input-group button:active {
+    background: linear-gradient(to bottom, #333 0%, #333 15%, #408000 15%, #408000 30%, #50a200 100%);
+}
+.login .command-group {
+    margin-left: 166px; /* 150px (label width) + 15px (margin) + 1px (input border) */
+    width: 220px; /* 200px (input width) + 20px (padding) */
+    text-align: right;
+}
+#register{
+    font-size: 14px;
+    color: #333;
+}
+#register:hover,
+#register:focus {
+    color: #666;
 }
 
 /*********************/

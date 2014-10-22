@@ -12,16 +12,15 @@
         <section class="login">
             <div class="content">
                 <div class="input-group">
-                    <label for="username">Username / Mail</label>
-                    <input type="text" id="username" name="username" auto-complete="false" />
+                    <label for="username">Username / Mail</label><input type="text" id="username" name="username" auto-complete="false" placeholder="Username" />
                 </div>
                 <div class="input-group">
-                    <label for="password">Password </label>
-                    <input type="password" id="password" name="password" auto-complete="false" />
+                    <label for="password">Password</label><input type="password" id="password" name="password" auto-complete="false" placeholder="Password" />
                 </div>
-                <div class="input-group">
-                    <button type="button" id="cancel">Cancel</button>
-                    <button type="submit" id="login">Login</button>
+                <div class="input-group command-group">
+                    <button type="button" id="cancel-login">Cancel</button>
+                    <button type="submit" id="login">Login</button><br />
+                    <a href="#" id="register">Create new account...</a>
                 </div>
             </div>
         </section>
@@ -31,7 +30,7 @@
                 <a href="#" class="active">Home</a>
                 <a href="#">Link 2</a>
                 <a href="#">Link 3</a>
-                <a href="#" class="pull-right">Login / Logout</a>
+                <a href="#" class="pull-right" id="toggle-login">Login</a>
             </div>
         </nav>
         <section class="content main">

@@ -34,7 +34,9 @@ var api = {
     wsUri : 'ws://127.0.0.1:8080', //Testing environment
     sid : null,
     ws : null,
-    ready : false
+    ready : false,
+    callbacks : [],
+    user : { login, logout }
 };
 api.setSid = function(sid){
     api.sid = sid;
@@ -76,7 +78,14 @@ api.send = function(obj){
         var message = JSON.stringify(obj);
         api.ws.send(message);
     }
-}
+};
 api.handle = function(evt){
-    alert('message: ' + evt.data);
+    console.log('message: ' + evt.data);
+    /*if(evt.data && evt.data.t){
+    
+    }*/
 }
+
+//Api functions
+api.user.login = function(username, password){
+};
