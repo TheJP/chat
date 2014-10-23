@@ -25,6 +25,10 @@ $(document).ready(function() {
         api.send(ApiRequest.Login, {username : $('#username').val(), password : $('#password').val()});
         return false;
     });
+    $('#nav-user').click(function(){
+        $('.second-navigation').removeClass('hidden');
+        $('#nav-user').addClass('active');
+    });
 });
 $(window).on('beforeunload', function(){
     api.disconnect(); //Not needed but good practice

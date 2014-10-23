@@ -84,6 +84,27 @@ a:hover, a:focus, a.active {
     background-color: #408000;
     background: linear-gradient(to bottom, #333 0%, #333 10%, #408000 10%, #408000 100%);
 }
+.second-navigation {
+    position: fixed;
+    z-index: 1030;
+    top: 60px;
+    left: 0;
+    right: 0;
+}
+.second-navigation .down-menu {
+    background-color: #408000;
+    padding: 5px 0;
+}
+.second-navigation .down-menu a {
+    padding: 5px 20px;
+    display: block;
+    font-size: 18px;
+    color: #D0FF8B;
+}
+.second-navigation .down-menu a:hover {
+    background-color: #333;
+    background: linear-gradient(to right, #333 0%, #333 5%, #2C5700 5%, #2C5700 100%);
+}
 
 /***************/
 /** 03. Login **/
@@ -156,6 +177,9 @@ a:hover, a:focus, a.active {
 #register:hover,
 #register:focus {
     color: #666;
+}
+#nav-user {
+    padding-left: 21px;
 }
 
 /*********************/
