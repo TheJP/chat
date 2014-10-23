@@ -63,7 +63,7 @@ public:
     QSharedPointer<IChatMsg> createRequest(RequestType request) const;
     QSharedPointer<IChatMsg> createResponse(RequestType request, bool success) const;
     QSharedPointer<IChatMsg> createResponse(RequestType request, ErrorType error, const QString & errorText) const;
-    QSharedPointer<IChatMsg> createResponseSession(RequestType request, bool success, quint32 numSid, const QSharedPointer<QString> & sid) const;
+    QSharedPointer<IChatMsg> createResponseSession(RequestType request, bool success, quint32 numSid, const QSharedPointer<QString> & sid, const QSharedPointer<QString> & username) const;
 signals:
 
 public slots:

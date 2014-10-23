@@ -1,18 +1,20 @@
 #include "responsesession.h"
 
-ResponseSession::ResponseSession(quint32 numSid, const QSharedPointer<QString> & sid, RequestType request, bool success, QObject *parent) :
-    numSid(numSid), sid(sid), Response(request, success, parent)
+ResponseSession::ResponseSession(quint32 numSid, const QSharedPointer<QString> & sid, const QSharedPointer<QString> & username, RequestType request, bool success, QObject *parent) :
+    numSid(numSid), sid(sid), username(username), Response(request, success, parent)
 {
 }
 
 void ResponseSession::read(IKeyValueReader & stream){
     Response::read(stream);
     sid = stream.readString(QStringLiteral("sid"));
+    username = stream.readString(QStringLiteral("username"));
 }
 
 void ResponseSession::write(IKeyValueWriter & stream){
     Response::write(stream);
     stream.writeString(QStringLiteral("sid"), *sid);
+    stream.writeString(QStringLiteral("username"), *username);
 }
 
 quint32 ResponseSession::getNumSid() const {

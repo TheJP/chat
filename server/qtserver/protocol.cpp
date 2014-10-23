@@ -1,5 +1,7 @@
 #include "protocol.h"
 
+#include "msgs/continuesession.h"
+#include "msgs/empty.h"
 #include "msgs/login.h"
 #include "msgs/logout.h"
 #include "msgs/response.h"
@@ -15,8 +17,9 @@ QSharedPointer<IChatMsg> & Protocol::operator[](const int & index){
 }
 
 void Protocol::initDefault(){
-    set(RequestType::Login, QSharedPointer<Login>(new Login()));
-    set(RequestType::Logout, QSharedPointer<Logout>(new Logout()));
+    set(RequestType::Login, QSharedPointer<IChatMsg>(new Login()));
+    set(RequestType::Logout, QSharedPointer<IChatMsg>(new Logout()));
+    set(RequestType::ContinueSession, QSharedPointer<IChatMsg>(new ContinueSession()));
 }
 
 void Protocol::set(RequestType request, const QSharedPointer<IChatMsg> & msg){
@@ -24,7 +27,7 @@ void Protocol::set(RequestType request, const QSharedPointer<IChatMsg> & msg){
 }
 
 QSharedPointer<IChatMsg> Protocol::createRequest(RequestType request) const {
-    //TODO: Handle !msgs.contains(request)
+    if(!msgs.contains(static_cast<int>(request))) { return QSharedPointer<Empty>(new Empty()); }
     return msgs[static_cast<int>(request)]->create();
 }
 
@@ -36,6 +39,6 @@ QSharedPointer<IChatMsg> Protocol::createResponse(RequestType request, ErrorType
     return QSharedPointer<IChatMsg>(new Response(request, error, errorText));
 }
 
-QSharedPointer<IChatMsg> Protocol::createResponseSession(RequestType request, bool success, quint32 numSid, const QSharedPointer<QString> & sid) const {
-    return QSharedPointer<IChatMsg>(new ResponseSession(numSid, sid, request, success));
+QSharedPointer<IChatMsg> Protocol::createResponseSession(RequestType request, bool success, quint32 numSid, const QSharedPointer<QString> & sid, const QSharedPointer<QString> & username) const {
+    return QSharedPointer<IChatMsg>(new ResponseSession(numSid, sid, username, request, success));
 }

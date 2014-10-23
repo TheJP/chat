@@ -14,8 +14,9 @@ class ResponseSession final : public Response
 private:
     quint32 numSid;
     QSharedPointer<QString> sid;
+    QSharedPointer<QString> username;
 public:
-    explicit ResponseSession(quint32 numSid, const QSharedPointer<QString> & sid, RequestType request, bool success, QObject *parent = 0);
+    explicit ResponseSession(quint32 numSid, const QSharedPointer<QString> & sid, const QSharedPointer<QString> & username, RequestType request, bool success, QObject *parent = 0);
     void read(IKeyValueReader & stream) override;
     void write(IKeyValueWriter & stream) override;
     quint32 getNumSid() const;

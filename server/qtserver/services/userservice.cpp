@@ -20,7 +20,7 @@ UserService::~UserService(){
 }
 
 QSharedPointer<IChatMsg> UserService::login(const QString & username, const QString & password) const {
-    qDebug() << "[UserService] username: " << username << " ";
+    qDebug() << "[UserService][login] username: " << username << " ";
 
     //** Check authentification **//
     quint32 userId = 0, numSid = 0;
@@ -32,7 +32,7 @@ QSharedPointer<IChatMsg> UserService::login(const QString & username, const QStr
         "WHERE username = :username");
     query.bindValue(":username", username);
     ok = ok && query.exec();
-    if(!ok){ return manager->getProtocol().createResponse(RequestType::Login, ErrorType::Internal, QStringLiteral("")); }
+    if(!ok){ qDebug() << query.lastError(); return manager->getProtocol().createResponse(RequestType::Login, ErrorType::Internal, QStringLiteral("")); }
     else if(!query.next()){
         qDebug() << "[wrong username]";
         ok = false; //Unkown username
@@ -67,10 +67,32 @@ QSharedPointer<IChatMsg> UserService::login(const QString & username, const QStr
         querySession.bindValue(":sid", *sid);
         querySession.bindValue(":user_id", userId);
         ok = ok && querySession.exec();
-        numSid = querySession.lastInsertId().toInt();
+        if(ok){ numSid = querySession.lastInsertId().toInt(); }
     }
-    if(!ok){ return manager->getProtocol().createResponse(RequestType::Login, ErrorType::Internal, QStringLiteral("")); }
-    else { return manager->getProtocol().createResponseSession(RequestType::Login, true, numSid, sid); }
+    if(!ok){ qDebug() << query.lastError(); return manager->getProtocol().createResponse(RequestType::Login, ErrorType::Internal, QStringLiteral("")); }
+    else { return manager->getProtocol().createResponseSession(RequestType::Login, true, numSid, sid, QSharedPointer<QString>(new QString(username))); }
+}
 
-    return QSharedPointer<IChatMsg>();
+QSharedPointer<IChatMsg> UserService::continueSession(const QString & sid) const {
+    qDebug() << "[UserService][continueSession]";
+    quint32 numSid;
+    bool ok;
+    QSqlQuery query;
+    ok = query.prepare(
+        "SELECT username, session.id "
+        "FROM session LEFT JOIN user ON session.user_id = user.id "
+        "WHERE sid = :sid");
+    query.bindValue(":sid", sid);
+    ok = ok && query.exec();
+    if(!ok){ qDebug() << query.lastError(); return manager->getProtocol().createResponse(RequestType::Login, ErrorType::Internal, QStringLiteral("")); }
+    else if(!query.next()){
+        qDebug() << "[unkown sid]";
+        //ok = false;
+        return manager->getProtocol().createResponse(RequestType::Login, ErrorType::Custom, QStringLiteral("Unkown sid"));
+    }else {
+        QSharedPointer<QString> username(new QString(query.value(0).toString()));
+        numSid = query.value(1).toInt();
+        qDebug() << "[success] add client to session. username: " << *username;
+        return manager->getProtocol().createResponseSession(RequestType::ContinueSession, true, numSid, QSharedPointer<QString>(new QString(sid)), username);
+    }
 }

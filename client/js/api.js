@@ -43,8 +43,13 @@ var api = {
 api.setSid = function(sid){
     api.sid = sid;
     var expire = new Date();
-    expire.setTime(expire.getTime() + 31536000000);  //Exactly 1 year (value in ms)
+    //Exactly 1 year - 1min (value in ms)
+    //(1min because of the time, the cookie travels from server to client)
+    expire.setTime(expire.getTime() + 31536000000 - 60000);
     document.cookie = 'sid=' + escape(sid) + '; expires=' + expire.toGMTString();
+};
+api.deleteSid = function(){
+    document.cookie = 'sid=; expires=Thu, 01 Jan 1970 00:00:01 GMT';
 };
 api.getSid = function (){
     //Is the session id already set?
@@ -76,6 +81,8 @@ api.disconnect = function(){
     }
 };
 api.send = function(type, obj){
+    if(!obj){ obj = {}; }
+    if(type != ApiRequest.Login){ obj.sid = api.getSid(); }
     obj.t = type;
     if(api.ws != null && api.ready){
         var message = JSON.stringify(obj);

@@ -18,6 +18,7 @@ QSharedPointer<IChatMsg> Logout::create(){
 }
 
 QSharedPointer<IChatMsg> Logout::handle(const ServiceManager & manager){
+    //TODO: implement
     Q_UNUSED(manager);
     return QSharedPointer<Logout>();
 }

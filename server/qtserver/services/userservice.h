@@ -4,6 +4,7 @@
 #include <QObject>
 #include <QSharedPointer>
 #include <QSqlQuery>
+#include <QSqlError>
 #include <QCryptographicHash>
 #include "../ichatmsg.h"
 
@@ -21,6 +22,7 @@ public:
     explicit UserService(ServiceManager * manager, const QString & applicationSalt, QObject *parent = 0);
     ~UserService();
     QSharedPointer<IChatMsg> login(const QString & username, const QString & password) const;
+    QSharedPointer<IChatMsg> continueSession(const QString & sid) const;
 signals:
 
 public slots:

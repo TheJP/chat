@@ -26,6 +26,7 @@ function setUserMenuVisible(visible){
     userMenuVisible = visible;
 }
 
+//Hide optional content
 function hideAll() {
     if(!hideIgnores.userMenu){ setUserMenuVisible(false); }
     hideIgnores.userMenu = false;
@@ -35,10 +36,28 @@ $(document).ready(function() {
     //Register hide all listener
     $('html').click(function() { hideAll(); });
     //Open connection
-    api.connect(function(){});
+    api.connect(function(){
+        //On connection open, continue session if exists
+        if(api.getSid() != null){
+            api.send(ApiRequest.ContinueSession, { sid: api.getSid() });
+        }
+    });
+    //Continue Session (Handle Server Response)
+    api.register(ApiRequest.ContinueSession, function(data){
+        if(data.s){
+            setLoginVisible(false);
+            $('#nav-user').text(data.username).append('&#x25BE;');
+            $('#nav-user').removeClass('hidden');
+            $('#toggle-login').addClass('hidden');
+        }
+    });
     //Login
     $('#toggle-login').click(function(){ setLoginVisible(!loginVisible); });
     $('#cancel-login').click(function(){ setLoginVisible(false); });
+    $('#login-form').submit(function(){
+        api.send(ApiRequest.Login, {username : $('#username').val(), password : $('#password').val()});
+        return false;
+    });
     api.register(ApiRequest.Login, function(data){
         if(!data.s){ alert('Login failed: ' + data.error + ' ' + data.error_text); }
         else {
@@ -48,13 +67,19 @@ $(document).ready(function() {
             $('#toggle-login').addClass('hidden');
         }
     });
-    $('#login-form').submit(function(){
-        api.send(ApiRequest.Login, {username : $('#username').val(), password : $('#password').val()});
-        return false;
-    });
     //User Menu
     $('#nav-user').click(function(){ setUserMenuVisible(!userMenuVisible); });
     $('#user-menu').click(function(){ setUserMenuVisible(true); }); //Keep open => ignores html click
+    //Logout
+    $('#logout').click(function(){
+        api.send(ApiRequest.Logout);
+        api.deleteSid();
+        setUserMenuVisible(false);
+        setTimeout(function(){ location.reload(); }, 300); //Reload if no answer after 300ms
+    });
+    api.register(ApiRequest.Logout, function(data){
+        location.reload();
+    });
 });
 $(window).on('beforeunload', function(){
     api.disconnect(); //Not needed but good practice
