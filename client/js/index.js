@@ -1,3 +1,8 @@
+var hideIgnores = {
+    userMenu : false
+};
+
+//Login show/hide
 var loginVisible = false;
 function setLoginVisible(visible){
     $('.login').stop(); $('.navigation').stop();
@@ -7,9 +12,31 @@ function setLoginVisible(visible){
     loginVisible = visible;
 }
 
+//UserMenu show/hide
+var userMenuVisible = false;
+function setUserMenuVisible(visible){
+    if(visible){
+        hideIgnores.userMenu = true;
+        $('.second-navigation').removeClass('hidden');
+        $('#nav-user').addClass('active');
+    } else {
+        $('.second-navigation').addClass('hidden');
+        $('#nav-user').removeClass('active');
+    }
+    userMenuVisible = visible;
+}
+
+function hideAll() {
+    if(!hideIgnores.userMenu){ setUserMenuVisible(false); }
+    hideIgnores.userMenu = false;
+}
+
 $(document).ready(function() {
-    api.connect(function(){
-    });
+    //Register hide all listener
+    $('html').click(function() { hideAll(); });
+    //Open connection
+    api.connect(function(){});
+    //Login
     $('#toggle-login').click(function(){ setLoginVisible(!loginVisible); });
     $('#cancel-login').click(function(){ setLoginVisible(false); });
     api.register(ApiRequest.Login, function(data){
@@ -25,10 +52,9 @@ $(document).ready(function() {
         api.send(ApiRequest.Login, {username : $('#username').val(), password : $('#password').val()});
         return false;
     });
-    $('#nav-user').click(function(){
-        $('.second-navigation').removeClass('hidden');
-        $('#nav-user').addClass('active');
-    });
+    //User Menu
+    $('#nav-user').click(function(){ setUserMenuVisible(!userMenuVisible); });
+    $('#user-menu').click(function(){ setUserMenuVisible(true); }); //Keep open => ignores html click
 });
 $(window).on('beforeunload', function(){
     api.disconnect(); //Not needed but good practice
