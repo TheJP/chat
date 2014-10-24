@@ -22,6 +22,7 @@ public:
     explicit UserService(ServiceManager * manager, const QString & applicationSalt, QObject *parent = 0);
     ~UserService();
     QSharedPointer<IChatMsg> login(const QString & username, const QString & password) const;
+    QSharedPointer<IChatMsg> logout(const QString & sid) const;
     QSharedPointer<IChatMsg> continueSession(const QString & sid) const;
 signals:
 

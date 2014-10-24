@@ -73,6 +73,12 @@ QSharedPointer<IChatMsg> UserService::login(const QString & username, const QStr
     else { return manager->getProtocol().createResponseSession(RequestType::Login, true, numSid, sid, QSharedPointer<QString>(new QString(username))); }
 }
 
+QSharedPointer<IChatMsg> UserService::logout(const QString & sid) const {
+    //Undecided behaviour: What happens to clients with the same sessionid?
+    Q_UNUSED(sid);
+    return QSharedPointer<IChatMsg>();
+}
+
 QSharedPointer<IChatMsg> UserService::continueSession(const QString & sid) const {
     qDebug() << "[UserService][continueSession]";
     quint32 numSid;

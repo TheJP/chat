@@ -2,6 +2,7 @@
 
 #include "msgs/continuesession.h"
 #include "msgs/empty.h"
+#include "msgs/getconversations.h"
 #include "msgs/login.h"
 #include "msgs/logout.h"
 #include "msgs/response.h"
@@ -20,6 +21,7 @@ void Protocol::initDefault(){
     set(RequestType::Login, QSharedPointer<IChatMsg>(new Login()));
     set(RequestType::Logout, QSharedPointer<IChatMsg>(new Logout()));
     set(RequestType::ContinueSession, QSharedPointer<IChatMsg>(new ContinueSession()));
+    set(RequestType::GetConversations, QSharedPointer<IChatMsg>(new GetConversations()));
 }
 
 void Protocol::set(RequestType request, const QSharedPointer<IChatMsg> & msg){
