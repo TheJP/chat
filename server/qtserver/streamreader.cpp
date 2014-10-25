@@ -9,17 +9,21 @@ T StreamReader::read(QString & key) const {
     return value;
 }
 
-int StreamReader::readInt(QString & key) const {
+int StreamReader::readInt(QString & key){
     return read<int>(key);
 }
 
-double StreamReader::readDouble(QString & key) const {
+double StreamReader::readDouble(QString & key){
     return read<double>(key);
 }
 
-QSharedPointer<QString> StreamReader::readString(QString & key) const {
+QSharedPointer<QString> StreamReader::readString(QString & key){
     Q_UNUSED(key);
     QSharedPointer<QString> value(new QString());
     (*reader) >> *value;
     return value;
+}
+
+QVector<QSharedPointer<IChatMsg>> StreamReader::readArray(QString &key, IChatMsg &replicator){
+    return QVector<QSharedPointer<IChatMsg>>();
 }

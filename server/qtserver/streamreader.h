@@ -4,9 +4,10 @@
 #include <QDataStream>
 #include <QObject>
 #include <QSharedPointer>
+#include <QVector>
 #include "ikeyvaluereader.h"
 
-class StreamReader : public QObject, public IKeyValueReader
+class StreamReader final : public QObject, public IKeyValueReader
 {
     Q_OBJECT
     Q_INTERFACES(IKeyValueReader)
@@ -16,9 +17,10 @@ public:
     explicit StreamReader(QSharedPointer<QDataStream> reader, QObject *parent = 0);
     template<class T>
     T read(QString & key) const;
-    int readInt(QString & key) const;
-    double readDouble(QString & key) const;
-    QSharedPointer<QString> readString(QString & key) const;
+    int readInt(QString & key) override;
+    double readDouble(QString & key) override;
+    QSharedPointer<QString> readString(QString & key) override;
+    QVector<QSharedPointer<IChatMsg>> readArray(QString & key, IChatMsg & replicator) override;
 signals:
 
 public slots:
