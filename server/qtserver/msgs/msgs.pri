@@ -5,7 +5,9 @@ HEADERS += \
     $$PWD/responsesession.h \
     $$PWD/empty.h \
     $$PWD/continuesession.h \
-    $$PWD/getconversations.h
+    $$PWD/getconversations.h \
+    $$PWD/responseconversations.h \
+    $$PWD/conversation.h
 
 SOURCES += \
     msgs/login.cpp \
@@ -14,4 +16,5 @@ SOURCES += \
     $$PWD/responsesession.cpp \
     $$PWD/empty.cpp \
     $$PWD/continuesession.cpp \
-    $$PWD/getconversations.cpp
+    $$PWD/getconversations.cpp \
+    $$PWD/responseconversations.cpp
