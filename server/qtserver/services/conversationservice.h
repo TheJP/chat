@@ -8,7 +8,7 @@
 #include <QVector>
 #include "servicemanager.h"
 #include "../ichatmsg.h"
-#include "../msgs/conversation.h"
+#include "../streamable/conversation.h"
 
 class ConversationService : public QObject
 {

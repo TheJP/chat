@@ -11,8 +11,8 @@ void Login::read(IKeyValueReader & stream){
 }
 
 void Login::write(IKeyValueWriter & stream){
-    stream.writeString(QStringLiteral("username"), *username);
-    stream.writeString(QStringLiteral("password"), *password);
+    stream.write(QStringLiteral("username"), *username);
+    stream.write(QStringLiteral("password"), *password);
 }
 
 QSharedPointer<IChatMsg> Login::create(){

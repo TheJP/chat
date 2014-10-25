@@ -15,7 +15,7 @@
 #include "notificationsender.h"
 #include "protocol.h"
 #include "iformat.h"
-#include "msgs/responsesession.h"
+#include "streamable/responsesession.h"
 
 class Server : public QObject
 {

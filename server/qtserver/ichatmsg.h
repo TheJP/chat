@@ -4,8 +4,8 @@
 #define KEY_MSG_TYPE QStringLiteral("t")
 
 #include <QSharedPointer>
-#include "IKeyValueReader.h"
-#include "IKeyValueWriter.h"
+#include "ikeyvaluereader.h"
+#include "ikeyvaluewriter.h"
 
 class ServiceManager; //resolve cyclic include
 //#include "services/servicemanager.h"

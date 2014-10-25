@@ -10,7 +10,7 @@ void ContinueSession::read(IKeyValueReader & stream){
 }
 
 void ContinueSession::write(IKeyValueWriter & stream){
-    stream.writeString(QStringLiteral("sid"), *sid);
+    stream.write(QStringLiteral("sid"), *sid);
 }
 
 QSharedPointer<IChatMsg> ContinueSession::create(){

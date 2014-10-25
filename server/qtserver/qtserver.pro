@@ -19,6 +19,7 @@ CONFIG   += c++11
 #include subprojects
 include(msgs/msgs.pri)
 include(services/services.pri)
+include(streamable/streamable.pri)
 
 #Only include tests in the debug builds
 debug {
@@ -50,4 +51,7 @@ HEADERS += \
     protocol.h \
     notificationsender.h \
     iformat.h \
-    jsonformat.h
+    jsonformat.h \
+    istreamable.h
+
+OTHER_FILES +=

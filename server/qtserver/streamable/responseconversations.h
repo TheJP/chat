@@ -14,9 +14,10 @@ class ResponseConversations final : public Response
 {
     Q_OBJECT
 private:
-    QSharedPointer<QVector<Conversation>> conversations;
+    QSharedPointer<QVector<Conversation*>> conversations;
 public:
-    explicit ResponseConversations(QSharedPointer<QVector<Conversation>> conversations, RequestType request, bool success, QObject *parent = 0);
+    explicit ResponseConversations(const QSharedPointer<QVector<Conversation*>> & conversations, RequestType request, bool success, QObject *parent = 0);
+    ~ResponseConversations();
     void read(IKeyValueReader & stream) override;
     void write(IKeyValueWriter & stream) override;
 signals:

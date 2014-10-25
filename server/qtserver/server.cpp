@@ -62,7 +62,7 @@ void Server::processTextMessage(QString message){
                 //Write to json
                 QSharedPointer<QJsonObject> json(new QJsonObject());
                 JsonWriter writer(json);
-                writer.writeInt(KEY_MSG_TYPE, static_cast<int>(ResponseType::Response));
+                writer.write(KEY_MSG_TYPE, static_cast<int>(ResponseType::Response));
                 result->write(writer);
                 //Write to stream
                 QJsonDocument document(*json);

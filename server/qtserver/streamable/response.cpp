@@ -15,11 +15,11 @@ void Response::read(IKeyValueReader & stream){
 }
 
 void Response::write(IKeyValueWriter & stream){
-    stream.writeInt(KEY_REQUEST_TYPE, static_cast<int>(request));
-    stream.writeInt(KEY_SUCCESS, success ? 1 : 0);
+    stream.write(KEY_REQUEST_TYPE, static_cast<int>(request));
+    stream.write(KEY_SUCCESS, success ? 1 : 0);
     if(error != ErrorType::None){
-        stream.writeInt(QStringLiteral("error"), static_cast<int>(error));
-        stream.writeString(QStringLiteral("error_text"), errorText);
+        stream.write(QStringLiteral("error"), static_cast<int>(error));
+        stream.write(QStringLiteral("error_text"), errorText);
     }
 }
 

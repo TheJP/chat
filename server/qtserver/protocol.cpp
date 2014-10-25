@@ -5,8 +5,8 @@
 #include "msgs/getconversations.h"
 #include "msgs/login.h"
 #include "msgs/logout.h"
-#include "msgs/response.h"
-#include "msgs/responsesession.h"
+#include "streamable/response.h"
+#include "streamable/responsesession.h"
 
 Protocol::Protocol(QObject *parent) :
     QObject(parent)

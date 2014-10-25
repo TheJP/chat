@@ -13,8 +13,8 @@ void ResponseSession::read(IKeyValueReader & stream){
 
 void ResponseSession::write(IKeyValueWriter & stream){
     Response::write(stream);
-    stream.writeString(QStringLiteral("sid"), *sid);
-    stream.writeString(QStringLiteral("username"), *username);
+    stream.write(QStringLiteral("sid"), *sid);
+    stream.write(QStringLiteral("username"), *username);
 }
 
 quint32 ResponseSession::getNumSid() const {

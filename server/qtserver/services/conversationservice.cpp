@@ -22,16 +22,16 @@ QSharedPointer<IChatMsg> ConversationService::getPublicConversations() const {
     ok = ok && query.exec();
     int rows = ok ? query.size() : -1;
     if(!ok || rows < 0){ qDebug() << query.lastError(); return manager->getProtocol().createResponse(RequestType::GetConversations, ErrorType::Internal, QStringLiteral("")); }
-    QSharedPointer<QVector<Conversation>> conversations(new QVector<Conversation>(rows));
+    QSharedPointer<QVector<Conversation*>> conversations(new QVector<Conversation*>(rows));
     while(!query.next()){
-        conversations->push_back(std::move(Conversation()));
-        Conversation & con = conversations->last();
-        con.id = query.value(0).toInt();
-        con.title = query.value(1).toString();
-        con.topic = query.value(2).toString();
-        con.description = query.value(3).toString();
-        con.root = query.value(4).toBool();
-        con.parent_id = query.value(5).toInt();
+        conversations->push_back(new Conversation());
+        Conversation * con = conversations->last();
+        con->id = query.value(0).toInt();
+        con->title = query.value(1).toString();
+        con->topic = query.value(2).toString();
+        con->description = query.value(3).toString();
+        con->root = query.value(4).toBool();
+        con->parent_id = query.value(5).toInt();
     }
     return QSharedPointer<IChatMsg>();
 }
