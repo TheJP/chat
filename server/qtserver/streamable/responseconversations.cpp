@@ -15,4 +15,5 @@ void ResponseConversations::read(IKeyValueReader & stream){
 
 void ResponseConversations::write(IKeyValueWriter & stream){
     Response::write(stream);
+    stream.writeArray(QStringLiteral("conversations"), static_cast<QVector<IStreamable*>>(*conversations));
 }
