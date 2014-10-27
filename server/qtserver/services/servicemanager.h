@@ -3,7 +3,10 @@
 
 #include <QObject>
 #include <QSharedPointer>
+#include <QSqlDatabase>
+#include <QSqlDriver>
 #include "userservice.h"
+#include "conversationservice.h"
 #include "../notificationsender.h"
 
 class Protocol; //resolve cyclic reference
@@ -15,13 +18,17 @@ class ServiceManager : public QObject
 private:
     QSharedPointer<NotificationSender> sender;
     QSharedPointer<Protocol> protocol;
+    bool supportSize;
     //Services
     UserService user;
+    ConversationService conversation;
 public:
     explicit ServiceManager(const QSharedPointer<NotificationSender> & sender, const QSharedPointer<Protocol> & protocol, const QString & applicationSalt, QObject *parent = 0);
     const UserService & getUserService() const;
+    const ConversationService & getConversationService() const;
     const NotificationSender & getNotificationSender() const;
     const Protocol & getProtocol() const;
+    bool getSupportSize() const;
 signals:
 
 public slots:

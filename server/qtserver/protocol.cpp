@@ -7,6 +7,7 @@
 #include "msgs/logout.h"
 #include "streamable/response.h"
 #include "streamable/responsesession.h"
+#include "streamable/responseconversations.h"
 
 Protocol::Protocol(QObject *parent) :
     QObject(parent)
@@ -43,4 +44,8 @@ QSharedPointer<IChatMsg> Protocol::createResponse(RequestType request, ErrorType
 
 QSharedPointer<IChatMsg> Protocol::createResponseSession(RequestType request, bool success, quint32 numSid, const QSharedPointer<QString> & sid, const QSharedPointer<QString> & username) const {
     return QSharedPointer<IChatMsg>(new ResponseSession(numSid, sid, username, request, success));
+}
+
+QSharedPointer<IChatMsg> Protocol::createResponseConversations(RequestType request, bool success, const ConversationsVector & conversations) const {
+    return QSharedPointer<IChatMsg>(new ResponseConversations(conversations, request, success));
 }

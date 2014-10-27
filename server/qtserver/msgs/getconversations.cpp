@@ -18,6 +18,5 @@ QSharedPointer<IChatMsg> GetConversations::create(){
 }
 
 QSharedPointer<IChatMsg> GetConversations::handle(const ServiceManager & manager){
-    Q_UNUSED(manager);
-    return QSharedPointer<GetConversations>();
+    return manager.getConversationService().getPublicConversations();
 }

@@ -41,6 +41,8 @@ $(document).ready(function() {
         if(api.getSid() != null){
             api.send(ApiRequest.ContinueSession, { sid: api.getSid() });
         }
+        //Get conversations
+        api.send(ApiRequest.GetConversations);
     });
     //Continue Session (Handle Server Response)
     api.register(ApiRequest.ContinueSession, function(data){
@@ -79,6 +81,10 @@ $(document).ready(function() {
     });
     api.register(ApiRequest.Logout, function(data){
         location.reload();
+    });
+    //Conversations
+    api.register(ApiRequest.GetConversations, function(data){
+        if(data.s){ var key; for(key in data.conversations){ alert(data.conversations[key].title); } }
     });
 });
 $(window).on('beforeunload', function(){

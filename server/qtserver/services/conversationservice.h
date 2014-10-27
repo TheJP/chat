@@ -6,9 +6,8 @@
 #include <QSqlQuery>
 #include <QSqlError>
 #include <QVector>
-#include "servicemanager.h"
 #include "../ichatmsg.h"
-#include "../streamable/conversation.h"
+#include "../istreamable.h"
 
 class ConversationService : public QObject
 {

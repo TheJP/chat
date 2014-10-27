@@ -1,6 +1,6 @@
 #include "responseconversations.h"
 
-ResponseConversations::ResponseConversations(const QSharedPointer<QVector<Conversation*>> & conversations, RequestType request, bool success, QObject *parent) :
+ResponseConversations::ResponseConversations(const ConversationsVector & conversations, RequestType request, bool success, QObject *parent) :
     conversations(conversations), Response(request, success, parent)
 {
 }
@@ -15,5 +15,5 @@ void ResponseConversations::read(IKeyValueReader & stream){
 
 void ResponseConversations::write(IKeyValueWriter & stream){
     Response::write(stream);
-    stream.writeArray(QStringLiteral("conversations"), static_cast<QVector<IStreamable*>>(*conversations));
+    stream.writeArray(QStringLiteral("conversations"), *conversations);
 }

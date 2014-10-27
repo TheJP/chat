@@ -5,18 +5,18 @@
 #include <QHash>
 #include <QSharedPointer>
 #include <QVector>
-#include "conversation.h"
 #include "response.h"
 #include "../protocol.h"
+#include "../istreamable.h"
 #include "../services/servicemanager.h"
 
 class ResponseConversations final : public Response
 {
     Q_OBJECT
 private:
-    QSharedPointer<QVector<Conversation*>> conversations;
+    ConversationsVector conversations;
 public:
-    explicit ResponseConversations(const QSharedPointer<QVector<Conversation*>> & conversations, RequestType request, bool success, QObject *parent = 0);
+    explicit ResponseConversations(const ConversationsVector & conversations, RequestType request, bool success, QObject *parent = 0);
     ~ResponseConversations();
     void read(IKeyValueReader & stream) override;
     void write(IKeyValueWriter & stream) override;

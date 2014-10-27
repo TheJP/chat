@@ -24,7 +24,7 @@ void JsonWriter::write(QString & key, IStreamable & value){
 void JsonWriter::writeArray(QString & key, QVector<IStreamable *> & values){
     QJsonArray arr;
     for(IStreamable * value : values){
-        QSharedPointer<QJsonObject> obj;
+        QSharedPointer<QJsonObject> obj(new QJsonObject());
         JsonWriter subwriter(obj);
         value->write(subwriter);
         arr.append(*obj);
