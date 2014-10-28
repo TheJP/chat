@@ -18,10 +18,10 @@ private:
     QSharedPointer<QJsonObject> reader;
 public:
     explicit JsonReader(QSharedPointer<QJsonObject> reader, QObject *parent = 0);
-    int readInt(QString & key) override;
-    double readDouble(QString & key) override;
-    QSharedPointer<QString> readString(QString & key) override;
-    QVector<QSharedPointer<IChatMsg>> readArray(QString & key, IChatMsg & replicator) override;
+    int readInt(const QString & key) override;
+    double readDouble(const QString & key) override;
+    QSharedPointer<QString> readString(const QString & key) override;
+    QVector<QSharedPointer<IChatMsg>> readArray(const QString & key, IChatMsg & replicator) override;
 signals:
 
 public slots:

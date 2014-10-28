@@ -16,11 +16,11 @@ private:
 public:
     explicit StreamReader(QSharedPointer<QDataStream> reader, QObject *parent = 0);
     template<class T>
-    T read(QString & key) const;
-    int readInt(QString & key) override;
-    double readDouble(QString & key) override;
-    QSharedPointer<QString> readString(QString & key) override;
-    QVector<QSharedPointer<IChatMsg>> readArray(QString & key, IChatMsg & replicator) override;
+    T read(const QString & key) const;
+    int readInt(const QString & key) override;
+    double readDouble(const QString & key) override;
+    QSharedPointer<QString> readString(const QString & key) override;
+    QVector<QSharedPointer<IChatMsg>> readArray(const  QString & key, IChatMsg & replicator) override;
 signals:
 
 public slots:

@@ -3,27 +3,27 @@
 StreamReader::StreamReader(QSharedPointer<QDataStream> reader, QObject *parent) : reader(reader), QObject(parent) { }
 
 template<class T>
-T StreamReader::read(QString & key) const {
+T StreamReader::read(const QString & key) const {
     Q_UNUSED(key);
     T value; (*reader) >> value;
     return value;
 }
 
-int StreamReader::readInt(QString & key){
+int StreamReader::readInt(const QString & key){
     return read<int>(key);
 }
 
-double StreamReader::readDouble(QString & key){
+double StreamReader::readDouble(const QString & key){
     return read<double>(key);
 }
 
-QSharedPointer<QString> StreamReader::readString(QString & key){
+QSharedPointer<QString> StreamReader::readString(const QString & key){
     Q_UNUSED(key);
     QSharedPointer<QString> value(new QString());
     (*reader) >> *value;
     return value;
 }
 
-QVector<QSharedPointer<IChatMsg>> StreamReader::readArray(QString &key, IChatMsg &replicator){
+QVector<QSharedPointer<IChatMsg>> StreamReader::readArray(const QString &key, IChatMsg &replicator){
     return QVector<QSharedPointer<IChatMsg>>();
 }

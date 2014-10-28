@@ -15,11 +15,11 @@ private:
     QSharedPointer<QJsonObject> writer;
 public:
     explicit JsonWriter(QSharedPointer<QJsonObject> writer, QObject *parent = 0);
-    void write(QString & key, int value) override;
-    void write(QString & key, double value) override;
-    void write(QString & key, QString & value) override;
-    void write(QString & key, IStreamable & value) override;
-    void writeArray(QString & key, QVector<IStreamable*> & values) override;
+    void write(const QString & key, int value) override;
+    void write(const QString & key, double value) override;
+    void write(const QString & key, const QString & value) override;
+    void write(const QString & key, IStreamable & value) override;
+    void writeArray(const QString & key, const QVector<IStreamable*> & values) override;
 signals:
 
 public slots:

@@ -82,13 +82,25 @@ $(document).ready(function() {
     api.register(ApiRequest.Logout, function(data){
         location.reload();
     });
-    //Conversations
+    //Public Conversations
     api.register(ApiRequest.GetConversations, function(data){
         if(data.s){
             var key; for(key in data.conversations){
                 var room = data.conversations[key];
                 $('#rooms').append('<a class="room" id="room-' + room.id + '"></a>');
                 $('#room-' + room.id).text(room.title);
+                //Open Public Conversation
+                $('#room-' + room.id).click(function(inner){ return function(){
+                    api.send(ApiRequest.OpenConversation, { id: inner.id });
+                }}(room));
+            }
+        }
+    });
+    //Open Public Conversation (callback)
+    api.register(ApiRequest.OpenConversation, function(data){
+        if(data.s){
+            var key; for(key in data.msgs){
+                console.log(data.msgs[key]);
             }
         }
     });
