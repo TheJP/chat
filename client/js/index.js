@@ -84,7 +84,13 @@ $(document).ready(function() {
     });
     //Conversations
     api.register(ApiRequest.GetConversations, function(data){
-        if(data.s){ var key; for(key in data.conversations){ alert(data.conversations[key].title); } }
+        if(data.s){
+            var key; for(key in data.conversations){
+                var room = data.conversations[key];
+                $('#rooms').append('<a class="room" id="room-' + room.id + '"></a>');
+                $('#room-' + room.id).text(room.title);
+            }
+        }
     });
 });
 $(window).on('beforeunload', function(){

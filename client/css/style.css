@@ -8,6 +8,7 @@
  * 02. Navigation
  * 03. Login
  * 04. Content Div
+ * 05. Public Chat Rooms
  *
  */
 
@@ -32,6 +33,9 @@ input[type="file"] > input[type="button"]::-moz-focus-inner {
 .invisible {
   visibility: hidden;
 }
+html {
+    height: 100%;
+}
 body {
     font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
     font-size: 14px;
@@ -40,6 +44,9 @@ body {
 
     padding: 0;
     margin: 0;
+
+    height: calc(100% - 80px);
+    overflow: hidden;
 }
 a {
 	text-decoration: none;
@@ -187,6 +194,8 @@ a:hover, a:focus, a.active {
 /*********************/
 .main {
     margin-top: 80px;
+    height: 100%;
+    overflow: hidden;
 }
 .content {
 	margin-left: auto;
@@ -195,17 +204,65 @@ a:hover, a:focus, a.active {
 	padding-right: 15px;
 }
 @media (min-width: 768px) {
-.content {
-    width: 750px;
-}
+    .content {
+        width: 750px;
+    }
 }
 @media (min-width: 992px) {
-.content {
-    width: 970px;
-}
+    .content {
+        width: 970px;
+    }
 }
 @media (min-width: 1200px) {
-.content {
-    width: 1170px;
+    .content {
+        width: 1170px;
+    }
 }
+
+/***************************/
+/** 05. Public Chat Rooms **/
+/***************************/
+#rooms {
+    border: 2px solid #2C5700;
+    border-radius: 5px;
+    width: 100%;
+    margin-bottom: 20px;
 }
+@media (min-width: 768px) {
+    #rooms {
+        float: left;
+        width: 200px;
+        height: calc(100% - 30px);
+    }
+}
+@media (min-width: 1200px) {
+    #rooms {
+        width: 300px;
+    }
+}
+.rooms-title {
+    display: block;
+    text-align: center;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    font-size: 24px;
+    color: #000;
+    background-color: #ccc;
+}
+a.room {
+    display: block;
+    color: #2C5700;
+    padding: 5px 10px;
+    font-size: 18px;
+    cursor: pointer;
+}
+a.room:hover,
+a.room:focus {
+    color: #408000;
+}
+
+.chat {
+    margin-left: 20px;
+    float: left;
+}
+
