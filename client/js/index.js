@@ -1,7 +1,12 @@
-var openConversation = 0;
+var openRoom = 0;
+var user = {
+    name : null
+};
 var hideIgnores = {
     userMenu : false
 };
+var rooms = [
+];
 
 //Login show/hide
 var loginVisible = false;
@@ -25,6 +30,26 @@ function setUserMenuVisible(visible){
         $('#nav-user').removeClass('active');
     }
     userMenuVisible = visible;
+}
+
+//Display new messages
+function receiveMessages(msgs){
+    var key; for(key in msgs){
+        var msg = msgs[key];
+        if(msg.c in rooms){
+            rooms[msg.c].msgs.push(msg);
+        }
+        if(msg.c == openRoom){
+            var message = $('<div />', { id: 'message-' + msg.id, class: 'message' });
+            message.append('<span />').addClass('person').text(msg.user);
+            message.append('<span />').addClass('time').text(msg.time);
+            message.append('<span />').addClass('message-content').text(msg.message);
+            $('#chat').append(message);
+            //Scroll to bottom
+            //TODO: disable, if user scrolled manually
+            $('#chat').animate({ scrollTop: $('#chat').prop("scrollHeight") }, 1000);
+        }
+    }
 }
 
 //Hide optional content
@@ -86,32 +111,47 @@ $(document).ready(function() {
     //Public Conversations
     api.register(ApiRequest.GetConversations, function(data){
         if(data.s){
+            var first = true;
             var key; for(key in data.conversations){
                 var room = data.conversations[key];
+                //Open first conversation right away (Has to be done by separate request for now)
+                if(first) { first = false; //once
+                    api.send(ApiRequest.OpenConversation, { id: room.id });
+                }
+                //Show room
                 $('#rooms').append('<a class="room" id="room-' + room.id + '"></a>');
                 $('#room-' + room.id).text(room.title);
                 //Open Public Conversation
                 $('#room-' + room.id).click(function(inner){ return function(){
                     api.send(ApiRequest.OpenConversation, { id: inner.id });
                 }}(room));
+                //Add to internal data
+                room.msgs = [];
+                rooms[room.id] = room;
             }
         }
     });
     //Open Public Conversation (callback)
     api.register(ApiRequest.OpenConversation, function(data){
         if(data.s){
-            var key; for(key in data.msgs){
-                console.log(data.msgs[key]);
-            }
+            $('#chat').empty();
+            //Clear msgs to prevent duplicates (for now; Later offline switching may be implemented)
+            rooms[data.c].msgs = [];
+            openRoom = data.c;
+            receiveMessages(data.msgs);
         }
     });
     //Message sending
     $('#sender-form').submit(function(){
-        if(openConversation > 0){
-            api.send(ApiRequest.SendMessage, { msg: $('#new-message').val(), c: openConversation });
+        if(openRoom > 0){
+            api.send(ApiRequest.SendMessage, { msg: $('#new-message').val(), c: openRoom });
             $('#new-message').val('');
         } else { alert('You must have an open chat room to send messages'); }
         return false; //Prevent native submit
+    });
+    //Receive message notifications
+    api.register(ApiRequest.SendMessage, function(data){
+        if(data.s){ receiveMessages(data.msgs); }
     });
 });
 $(window).on('beforeunload', function(){
