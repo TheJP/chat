@@ -49,11 +49,16 @@
             <div id="rooms">
                 <span class="rooms-title">Chat Rooms</span>
             </div>
-            <div class="chat">
+            <div id="chat">
                 <script>
                     //Example content until real content is added
                     for(var i = 0; i < 200; i++){ document.write('Content<br>'); }
                 </script>
+            </div>
+            <div id="sender">
+                <form action="#" method="POST" id="sender-form">
+                    <input type="text" id="new-message" placeholder="Enter new message..." maxlength="500" /><button type="submit" id="send">Send</button>
+                </form>
             </div>
         </section>
     </body>

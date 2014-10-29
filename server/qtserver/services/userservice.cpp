@@ -91,11 +91,11 @@ QSharedPointer<IChatMsg> UserService::continueSession(const QString & sid) const
         "WHERE sid = :sid");
     query.bindValue(":sid", sid);
     ok = ok && query.exec();
-    if(!ok){ qDebug() << query.lastError(); return manager->getProtocol().createResponse(RequestType::Login, ErrorType::Internal, QStringLiteral("")); }
+    if(!ok){ qDebug() << query.lastError(); return manager->getProtocol().createResponse(RequestType::ContinueSession, ErrorType::Internal, QStringLiteral("")); }
     else if(!query.next()){
         qDebug() << "[unkown sid]";
         //ok = false;
-        return manager->getProtocol().createResponse(RequestType::Login, ErrorType::Custom, QStringLiteral("Unkown sid"));
+        return manager->getProtocol().createResponse(RequestType::ContinueSession, ErrorType::Custom, QStringLiteral("Unkown sid"));
     }else {
         QSharedPointer<QString> username(new QString(query.value(0).toString()));
         numSid = query.value(1).toInt();

@@ -113,7 +113,8 @@ api.register = function(type, callback){
 }
 //Predefined callback handler
 api.callbacks[ApiRequest.Login] = [function(data){
-    if(data.s){
-        api.setSid(data.sid);
-    }
+    if(data.s){ api.setSid(data.sid); }
+}];
+api.callbacks[ApiRequest.ContinueSession] = [function(data){
+    if(!data.s){ api.deleteSid(); }
 }];
