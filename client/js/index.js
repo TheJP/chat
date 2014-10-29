@@ -35,6 +35,7 @@ function setUserMenuVisible(visible){
 
 //Display new messages
 function receiveMessages(msgs){
+    msgs.reverse(); //Order messages correct for view
     var key; for(key in msgs){
         var msg = msgs[key];
         if(msg.c in rooms){
@@ -43,7 +44,7 @@ function receiveMessages(msgs){
         if(msg.c == openRoom){
             var message = $('<div />', { id: 'message-' + msg.id, class: 'message' });
             message.append($('<span />').addClass('person').text(msg.username));
-            message.append($('<span />').addClass('time').text(msg.time));
+            message.append($('<span />').addClass('time').text(api.formatTime(msg.time)));
             message.append($('<span />').addClass('message-content').text(msg.msg));
             message.addClass(user.id == msg.userid ? 'own' : 'their');
             $('#chat').append(message);
@@ -129,7 +130,7 @@ $(document).ready(function() {
                 $('#room-' + room.id).text(room.title);
                 //Open Public Conversation
                 $('#room-' + room.id).click(function(inner){ return function(){
-                    api.send(ApiRequest.OpenConversation, { id: inner.id });
+                    api.send(ApiRequest.OpenConversation, { c: inner.id });
                 }}(room));
                 //Add to internal data
                 room.msgs = [];

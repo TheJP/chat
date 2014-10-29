@@ -9,6 +9,7 @@
 #include <QSqlQuery>
 #include <QSqlError>
 #include <QVector>
+#include <QDateTime>
 #include "../ichatmsg.h"
 #include "../istreamable.h"
 

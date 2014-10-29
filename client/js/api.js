@@ -111,6 +111,15 @@ api.register = function(type, callback){
         else { api.callbacks[type].push(callback); }
     }
 }
+api.formatTime = function(time){
+    var now = new Date();
+    var date = new Date(time*1000); //api delivers times in seconds
+    return (now.getDate() != date.getDate() ||
+            now.getMonth() != date.getMonth() ||
+            now.getFullYear() != date.getFullYear() ?
+        date.toLocaleDateString() + ' ' : '') +
+        date.toLocaleTimeString();
+}
 //Predefined callback handler
 api.callbacks[ApiRequest.Login] = [function(data){
     if(data.s){ api.setSid(data.sid); }

@@ -47,7 +47,7 @@ QSharedPointer<IChatMsg> ConversationService::getOwnedConversations() const {
 
 QSharedPointer<IChatMsg> ConversationService::openConversation(quint32 conversationId, quint32 userId) const {
     Q_UNUSED(userId);
-    qDebug() << "[ConversationService][openConversation]";
+    qDebug() << "[ConversationService][openConversation] c: " << conversationId << " u: " << userId;
     //Get newest MAX_MESSAGES_ON_OPEN messages
     bool ok;
     QSqlQuery query;
@@ -67,7 +67,7 @@ QSharedPointer<IChatMsg> ConversationService::openConversation(quint32 conversat
         Message * msg = static_cast<Message*>(messages->last());
         msg->id = query.value(0).toInt();
         msg->message = QSharedPointer<QString>(new QString(query.value(1).toString()));
-        msg->time = query.value(2).toInt();
+        msg->time = query.value(2).toDateTime().toTime_t();
         msg->conversationId = query.value(3).toInt();
         msg->userId = query.value(4).toInt();
         msg->username = QSharedPointer<QString>(new QString(query.value(5).toString()));
