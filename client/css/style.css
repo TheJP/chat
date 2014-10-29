@@ -284,6 +284,34 @@ a.room:focus {
         width: calc(100% - 324px);
     }
 }
+.message {
+    margin: 10px 0;
+    padding: 7px 15px;
+    color: #f9f9f9;
+    background-color: #888;
+    border-radius: 2px;
+}
+.their {
+    width: calc(85% - 30px); /* +30px padding */
+    background-color: #408000;
+}
+.own {
+    margin-left: 15%;
+    width: calc(85% - 30px); /* +30px padding */
+}
+.message .person {
+    display: block;
+    float:left;
+    font-size: 16px;
+}
+.message .time {
+    display: block;
+    float: right;
+}
+.message .message-content {
+    display: block;
+    clear: both;
+}
 
 /****************/
 /** 07. Sender **/
@@ -293,10 +321,15 @@ a.room:focus {
     width: 100%;
 }
 @media (min-width: 768px) {
-    #sender{
+    #sender {
         float: left;
         margin-left: 20px;
         width: calc(100% - 224px); /* +4px border, 200px rooms, 20px margin */
+    }
+}
+@media (min-width: 1200px) {
+    #sender {
+        width: calc(100% - 324px);
     }
 }
 #sender-form {
@@ -304,14 +337,21 @@ a.room:focus {
 }
 #new-message {
     height: 48px; /* +2px border */
-    width: calc(100% - 102px); /* +80px button, 20px padding, 2px border */
+    width: calc(100% - 101px); /* +80px button, 20px padding, 1px border-left */
     padding: 0 10px;
     font-size: 18px;
     border-radius: 5px 0 0 5px;
     border: 1px solid #aaa;
+    border-right: none;
 }
 #new-message:focus {
     border: 1px solid #50a200;
+    border-right: none;
+}
+#new-message:focus + #send {
+    border: 1px solid #50a200;
+    border-left: none;
+    padding: 0 9px 0 10px; /* */
 }
 #send {
     height: 50px;
@@ -323,7 +363,7 @@ a.room:focus {
     color: #AFD775;
     background-color: #2C5700;
     cursor: pointer;
-} 
+}
 #send:hover, #send:focus {
     color: #D0FF8B;
     background-color: #408000;

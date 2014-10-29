@@ -52,7 +52,10 @@
             <div id="chat">
                 <script>
                     //Example content until real content is added
-                    for(var i = 0; i < 200; i++){ document.write('Content<br>'); }
+                    for(var i = 0; i < 50; i++){
+                        document.write('<div class="message their"><span class="person">Him/Her</span><span class="time">13:44</span><span class="message-content">Message</span></div>');
+                        document.write('<div class="message own"><span class="person">Me</span><span class="time">13:44</span><span class="message-content">Message</span></div>');
+                    }
                 </script>
             </div>
             <div id="sender">

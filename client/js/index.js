@@ -1,3 +1,4 @@
+var openConversation = 0;
 var hideIgnores = {
     userMenu : false
 };
@@ -58,7 +59,7 @@ $(document).ready(function() {
     $('#cancel-login').click(function(){ setLoginVisible(false); });
     $('#login-form').submit(function(){
         api.send(ApiRequest.Login, {username : $('#username').val(), password : $('#password').val()});
-        return false;
+        return false; //Prevent native submit
     });
     api.register(ApiRequest.Login, function(data){
         if(!data.s){ alert('Login failed: ' + data.error + ' ' + data.error_text); }
@@ -103,6 +104,14 @@ $(document).ready(function() {
                 console.log(data.msgs[key]);
             }
         }
+    });
+    //Message sending
+    $('#sender-form').submit(function(){
+        if(openConversation > 0){
+            api.send(ApiRequest.SendMessage, { msg: $('#new-message').val(), c: openConversation });
+            $('#new-message').val('');
+        } else { alert('You must have an open chat room to send messages'); }
+        return false; //Prevent native submit
     });
 });
 $(window).on('beforeunload', function(){
