@@ -14,6 +14,8 @@ class ServiceManager; //resolve cyclic include
 
 class IChatMsg
 {
+    private:
+        quint32 userId = 0;
     public:
         virtual ~IChatMsg() {}
         virtual void read(IKeyValueReader & stream) = 0;
@@ -24,6 +26,9 @@ class IChatMsg
         //Handles the message by calling the correct service methods
         //Returns an other message or a null message as a reply
         virtual QSharedPointer<IChatMsg> handle(const ServiceManager & manager) = 0;
+        //User id
+        void setUserId(quint32 userId){ this->userId = userId; }
+        quint32 getUserId(){ return this->userId; }
 };
 Q_DECLARE_INTERFACE(IChatMsg, "JP.IChatMsg/1.0")
 

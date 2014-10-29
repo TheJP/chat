@@ -9,6 +9,8 @@
 #include <QSharedPointer>
 #include <QJsonObject>
 #include <QJsonDocument>
+#include <QMultiHash>
+#include <QHash>
 #include "jsonwriter.h"
 #include "ichatmsg.h"
 #include "services/servicemanager.h"
@@ -26,6 +28,7 @@ private:
     QWebSocketServer * websocketServer;
     QList<QWebSocket *> clients;
     QMultiHash<quint32, QWebSocket *> sessions;
+    QHash<QWebSocket *, quint32> userIds;
     QSharedPointer<Protocol> protocol;
     QSharedPointer<IFormat> format;
     QSharedPointer<ServiceManager> manager;

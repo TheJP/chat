@@ -71,7 +71,7 @@ QSharedPointer<IChatMsg> UserService::login(const QString & username, const QStr
         if(ok){ numSid = querySession.lastInsertId().toInt(); }
     }
     if(!ok){ qDebug() << query.lastError(); return manager->getProtocol().createResponse(RequestType::Login, ErrorType::Internal, QStringLiteral("")); }
-    else { return manager->getProtocol().createResponseSession(RequestType::Login, true, numSid, sid, QSharedPointer<QString>(new QString(username))); }
+    else { return manager->getProtocol().createResponseSession(RequestType::Login, true, numSid, sid, userId, QSharedPointer<QString>(new QString(username))); }
 }
 
 QSharedPointer<IChatMsg> UserService::logout(const QString & sid) const {
@@ -82,11 +82,10 @@ QSharedPointer<IChatMsg> UserService::logout(const QString & sid) const {
 
 QSharedPointer<IChatMsg> UserService::continueSession(const QString & sid) const {
     qDebug() << "[UserService][continueSession]";
-    quint32 numSid;
     bool ok;
     QSqlQuery query;
     ok = query.prepare(
-        "SELECT username, session.id "
+        "SELECT user.id, username, session.id "
         "FROM session LEFT JOIN user ON session.user_id = user.id "
         "WHERE sid = :sid");
     query.bindValue(":sid", sid);
@@ -97,9 +96,10 @@ QSharedPointer<IChatMsg> UserService::continueSession(const QString & sid) const
         //ok = false;
         return manager->getProtocol().createResponse(RequestType::ContinueSession, ErrorType::Custom, QStringLiteral("Unkown sid"));
     }else {
-        QSharedPointer<QString> username(new QString(query.value(0).toString()));
-        numSid = query.value(1).toInt();
+        quint32 userId = query.value(0).toInt();
+        QSharedPointer<QString> username(new QString(query.value(1).toString()));
+        quint32 numSid = query.value(2).toInt();
         qDebug() << "[success] add client to session. username: " << *username;
-        return manager->getProtocol().createResponseSession(RequestType::ContinueSession, true, numSid, QSharedPointer<QString>(new QString(sid)), username);
+        return manager->getProtocol().createResponseSession(RequestType::ContinueSession, true, numSid, QSharedPointer<QString>(new QString(sid)), userId, username);
     }
 }

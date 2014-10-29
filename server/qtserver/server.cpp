@@ -12,7 +12,8 @@ Server::Server(const quint16 & port, const QSharedPointer<Protocol> & protocol, 
     QObject(parent),
     websocketServer(new QWebSocketServer(QStringLiteral("Chat Server"), QWebSocketServer::NonSecureMode, this)),
     clients(),
-    sessions()
+    sessions(),
+    userIds()
 {
     connect(&manager->getNotificationSender(), &NotificationSender::newNotification, this, &Server::onNewNotification);
 }
@@ -47,7 +48,7 @@ void Server::onNewNotification(const IChatMsg & msg, const QList<int> & sessions
 }
 
 void Server::processTextMessage(QString message){
-    QWebSocket *pClient = qobject_cast<QWebSocket *>(sender());
+    QWebSocket * pClient = qobject_cast<QWebSocket *>(sender());
     if (pClient) {
         //Get reader for this message
         QSharedPointer<IKeyValueReader> reader = format->getReader(message.toUtf8());
@@ -55,6 +56,8 @@ void Server::processTextMessage(QString message){
         int type = reader->readInt(KEY_MSG_TYPE);
         if(type != 0){
             QSharedPointer<IChatMsg> msg = protocol->createRequest(static_cast<RequestType>(type));
+            //Set userId if known (some messages wont be handled without userId)
+            if(userIds.contains(pClient)){ msg->setUserId(userIds[pClient]); }
             msg->read(*reader);
             QSharedPointer<IChatMsg> result = msg->handle(*manager);
             //Send return message to client
@@ -69,7 +72,7 @@ void Server::processTextMessage(QString message){
                 pClient->sendTextMessage(QString::fromUtf8(document.toJson()));
                 //Store session id
                 ResponseSession * session = qobject_cast<ResponseSession *>(static_cast<Response *>(result.data())); //Direct qobject_cast not possible
-                if(session != NULL){ sessions.insert(session->getNumSid(), pClient); }
+                if(session != NULL){ sessions.insert(session->getNumSid(), pClient); userIds.insert(pClient, session->getUserId()); }
             }
         }
     }

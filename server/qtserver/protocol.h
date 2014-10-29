@@ -65,7 +65,7 @@ public:
     QSharedPointer<IChatMsg> createRequest(RequestType request) const;
     QSharedPointer<IChatMsg> createResponse(RequestType request, bool success) const;
     QSharedPointer<IChatMsg> createResponse(RequestType request, ErrorType error, const QString & errorText) const;
-    QSharedPointer<IChatMsg> createResponseSession(RequestType request, bool success, quint32 numSid, const QSharedPointer<QString> & sid, const QSharedPointer<QString> & username) const;
+    QSharedPointer<IChatMsg> createResponseSession(RequestType request, bool success, quint32 numSid, const QSharedPointer<QString> & sid, quint32 userId, const QSharedPointer<QString> & username) const;
     QSharedPointer<IChatMsg> createResponseConversations(RequestType request, bool success, const ConversationsVector & conversations) const;
 signals:
 
