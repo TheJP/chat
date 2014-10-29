@@ -9,6 +9,7 @@
 #include "msgs/login.h"
 
 typedef QSharedPointer<QVector<IStreamable*>> ConversationsVector;
+typedef QSharedPointer<QVector<IStreamable*>> MessagesVector;
 
 enum class RequestType {
     //User Operations
@@ -67,6 +68,7 @@ public:
     QSharedPointer<IChatMsg> createResponse(RequestType request, ErrorType error, const QString & errorText) const;
     QSharedPointer<IChatMsg> createResponseSession(RequestType request, bool success, quint32 numSid, const QSharedPointer<QString> & sid, quint32 userId, const QSharedPointer<QString> & username) const;
     QSharedPointer<IChatMsg> createResponseConversations(RequestType request, bool success, const ConversationsVector & conversations) const;
+    QSharedPointer<IChatMsg> createResponseMessages(RequestType request, bool success, const MessagesVector & messages, quint32 conversationId) const;
 signals:
 
 public slots:

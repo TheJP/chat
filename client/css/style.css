@@ -285,7 +285,7 @@ a.room:focus {
     }
 }
 .message {
-    margin: 10px 0;
+    margin: 0 0 10px 0;
     padding: 7px 15px;
     color: #f9f9f9;
     background-color: #888;

@@ -10,6 +10,7 @@
 #include "streamable/response.h"
 #include "streamable/responsesession.h"
 #include "streamable/responseconversations.h"
+#include "streamable/responsemessages.h"
 
 Protocol::Protocol(QObject *parent) :
     QObject(parent)
@@ -52,4 +53,8 @@ QSharedPointer<IChatMsg> Protocol::createResponseSession(RequestType request, bo
 
 QSharedPointer<IChatMsg> Protocol::createResponseConversations(RequestType request, bool success, const ConversationsVector & conversations) const {
     return QSharedPointer<IChatMsg>(new ResponseConversations(conversations, request, success));
+}
+
+QSharedPointer<IChatMsg> Protocol::createResponseMessages(RequestType request, bool success, const MessagesVector & messages, quint32 conversationId) const {
+    return QSharedPointer<IChatMsg>(new ResponseMessages(messages, conversationId, request, success));
 }

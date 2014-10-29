@@ -1,5 +1,6 @@
 var openRoom = 0;
 var user = {
+    id : 0,
     name : null
 };
 var hideIgnores = {
@@ -41,9 +42,10 @@ function receiveMessages(msgs){
         }
         if(msg.c == openRoom){
             var message = $('<div />', { id: 'message-' + msg.id, class: 'message' });
-            message.append('<span />').addClass('person').text(msg.user);
-            message.append('<span />').addClass('time').text(msg.time);
-            message.append('<span />').addClass('message-content').text(msg.message);
+            message.append($('<span />').addClass('person').text(msg.username));
+            message.append($('<span />').addClass('time').text(msg.time));
+            message.append($('<span />').addClass('message-content').text(msg.msg));
+            message.addClass(user.id == msg.userid ? 'own' : 'their');
             $('#chat').append(message);
             //Scroll to bottom
             //TODO: disable, if user scrolled manually
@@ -73,6 +75,8 @@ $(document).ready(function() {
     //Continue Session (Handle Server Response)
     api.register(ApiRequest.ContinueSession, function(data){
         if(data.s){
+            user.id = data.userid;
+            user.name = data.username;
             setLoginVisible(false);
             $('#nav-user').text(data.username).append('&#x25BE;');
             $('#nav-user').removeClass('hidden');
@@ -89,10 +93,14 @@ $(document).ready(function() {
     api.register(ApiRequest.Login, function(data){
         if(!data.s){ alert('Login failed: ' + data.error + ' ' + data.error_text); }
         else {
+            user.id = data.userid;
+            user.name = data.username;
             setLoginVisible(false);
             $('#nav-user').text($('#username').val()).append('&#x25BE;');
             $('#nav-user').removeClass('hidden');
             $('#toggle-login').addClass('hidden');
+            //Reopen conversation, so owned messages are shown correctly
+            if(openRoom > 0){ api.send(ApiRequest.OpenConversation, { c: openRoom }); }
         }
     });
     //User Menu
@@ -100,6 +108,8 @@ $(document).ready(function() {
     $('#user-menu').click(function(){ setUserMenuVisible(true); }); //Keep open => ignores html click
     //Logout
     $('#logout').click(function(){
+        user.id = 0;
+        user.name = null;
         api.send(ApiRequest.Logout);
         api.deleteSid();
         setUserMenuVisible(false);
@@ -114,10 +124,6 @@ $(document).ready(function() {
             var first = true;
             var key; for(key in data.conversations){
                 var room = data.conversations[key];
-                //Open first conversation right away (Has to be done by separate request for now)
-                if(first) { first = false; //once
-                    api.send(ApiRequest.OpenConversation, { id: room.id });
-                }
                 //Show room
                 $('#rooms').append('<a class="room" id="room-' + room.id + '"></a>');
                 $('#room-' + room.id).text(room.title);
@@ -128,12 +134,16 @@ $(document).ready(function() {
                 //Add to internal data
                 room.msgs = [];
                 rooms[room.id] = room;
+                //Open first conversation right away (Has to be done by separate request for now)
+                if(first) { first = false; //once
+                    api.send(ApiRequest.OpenConversation, { c: room.id });
+                }
             }
         }
     });
     //Open Public Conversation (callback)
     api.register(ApiRequest.OpenConversation, function(data){
-        if(data.s){
+        if(data.s && data.c in rooms){
             $('#chat').empty();
             //Clear msgs to prevent duplicates (for now; Later offline switching may be implemented)
             rooms[data.c].msgs = [];

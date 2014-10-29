@@ -6,11 +6,11 @@ OpenConversation::OpenConversation(QObject *parent) :
 }
 
 void OpenConversation::read(IKeyValueReader & stream){
-    Q_UNUSED(stream);
+    conversationId = stream.readInt(QStringLiteral("c"));
 }
 
 void OpenConversation::write(IKeyValueWriter & stream){
-    Q_UNUSED(stream);
+    stream.write(QStringLiteral("c"), static_cast<int>(conversationId));
 }
 
 QSharedPointer<IChatMsg> OpenConversation::create(){
@@ -18,6 +18,5 @@ QSharedPointer<IChatMsg> OpenConversation::create(){
 }
 
 QSharedPointer<IChatMsg> OpenConversation::handle(const ServiceManager & manager){
-    Q_UNUSED(manager);
-    return QSharedPointer<OpenConversation>();
+    return manager.getConversationService().openConversation(conversationId, getUserId());
 }
