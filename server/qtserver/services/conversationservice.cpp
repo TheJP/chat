@@ -21,7 +21,7 @@ QSharedPointer<IChatMsg> ConversationService::getPublicConversations() const {
     ok = query.prepare(
         "SELECT id, title, topic, description, root, parent_id "
         "FROM conversation "
-        "WHERE root = 1 OR parent_id IS NOT NULL");
+        "WHERE root = 1 OR parent_id IS NOT NULL;");
     ok = ok && query.exec();
     //* Potential performance improvement: */ int rows = ok ? (manager->getSupportSize() ? query.size() : 0) : -1; //Initial vector size
     int rows = 0;
@@ -56,7 +56,7 @@ QSharedPointer<IChatMsg> ConversationService::openConversation(quint32 conversat
         "FROM message AS m JOIN user AS u ON m.user_id = u.id "
         "WHERE m.conversation_id = :conversationid "
         "ORDER BY m.time DESC "
-        "LIMIT 0, :max");
+        "LIMIT 0, :max;");
     query.bindValue(":conversationid", conversationId);
     query.bindValue(":max", MAX_MESSAGES_ON_OPEN);
     ok = ok && query.exec();
@@ -73,4 +73,44 @@ QSharedPointer<IChatMsg> ConversationService::openConversation(quint32 conversat
         msg->username = QSharedPointer<QString>(new QString(query.value(5).toString()));
     }
     return manager->getProtocol().createResponseMessages(RequestType::OpenConversation, true, messages, conversationId);
+}
+
+QSharedPointer<IChatMsg> ConversationService::sendMessage(quint32 conversationId, quint32 userId, const QSharedPointer<QString> & message) const {
+    qDebug() << "[ConversationService][sendMessage] c: " << conversationId << " message: " << *message;
+    //Create new message
+    MessagesVector messages(new QVector<IStreamable*>());
+    messages->push_back(new Message());
+    Message * msg = static_cast<Message*>(messages->last());
+    msg->message = message;
+    msg->time = QDateTime::currentDateTime().toTime_t();
+    msg->conversationId = conversationId;
+    msg->userId = userId;
+
+    //Insert new message
+    bool ok;
+    QSqlQuery query;
+    ok = query.prepare(
+        "INSERT INTO message (`message`, `time`, `conversation_id`, `user_id`) "
+        "VALUES (:message, :time, :conversationid, :userid);");
+    query.bindValue(":message", *msg->message);
+    query.bindValue(":time", msg->time);
+    query.bindValue(":conversationid", msg->conversationId);
+    query.bindValue(":userid", msg->userId);
+    ok = ok && query.exec();
+    if(!ok){ qDebug() << query.lastError(); return manager->getProtocol().createResponse(RequestType::SendMessage, ErrorType::Internal, QStringLiteral("")); }
+    msg->id = query.lastInsertId().toInt();
+
+    //Get username for this message
+    QSqlQuery userQuery;
+    ok = userQuery.prepare("SELECT username FROM user WHERE user.id = :userid");
+    userQuery.bindValue(":userid", userId);
+    ok = ok && userQuery.exec();
+    if(!ok || !userQuery.next()){ qDebug() << query.lastError(); return manager->getProtocol().createResponse(RequestType::SendMessage, ErrorType::Internal, QStringLiteral("")); }
+    msg->username = QSharedPointer<QString>(new QString(userQuery.value(0).toString()));
+
+    //Send notifications to users
+    QSharedPointer<IChatMsg> response = manager->getProtocol().createResponseMessages(RequestType::SendMessage, true, messages, conversationId);
+    emit manager->getNotificationSender().newNotification(*response, QList<int>());
+
+    return QSharedPointer<IChatMsg>(); //No direct response; Sending user gets notification as well
 }

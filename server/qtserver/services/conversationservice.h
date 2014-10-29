@@ -9,6 +9,7 @@
 #include <QSqlQuery>
 #include <QSqlError>
 #include <QVector>
+#include <QList>
 #include <QDateTime>
 #include "../ichatmsg.h"
 #include "../istreamable.h"
@@ -23,6 +24,7 @@ public:
     QSharedPointer<IChatMsg> getPublicConversations() const;
     QSharedPointer<IChatMsg> getOwnedConversations() const; //Later
     QSharedPointer<IChatMsg> openConversation(quint32 conversationId, quint32 userId) const;
+    QSharedPointer<IChatMsg> sendMessage(quint32 conversationId, quint32 userId, const QSharedPointer<QString> & message) const;
 signals:
 
 public slots:

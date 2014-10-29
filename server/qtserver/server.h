@@ -41,7 +41,7 @@ signals:
     void closed();
 private slots:
     void onNewConnection();
-    void onNewNotification(const IChatMsg & msg, const QList<int> & sessions);
+    void onNewNotification(IChatMsg & msg, const QList<int> & sessions);
     void processTextMessage(QString message);
     void processBinaryMessage(QByteArray message);
     void socketDisconnected();

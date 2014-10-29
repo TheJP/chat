@@ -20,6 +20,5 @@ QSharedPointer<IChatMsg> SendMessage::create(){
 }
 
 QSharedPointer<IChatMsg> SendMessage::handle(const ServiceManager & manager){
-    Q_UNUSED(manager);
-    return QSharedPointer<SendMessage>();
+    return manager.getConversationService().sendMessage(conversationId, getUserId(), message);
 }

@@ -42,9 +42,21 @@ void Server::onNewConnection(){
     clients.append(pSocket);
 }
 
-void Server::onNewNotification(const IChatMsg & msg, const QList<int> & sessions){
-    Q_UNUSED(msg);
+void Server::onNewNotification(IChatMsg & msg, const QList<int> & sessions){
     Q_UNUSED(sessions);
+    if(sessions.empty()){
+        //Try to send notification to each client
+        for(QWebSocket * client : clients){
+            //Write to json
+            QSharedPointer<QJsonObject> json(new QJsonObject());
+            JsonWriter writer(json);
+            writer.write(KEY_MSG_TYPE, static_cast<int>(ResponseType::Notify));
+            msg.write(writer);
+            //Write to stream
+            QJsonDocument document(*json);
+            client->sendTextMessage(QString::fromUtf8(document.toJson()));
+        }
+    }
 }
 
 void Server::processTextMessage(QString message){

@@ -12,7 +12,7 @@ public:
     explicit NotificationSender(QObject *parent = 0);
 
 signals:
-    void newNotification(const IChatMsg & msg, const QList<int> & sessions);
+    void newNotification(IChatMsg & msg, const QList<int> & sessions) const;
 public slots:
 
 };
