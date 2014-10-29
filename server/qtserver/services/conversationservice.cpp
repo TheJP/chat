@@ -76,7 +76,7 @@ QSharedPointer<IChatMsg> ConversationService::openConversation(quint32 conversat
 }
 
 QSharedPointer<IChatMsg> ConversationService::sendMessage(quint32 conversationId, quint32 userId, const QSharedPointer<QString> & message) const {
-    qDebug() << "[ConversationService][sendMessage] c: " << conversationId << " message: " << *message;
+    qDebug() << "[ConversationService][sendMessage] c: " << conversationId << " u: " << userId << " message: " << *message;
     //Create new message
     MessagesVector messages(new QVector<IStreamable*>());
     messages->push_back(new Message());

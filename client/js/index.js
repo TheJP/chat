@@ -82,6 +82,15 @@ $(document).ready(function() {
             $('#nav-user').text(data.username).append('&#x25BE;');
             $('#nav-user').removeClass('hidden');
             $('#toggle-login').addClass('hidden');
+
+            //Try to Open Last Conversation
+            var indexOfDash = window.location.hash.lastIndexOf('-');
+            if(indexOfDash > 0){ openRoom = parseInt(window.location.hash.substring(indexOfDash+1)); }
+            if(openRoom == NaN || !openRoom || openRoom < 0){ openRoom = 0; }
+            if(openRoom > 0){
+                rooms[openRoom] = { msgs : [] };
+                api.send(ApiRequest.OpenConversation, { c: openRoom });
+            }
         }
     });
     //Login
@@ -122,11 +131,11 @@ $(document).ready(function() {
     //Public Conversations
     api.register(ApiRequest.GetConversations, function(data){
         if(data.s){
-            var first = true;
+            var openConv = (openRoom == 0);
             var key; for(key in data.conversations){
                 var room = data.conversations[key];
                 //Show room
-                $('#rooms').append('<a class="room" id="room-' + room.id + '"></a>');
+                $('#rooms').append('<a class="room" id="room-' + room.id + '" href="#' + room.title + '-' + room.id + '"></a>');
                 $('#room-' + room.id).text(room.title);
                 //Open Public Conversation
                 $('#room-' + room.id).click(function(inner){ return function(){
@@ -136,7 +145,7 @@ $(document).ready(function() {
                 room.msgs = [];
                 rooms[room.id] = room;
                 //Open first conversation right away (Has to be done by separate request for now)
-                if(first) { first = false; //once
+                if(openConv) { openConv = false; //once
                     api.send(ApiRequest.OpenConversation, { c: room.id });
                 }
             }
