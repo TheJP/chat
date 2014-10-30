@@ -4,7 +4,8 @@ var user = {
     name : null
 };
 var hideIgnores = {
-    userMenu : false
+    userMenu : false,
+    registerModal : false
 };
 var rooms = [
 ];
@@ -17,6 +18,40 @@ function setLoginVisible(visible){
     $('.navigation').animate({ top: (visible ? '140px' : '0px') }, 400);
     if(visible){ $('#username').focus(); }
     loginVisible = visible;
+}
+
+//Register Modal
+var registerVisible = false;
+function setRegisterVisible(visible){
+    setGreyScreenVisible(visible);
+    $('#register-box').stop();
+    if(visible){
+        $('#register-box').removeClass('hidden');
+        $('#register-box').animate({ top: '110px' }, 400, function(){
+            $('#register-username').focus();
+        });
+    } else {
+        $('#register-box').animate({ top: '-250px' }, 400, function(){
+            $('#register-box').addClass('hidden');
+        });
+    }
+    registerVisible = visible;
+}
+
+var greyScreenVisible = false;
+function setGreyScreenVisible(visible){
+    $('#grey-screen').stop();
+    if(visible){
+        hideIgnores.registerModal = true;
+        if(!greyScreenVisible){ $('#grey-screen').css('opacity', 0); }
+        $('#grey-screen').removeClass('hidden');
+        $('#grey-screen').animate({ opacity: 0.6 }, 400);
+    } else {
+        $('#grey-screen').animate({ opacity: 0.0 }, 400, function(){
+            $('#grey-screen').addClass('hidden');
+        });
+    }
+    greyScreenVisible = visible;
 }
 
 //UserMenu show/hide
@@ -59,6 +94,8 @@ function receiveMessages(msgs){
 function hideAll() {
     if(!hideIgnores.userMenu){ setUserMenuVisible(false); }
     hideIgnores.userMenu = false;
+    if(!hideIgnores.registerModal){ setRegisterVisible(false); }
+    hideIgnores.registerModal = false;
 }
 
 $(document).ready(function() {
@@ -172,6 +209,39 @@ $(document).ready(function() {
     //Receive message notifications
     api.register(ApiRequest.SendMessage, function(data){
         if(data.s){ receiveMessages(data.msgs); }
+    });
+    //Register
+    $('#register').click(function(){
+        setLoginVisible(false);
+        setRegisterVisible(true);
+    });
+    $('#register-modal').click(function(){ hideIgnores.registerModal = true; });
+    $('#register-modal-close').click(function(){ setRegisterVisible(false); });
+    $('#register-cancel').click(function(){ setRegisterVisible(false); });
+    $('#register-form').submit(function(){
+        //Check validity
+        var userLength = $('#register-username').val().length;
+        if(userLength < 2){
+            alert('The username is too short');
+            $('#register-username').focus();
+        } else if(userLength > 24){
+            alert('The username is too long');
+            $('#register-username').focus();
+        } else if($('#register-password').val().length < 6){
+            alert('Password has to be longer than 6 characters');
+            $('#register-password').focus();
+        } else if($('#register-password').val() != $('#register-password-repeat').val()){
+            alert('Passwords have to be the same');
+            $('#register-password').focus();
+        } else {
+            //Valid: Register
+            api.send(ApiRequest.Register, {
+                username: $('#register-username').val(),
+                email: $('#register-mail').val(),
+                password: $('#register-password').val()
+            });
+        }
+        return false; //Prevent native submit
     });
 });
 $(window).on('beforeunload', function(){

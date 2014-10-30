@@ -24,6 +24,7 @@ public:
     QSharedPointer<IChatMsg> login(const QString & username, const QString & password) const;
     QSharedPointer<IChatMsg> logout(const QString & sid) const;
     QSharedPointer<IChatMsg> continueSession(const QString & sid) const;
+    QSharedPointer<IChatMsg> create(const QString & username, const QString & email, const QString & password) const;
 signals:
 
 public slots:

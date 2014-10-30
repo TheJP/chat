@@ -10,6 +10,8 @@
  * 04. Content Div
  * 05. Public Chat Rooms
  * 06. Chat
+ * 07. Sender
+ * 08. Register
  *
  */
 
@@ -32,7 +34,7 @@ input[type="file"] > input[type="button"]::-moz-focus-inner {
   visibility: hidden !important;
 }
 .invisible {
-  visibility: hidden;
+  visibility: hidden !important;
 }
 html {
     height: 100%;
@@ -58,6 +60,53 @@ a:hover, a:focus, a.active {
 }
 .pull-right {
     float: right;
+}
+.input-group {
+    display: block;
+    height: 28px;
+    margin: 5px 0;
+    color: #2C5700;
+    font-size: 18px;
+}
+.input-group label{
+    display: inline-block;
+    height: 100%;
+    text-align: right;
+    margin-right: 15px;
+    vertical-align: middle;
+}
+.input-group input{
+    display: inline-block;
+    border-radius: 5px;
+    height: 20px;
+    padding: 3px 10px;
+    border: 1px solid #2C5700;
+}
+.input-group input:focus{
+    border: 1px solid #50a200;
+}
+.input-group button {
+    display: inline-block;
+    font-size: 18px;
+    padding: 5px 10px;
+    border-radius: 5px;
+    border: none;
+    color: #fafafa;
+    background-color: #408000;
+    cursor: pointer;
+}
+.input-group button:focus {
+    background-color: #50a200;
+    background: linear-gradient(to bottom, #50a200 15%, #50a200 30%, #408000 100%);
+}
+.input-group button:hover {
+    background: linear-gradient(to bottom, #333 0%, #333 15%, #50a200 15%, #50a200 30%, #408000 100%);
+}
+.input-group button:active {
+    background: linear-gradient(to bottom, #333 0%, #333 15%, #408000 15%, #408000 30%, #50a200 100%);
+}
+.command-group {
+    text-align: right;
 }
 
 /********************/
@@ -127,56 +176,15 @@ a:hover, a:focus, a.active {
     right: 0;
     top: -140px;
 }
-.login .input-group {
-    display: block;
-    height: 28px;
-    margin: 5px 0;
-    color: #2C5700;
-    font-size: 18px;
-}
 .login .input-group label{
-    display: inline-block;
-    height: 100%;
     width: 150px;
-    text-align: right;
-    margin-right: 15px;
-    vertical-align: middle;
 }
 .login .input-group input{
-    display: inline-block;
     width: 200px;
-    border-radius: 5px;
-    height: 20px;
-    padding: 3px 10px;
-    border: 1px solid #2C5700;
-}
-.login .input-group input:focus{
-    border: 1px solid #50a200;
-}
-.login .input-group button {
-    display: inline-block;
-    font-size: 18px;
-    padding: 5px 10px;
-    border-radius: 5px;
-    border: none;
-    color: #fafafa;
-    background-color: #408000;
-    cursor: pointer;
-}
-.login .input-group button:focus {
-    background-color: #50a200;
-    background: linear-gradient(to bottom, #50a200 15%, #50a200 30%, #408000 100%);
-}
-.login .input-group button:hover {
-    background: linear-gradient(to bottom, #333 0%, #333 15%, #50a200 15%, #50a200 30%, #408000 100%);
-}
-.login .input-group button:active {
-    background: linear-gradient(to bottom, #333 0%, #333 15%, #408000 15%, #408000 30%, #50a200 100%);
 }
 .login .command-group {
     margin-left: 166px; /* 150px (label width) + 15px (margin) + 1px (input border) */
     width: 220px; /* 200px (input width) + 20px (padding) */
-    text-align: right;
 }
 #register{
     font-size: 14px;
@@ -367,4 +375,61 @@ a.room:focus {
 #send:hover, #send:focus {
     color: #D0FF8B;
     background-color: #408000;
+}
+
+/******************/
+/** 08. Register **/
+/******************/
+#grey-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: black;
+    opacity: 0.6;
+    z-index: 2030;
+}
+#register-box {
+    position: fixed;
+    top: -250px;/* visible: 110px; */
+    left: 0;
+    width: 100%;
+    z-index: 3030;
+}
+#register-modal {
+    background-color: white;
+    width: 500px;
+    min-height: 200px;
+    margin-left: auto;
+    margin-right: auto;
+    border-radius: 8px 8px 5px 5px;
+}
+.modal-header {
+    color: #AFD775;
+    font-size: 18px;
+    background-color: #2C5700;
+    padding: 5px 20px;
+    border-radius: 5px 5px 0 0;
+    margin-bottom: 15px;
+}
+#register-modal-close {
+    color: #AFD775;
+}
+#register-modal-close:hover,
+#register-modal-close:focus {
+    color: #D0FF8B;
+}
+#register-form .input-group label{
+    width: 170px;
+}
+#register-form .input-group input{
+    width: 230px;
+}
+#register-form .command-group {
+    margin-left: 186px; /* 170px (label width) + 15px (margin) + 1px (input border) */
+    width: 250px; /* 230px (input width) + 20px (padding) */
+}
+#register-form {
+    padding-bottom: 15px;
 }

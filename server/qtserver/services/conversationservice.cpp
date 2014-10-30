@@ -77,6 +77,10 @@ QSharedPointer<IChatMsg> ConversationService::openConversation(quint32 conversat
 
 QSharedPointer<IChatMsg> ConversationService::sendMessage(quint32 conversationId, quint32 userId, const QSharedPointer<QString> & message) const {
     qDebug() << "[ConversationService][sendMessage] c: " << conversationId << " u: " << userId << " message: " << *message;
+
+    //Filter invalid user
+    if(userId <= 0){ return manager->getProtocol().createResponse(RequestType::SendMessage, ErrorType::Custom, QStringLiteral("You have to login, before sending messages")); }
+
     //Create new message
     MessagesVector messages(new QVector<IStreamable*>());
     messages->push_back(new Message());
@@ -85,6 +89,10 @@ QSharedPointer<IChatMsg> ConversationService::sendMessage(quint32 conversationId
     msg->time = QDateTime::currentDateTime().toTime_t();
     msg->conversationId = conversationId;
     msg->userId = userId;
+
+    //Filter invalid messages
+    int messageLength = msg->message->length();
+    if(messageLength < 1 || messageLength > 500){ return manager->getProtocol().createResponse(RequestType::SendMessage, ErrorType::Custom, QStringLiteral("Invalid message size")); }
 
     //Insert new message
     bool ok;

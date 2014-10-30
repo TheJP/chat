@@ -30,8 +30,9 @@ QSharedPointer<IChatMsg> UserService::login(const QString & username, const QStr
     ok = query.prepare(
         "SELECT id, salt, password "
         "FROM user "
-        "WHERE username = :username");
+        "WHERE username = :username OR email = :email");
     query.bindValue(":username", username);
+    query.bindValue(":email", username);
     ok = ok && query.exec();
     if(!ok){ qDebug() << query.lastError(); return manager->getProtocol().createResponse(RequestType::Login, ErrorType::Internal, QStringLiteral("")); }
     else if(!query.next()){
@@ -102,4 +103,8 @@ QSharedPointer<IChatMsg> UserService::continueSession(const QString & sid) const
         qDebug() << "[success] add client to session. username: " << *username;
         return manager->getProtocol().createResponseSession(RequestType::ContinueSession, true, numSid, QSharedPointer<QString>(new QString(sid)), userId, username);
     }
+}
+
+QSharedPointer<IChatMsg> create(const QString & username, const QString & email, const QString & password) const {
+    return QSharedPointer<IChatMsg>();
 }
