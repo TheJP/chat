@@ -143,7 +143,7 @@ $(document).ready(function() {
             user.id = data.userid;
             user.name = data.username;
             setLoginVisible(false);
-            $('#nav-user').text($('#username').val()).append('&#x25BE;');
+            $('#nav-user').text(data.username).append('&#x25BE;');
             $('#nav-user').removeClass('hidden');
             $('#toggle-login').addClass('hidden');
             //Reopen conversation, so owned messages are shown correctly

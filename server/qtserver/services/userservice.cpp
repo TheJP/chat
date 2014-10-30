@@ -35,10 +35,11 @@ QSharedPointer<IChatMsg> UserService::login(const QString & username, const QStr
 
     //** Check authentification **//
     quint32 userId = 0, numSid = 0;
+    QString dbUsername;
     bool ok;
     QSqlQuery query;
     ok = query.prepare(
-        "SELECT id, salt, password "
+        "SELECT id, username, salt, password "
         "FROM user "
         "WHERE username = :username OR email = :email");
     query.bindValue(":username", username);
@@ -50,8 +51,9 @@ QSharedPointer<IChatMsg> UserService::login(const QString & username, const QStr
         ok = false; //Unkown username
     } else {
         userId = query.value(0).toUInt();
-        QString dbSalt = query.value(1).toString();
-        QString dbPassword = query.value(2).toString();
+        dbUsername = query.value(1).toString();
+        QString dbSalt = query.value(2).toString();
+        QString dbPassword = query.value(3).toString();
         QCryptographicHash sha256Password(QCryptographicHash::Sha256);
         sha256Password.addData(password.toUtf8());
         QCryptographicHash sha256(QCryptographicHash::Sha256);
@@ -80,7 +82,7 @@ QSharedPointer<IChatMsg> UserService::login(const QString & username, const QStr
         if(ok){ numSid = querySession.lastInsertId().toInt(); }
     }
     if(!ok){ qDebug() << query.lastError(); return manager->getProtocol().createResponse(RequestType::Login, ErrorType::Internal, QStringLiteral("")); }
-    else { return manager->getProtocol().createResponseSession(RequestType::Login, true, numSid, sid, userId, QSharedPointer<QString>(new QString(username))); }
+    else { return manager->getProtocol().createResponseSession(RequestType::Login, true, numSid, sid, userId, QSharedPointer<QString>(new QString(dbUsername))); }
 }
 
 QSharedPointer<IChatMsg> UserService::logout(const QString & sid) const {
