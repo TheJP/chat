@@ -148,9 +148,7 @@ QSharedPointer<IChatMsg> UserService::createUser(const QString & username, const
     QCryptographicHash sha256Password(QCryptographicHash::Sha256);
     sha256Password.addData(password.toUtf8());
     QCryptographicHash sha256(QCryptographicHash::Sha256);
-    qDebug() << "salt: " << *salt << " shapw: " << sha256Password.result().toHex();
     sha256.addData(applicationSalt.toUtf8() + sha256Password.result().toHex() + salt->toUtf8());
-    qDebug() << "result: " << sha256.result().toHex();
 
     //Create user
     QSqlQuery queryCreate;
