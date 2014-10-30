@@ -6,6 +6,7 @@
 #include "msgs/login.h"
 #include "msgs/logout.h"
 #include "msgs/openconversation.h"
+#include "msgs/register.h"
 #include "msgs/sendmessage.h"
 #include "streamable/response.h"
 #include "streamable/responsesession.h"
@@ -22,11 +23,12 @@ QSharedPointer<IChatMsg> & Protocol::operator[](const int & index){
 }
 
 void Protocol::initDefault(){
-    set(RequestType::Login, QSharedPointer<IChatMsg>(new Login()));
-    set(RequestType::Logout, QSharedPointer<IChatMsg>(new Logout()));
     set(RequestType::ContinueSession, QSharedPointer<IChatMsg>(new ContinueSession()));
     set(RequestType::GetConversations, QSharedPointer<IChatMsg>(new GetConversations()));
+    set(RequestType::Login, QSharedPointer<IChatMsg>(new Login()));
+    set(RequestType::Logout, QSharedPointer<IChatMsg>(new Logout()));
     set(RequestType::OpenConversation, QSharedPointer<IChatMsg>(new OpenConversation()));
+    set(RequestType::Register, QSharedPointer<IChatMsg>(new Register()));
     set(RequestType::SendMessage, QSharedPointer<IChatMsg>(new SendMessage()));
 }
 

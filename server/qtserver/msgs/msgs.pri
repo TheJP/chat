@@ -5,7 +5,8 @@ HEADERS += \
     $$PWD/continuesession.h \
     $$PWD/getconversations.h \
     $$PWD/openconversation.h \
-    $$PWD/sendmessage.h
+    $$PWD/sendmessage.h \
+    $$PWD/register.h
 
 SOURCES += \
     msgs/login.cpp \
@@ -14,4 +15,5 @@ SOURCES += \
     $$PWD/continuesession.cpp \
     $$PWD/getconversations.cpp \
     $$PWD/openconversation.cpp \
-    $$PWD/sendmessage.cpp
+    $$PWD/sendmessage.cpp \
+    $$PWD/register.cpp

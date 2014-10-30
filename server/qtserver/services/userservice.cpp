@@ -20,6 +20,16 @@ UserService::~UserService(){
     delete[] letters;
 }
 
+QSharedPointer<QString> UserService::generateString(int length) const {
+    char str[USERSERVICE_MAX_GENERATE_LENGTH+1];
+    int i;
+    for(i = 0; i < length; ++i){
+        str[i] = letters[qrand()%USERSERVICE_COUNT_LETTERS];
+    }
+    str[i] = '\0';
+    return QSharedPointer<QString>(new QString(str));
+}
+
 QSharedPointer<IChatMsg> UserService::login(const QString & username, const QString & password) const {
     qDebug() << "[UserService][login] username: " << username << " ";
 
@@ -58,9 +68,7 @@ QSharedPointer<IChatMsg> UserService::login(const QString & username, const QStr
     QSharedPointer<QString> sid(new QString());
     if(!ok){ return manager->getProtocol().createResponse(RequestType::Login, ErrorType::Custom, QStringLiteral("Unkown username or password")); }
     else {
-        for(int i = 0; i < USERSERVICE_SID_LENGTH; ++i){
-            sid->append(letters[qrand()%USERSERVICE_COUNT_LETTERS]);
-        }
+        sid = this->generateString(USERSERVICE_SID_LENGTH);
         qDebug() << "session: " << *sid << endl;
         QSqlQuery querySession;
         ok = querySession.prepare(
@@ -105,6 +113,55 @@ QSharedPointer<IChatMsg> UserService::continueSession(const QString & sid) const
     }
 }
 
-QSharedPointer<IChatMsg> create(const QString & username, const QString & email, const QString & password) const {
-    return QSharedPointer<IChatMsg>();
+QSharedPointer<IChatMsg> UserService::createUser(const QString & username, const QString & email, const QString & password) const {
+    qDebug() << "[UserService][register] username: " << username << " email: " << email;
+
+    //Validate inputs
+    int usernameLength = username.length();
+    if(usernameLength < 2 || usernameLength > 24 || email.length() < 3 || password.length() < 6){
+        //Should already be handled by client -> Probably someone testing out the system, who doesn't need an error message
+        return manager->getProtocol().createResponse(RequestType::SendMessage, ErrorType::Custom, QStringLiteral("Invalid input"));
+    }
+
+    //Check for duplicates
+    bool ok;
+    QSqlQuery query;
+    ok = query.prepare(
+        "SELECT username, email "
+        "FROM user "
+        "WHERE username = :username OR email = :email");
+    query.bindValue(":username", username);
+    query.bindValue(":email", email);
+    ok = ok && query.exec();
+    if(!ok){ qDebug() << query.lastError(); return manager->getProtocol().createResponse(RequestType::Register, ErrorType::Internal, QStringLiteral("")); }
+    else if(query.next()){
+        qDebug() << "Duplicate username or email";
+        return manager->getProtocol().createResponse(RequestType::Register, ErrorType::Custom,
+            username == query.value(0).toString() ? QStringLiteral("Username is already used") : QStringLiteral("Mail is already used")
+        );
+    }
+
+    //Encrypt password
+    QSharedPointer<QString> salt = this->generateString(USERSERVICE_SALT_LENGTH);
+    QCryptographicHash sha256Password(QCryptographicHash::Sha256);
+    sha256Password.addData(password.toUtf8());
+    QCryptographicHash sha256(QCryptographicHash::Sha256);
+    qDebug() << "salt: " << *salt << " shapw: " << sha256Password.result().toHex();
+    sha256.addData(applicationSalt.toUtf8() + sha256Password.result().toHex() + salt->toUtf8());
+    qDebug() << "result: " << sha256.result().toHex();
+
+    //Create user
+    QSqlQuery queryCreate;
+    ok = queryCreate.prepare(
+        "INSERT INTO user (`username`, `email`, `salt`, `password`) "
+        "VALUES (:username, :email, :salt, :password);");
+    queryCreate.bindValue(":username", username);
+    queryCreate.bindValue(":email", email);
+    queryCreate.bindValue(":salt", *salt);
+    queryCreate.bindValue(":password", sha256.result().toHex());
+    ok = ok && queryCreate.exec();
+    if(!ok){ qDebug() << query.lastError(); return manager->getProtocol().createResponse(RequestType::Register, ErrorType::Internal, QStringLiteral("")); }
+
+    qDebug() << "[success]";
+    return manager->getProtocol().createResponse(RequestType::Register, true);
 }

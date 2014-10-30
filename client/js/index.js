@@ -227,6 +227,9 @@ $(document).ready(function() {
         } else if(userLength > 24){
             alert('The username is too long');
             $('#register-username').focus();
+        } else if($('#register-mail').val().length <= 0){
+            alert('A mail address is required');
+            $('#register-mail').focus();
         } else if($('#register-password').val().length < 6){
             alert('Password has to be longer than 6 characters');
             $('#register-password').focus();
@@ -242,6 +245,15 @@ $(document).ready(function() {
             });
         }
         return false; //Prevent native submit
+    });
+    //Register (callback)
+    api.register(ApiRequest.Register, function(data){
+        if(data.s){
+            setRegisterVisible(false);
+            setLoginVisible(true);
+        } else {
+            alert(data.error_text);
+        }
     });
 });
 $(window).on('beforeunload', function(){
