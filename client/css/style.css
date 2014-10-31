@@ -11,7 +11,9 @@
  * 05. Public Chat Rooms
  * 06. Chat
  * 07. Sender
- * 08. Register
+ * 08. Modal
+ *   08.01 Register
+ *   08.02 Change Password
  *
  */
 
@@ -377,9 +379,9 @@ a.room:focus {
     background-color: #408000;
 }
 
-/******************/
-/** 08. Register **/
-/******************/
+/***************/
+/** 08. Modal **/
+/***************/
 #grey-screen {
     position: fixed;
     top: 0;
@@ -390,14 +392,13 @@ a.room:focus {
     opacity: 0.6;
     z-index: 2030;
 }
-#register-box {
+.box {
     position: fixed;
-    top: -250px;/* visible: 110px; */
     left: 0;
     width: 100%;
     z-index: 3030;
 }
-#register-modal {
+.modal {
     background-color: white;
     width: 500px;
     min-height: 200px;
@@ -413,23 +414,31 @@ a.room:focus {
     border-radius: 5px 5px 0 0;
     margin-bottom: 15px;
 }
-#register-modal-close {
+.modal-close {
     color: #AFD775;
 }
-#register-modal-close:hover,
-#register-modal-close:focus {
+.modal-close:hover,
+.modal-close:focus {
     color: #D0FF8B;
 }
-#register-form .input-group label{
+.modal .input-group label {
     width: 170px;
 }
-#register-form .input-group input{
+.modal .input-group input {
     width: 230px;
 }
-#register-form .command-group {
+.modal .command-group {
     margin-left: 186px; /* 170px (label width) + 15px (margin) + 1px (input border) */
     width: 250px; /* 230px (input width) + 20px (padding) */
 }
-#register-form {
+.modal form {
     padding-bottom: 15px;
+}
+/** 08.01 Register **/
+#register-box {
+    top: -250px; /* visible: 110px; */
+}
+/** 08.02 Change Password **/
+#chpw-box {
+    top: -250px; /* visible: 110px; */
 }

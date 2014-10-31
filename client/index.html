@@ -28,10 +28,10 @@
         </section>
         <nav class="navigation">
             <div class="content">
-                <span class="brand">Logo</span>
-                <a href="#" class="active">Home</a>
-                <!-- <a href="#">Link 2</a>
-                <a href="#">Link 3</a> -->
+                <span class="brand">JP</span>
+                <a href="#" class="active">Chat</a>
+                <!-- <a href="#">Friends</a>
+                <a href="#">About</a> -->
                 <a href="#" class="pull-right" id="toggle-login">Login</a>
                 <a href="#" class="pull-right hidden" id="nav-user">[USER]</a>
             </div>
@@ -40,7 +40,7 @@
             <div class="content">
                 <div class="down-menu pull-right" id="user-menu">
                     <a href="#">Profile</a>
-                    <a href="#">Change Password</a>
+                    <a href="#" id="chpw">Change Password</a>
                     <a href="#" id="logout">Logout</a>
                 </div>
             </div>
@@ -57,12 +57,13 @@
             </div>
         </section>
         <div id="grey-screen" class="hidden">&nbsp;</div>
-        <div id="register-box" class="hidden">
-            <div id="register-modal">
+        <!-- Register Modal -->
+        <div id="register-box" class="box hidden">
+            <div id="register-modal" class="modal">
                 <div class="modal-header">
                     <span class="title">Register</span>
                     <span class="close-modal pull-right">
-                        <a href="#" id="register-modal-close">&times;</a>
+                        <a href="#" id="register-modal-close" class="modal-close">&times;</a>
                     </span>
                 </div>
                 <form action="#" method="POST" id="register-form">
@@ -81,6 +82,32 @@
                 <div class="input-group command-group">
                     <button type="submit" id="register-submit">Register</button>
                     <button type="button" id="register-cancel">Cancel</button><br />
+                </div>
+                </form>
+            </div>
+        </div>
+        <!-- Change Password Modal -->
+        <div id="chpw-box" class="box hidden">
+            <div id="chpw-modal" class="modal">
+                <div class="modal-header">
+                    <span class="title">Change Password</span>
+                    <span class="pull-right">
+                        <a href="#" id="chpw-modal-close" class="modal-close">&times;</a>
+                    </span>
+                </div>
+                <form action="#" method="POST" id="chpw-form">
+                <div class="input-group">
+                    <label for="chpw-old-password">Old Password</label><input type="password" id="chpw-old-password" autocomplete="false" placeholder="Old Password" maxlength="256" />
+                </div>
+                <div class="input-group">
+                    <label for="chpw-password">Password</label><input type="password" id="chpw-password" autocomplete="false" placeholder="Password" maxlength="256" />
+                </div>
+                <div class="input-group">
+                    <label for="chpw-password-repeat">Repeat Password</label><input type="password" id="chpw-password-repeat" autocomplete="false" placeholder="Repeat Password" maxlength="256" />
+                </div>
+                <div class="input-group command-group">
+                    <button type="submit" id="chpw-submit">Save</button>
+                    <button type="button" id="chpw-cancel">Cancel</button><br />
                 </div>
                 </form>
             </div>

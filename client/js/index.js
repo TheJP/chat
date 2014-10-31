@@ -5,7 +5,9 @@ var user = {
 };
 var hideIgnores = {
     userMenu : false,
-    registerModal : false
+    grayScreen : false,
+    registerModal : false,
+    chpwModal : false
 };
 var rooms = [
 ];
@@ -26,6 +28,7 @@ function setRegisterVisible(visible){
     setGreyScreenVisible(visible);
     $('#register-box').stop();
     if(visible){
+        hideIgnores.registerModal = true;
         $('#register-box').removeClass('hidden');
         $('#register-box').animate({ top: '110px' }, 400, function(){
             $('#register-username').focus();
@@ -38,20 +41,41 @@ function setRegisterVisible(visible){
     registerVisible = visible;
 }
 
+//Change Password Modal
+var chpwVisible = false;
+function setChpwVisible(visible){
+    setGreyScreenVisible(visible);
+    $('#chpw-box').stop();
+    if(visible){
+        hideIgnores.chpwModal = true;
+        $('#chpw-box').removeClass('hidden');
+        $('#chpw-box').animate({ top: '110px' }, 400, function(){
+            $('#chpw-old-password').focus();
+        });
+    } else {
+        $('#chpw-box').animate({ top: '-250px' }, 400, function(){
+            $('#chpw-box').addClass('hidden');
+        });
+    }
+    chpwVisible = visible;
+}
+
+//Gray screen (used for modals)
 var greyScreenVisible = false;
 function setGreyScreenVisible(visible){
     $('#grey-screen').stop();
-    if(visible){
-        hideIgnores.registerModal = true;
+    if(visible || hideIgnores.grayScreen){
         if(!greyScreenVisible){ $('#grey-screen').css('opacity', 0); }
         $('#grey-screen').removeClass('hidden');
         $('#grey-screen').animate({ opacity: 0.6 }, 400);
+        greyScreenVisible = true;
     } else {
         $('#grey-screen').animate({ opacity: 0.0 }, 400, function(){
             $('#grey-screen').addClass('hidden');
         });
+        greyScreenVisible = false;
     }
-    greyScreenVisible = visible;
+    hideIgnores.grayScreen = visible;
 }
 
 //UserMenu show/hide
@@ -96,6 +120,8 @@ function hideAll() {
     hideIgnores.userMenu = false;
     if(!hideIgnores.registerModal){ setRegisterVisible(false); }
     hideIgnores.registerModal = false;
+    if(!hideIgnores.chpwModal){ setChpwVisible(false); }
+    hideIgnores.chpwModal = false;
 }
 
 $(document).ready(function() {
@@ -254,6 +280,10 @@ $(document).ready(function() {
         } else {
             alert(data.error_text);
         }
+    });
+    //Change Password
+    $('#chpw').click(function(){
+        setChpwVisible(true);
     });
 });
 $(window).on('beforeunload', function(){
