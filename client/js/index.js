@@ -63,19 +63,19 @@ function setChpwVisible(visible){
 //Gray screen (used for modals)
 var greyScreenVisible = false;
 function setGreyScreenVisible(visible){
+    if(hideIgnores.grayScreen){ return; }
     $('#grey-screen').stop();
-    if(visible || hideIgnores.grayScreen){
+    if(visible){
+        hideIgnores.grayScreen = true;
         if(!greyScreenVisible){ $('#grey-screen').css('opacity', 0); }
         $('#grey-screen').removeClass('hidden');
         $('#grey-screen').animate({ opacity: 0.6 }, 400);
-        greyScreenVisible = true;
     } else {
         $('#grey-screen').animate({ opacity: 0.0 }, 400, function(){
             $('#grey-screen').addClass('hidden');
         });
-        greyScreenVisible = false;
     }
-    hideIgnores.grayScreen = visible;
+    greyScreenVisible = visible;
 }
 
 //UserMenu show/hide
@@ -109,7 +109,8 @@ function receiveMessages(msgs){
             $('#chat').append(message);
             //Scroll to bottom
             //TODO: disable, if user scrolled manually
-            $('#chat').animate({ scrollTop: $('#chat').prop("scrollHeight") }, 1000);
+            //Animation seems to bug out: $('#chat').animate({ scrollTop: $('#chat').prop("scrollHeight") }, 1000);
+            $("#chat").scrollTop($("#chat")[0].scrollHeight);
         }
     }
 }
@@ -122,6 +123,7 @@ function hideAll() {
     hideIgnores.registerModal = false;
     if(!hideIgnores.chpwModal){ setChpwVisible(false); }
     hideIgnores.chpwModal = false;
+    hideIgnores.grayScreen = false;
 }
 
 $(document).ready(function() {
@@ -178,7 +180,7 @@ $(document).ready(function() {
     });
     //User Menu
     $('#nav-user').click(function(){ setUserMenuVisible(!userMenuVisible); });
-    $('#user-menu').click(function(){ setUserMenuVisible(true); }); //Keep open => ignores html click
+    $('#user-menu').click(function(){ hideIgnores.userMenu = true; }); //Keep open => ignores html click
     //Logout
     $('#logout').click(function(){
         user.id = 0;
@@ -241,7 +243,10 @@ $(document).ready(function() {
         setLoginVisible(false);
         setRegisterVisible(true);
     });
-    $('#register-modal').click(function(){ hideIgnores.registerModal = true; });
+    $('#register-modal').click(function(){
+        hideIgnores.registerModal = true;
+        hideIgnores.grayScreen = true;
+    });
     $('#register-modal-close').click(function(){ setRegisterVisible(false); });
     $('#register-cancel').click(function(){ setRegisterVisible(false); });
     $('#register-form').submit(function(){
@@ -283,7 +288,14 @@ $(document).ready(function() {
     });
     //Change Password
     $('#chpw').click(function(){
+        setUserMenuVisible(false);
         setChpwVisible(true);
+    });
+    $('#chpw-modal-close').click(function(){ setChpwVisible(false); });
+    $('#chpw-cancel').click(function(){ setChpwVisible(false); });
+    $('#chpw-modal').click(function(){
+        hideIgnores.chpwModal = true;
+        hideIgnores.grayScreen = true;
     });
 });
 $(window).on('beforeunload', function(){
