@@ -33,6 +33,14 @@ var ApiResponse = {
     //1 client request to n server responses
     Notify : 2
 };
+var ErrorType = {
+    None : 0,
+    Forbidden : 403, //Access denied
+    NotFound : 404,
+    ImATeapot : 418,
+    Internal : 500,
+    Custom : 600
+};
 var api = {
     wsUri : 'ws://127.0.0.1:8080', //Testing environment
     sid : null,
@@ -125,5 +133,5 @@ api.callbacks[ApiRequest.Login] = [function(data){
     if(data.s){ api.setSid(data.sid); }
 }];
 api.callbacks[ApiRequest.ContinueSession] = [function(data){
-    if(!data.s){ api.deleteSid(); }
+    if(!data.s && data.error == ErrorType.Custom){ api.deleteSid(); }
 }];
