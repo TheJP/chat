@@ -22,41 +22,34 @@ function setLoginVisible(visible){
     loginVisible = visible;
 }
 
+//Generic Modal Code
+function setModalVisible(modal, focus, visible){
+    setGreyScreenVisible(visible);
+    modal.stop();
+    if(visible){
+        hideIgnores.registerModal = true;
+        modal.removeClass('hidden');
+        modal.animate({ top: '110px' }, 400, function(){
+            focus.focus();
+        });
+    } else {
+        modal.animate({ top: '-250px' }, 400, function(){
+            modal.addClass('hidden');
+        });
+    }
+}
+
 //Register Modal
 var registerVisible = false;
 function setRegisterVisible(visible){
-    setGreyScreenVisible(visible);
-    $('#register-box').stop();
-    if(visible){
-        hideIgnores.registerModal = true;
-        $('#register-box').removeClass('hidden');
-        $('#register-box').animate({ top: '110px' }, 400, function(){
-            $('#register-username').focus();
-        });
-    } else {
-        $('#register-box').animate({ top: '-250px' }, 400, function(){
-            $('#register-box').addClass('hidden');
-        });
-    }
+    setModalVisible($('#register-box'), $('#register-username'), visible);
     registerVisible = visible;
 }
 
 //Change Password Modal
 var chpwVisible = false;
 function setChpwVisible(visible){
-    setGreyScreenVisible(visible);
-    $('#chpw-box').stop();
-    if(visible){
-        hideIgnores.chpwModal = true;
-        $('#chpw-box').removeClass('hidden');
-        $('#chpw-box').animate({ top: '110px' }, 400, function(){
-            $('#chpw-old-password').focus();
-        });
-    } else {
-        $('#chpw-box').animate({ top: '-250px' }, 400, function(){
-            $('#chpw-box').addClass('hidden');
-        });
-    }
+    setModalVisible($('#chpw-box'), $('#chpw-old-password'), visible);
     chpwVisible = visible;
 }
 
