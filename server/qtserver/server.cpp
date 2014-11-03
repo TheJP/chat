@@ -99,10 +99,12 @@ void Server::processBinaryMessage(QByteArray message){
 }
 
 void Server::socketDisconnected(){
-    qDebug() << "Client dc, start remove..";
     QWebSocket *pClient = qobject_cast<QWebSocket *>(sender());
+    quint32 userId = (userIds.contains(pClient) ? userIds[pClient] : 0);
+    qDebug() << "Client dc, start remove.. u:" << userId;
     if (pClient) {
         clients.removeAll(pClient);
+        userIds.remove(pClient);
         //Linear search to remove clients from sessions
         //TODO: better performance
         auto itr = sessions.begin();
