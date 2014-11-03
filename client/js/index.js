@@ -27,7 +27,6 @@ function setModalVisible(modal, focus, visible){
     setGreyScreenVisible(visible);
     modal.stop();
     if(visible){
-        hideIgnores.registerModal = true;
         modal.removeClass('hidden');
         modal.animate({ top: '110px' }, 400, function(){
             focus.focus();
@@ -43,6 +42,7 @@ function setModalVisible(modal, focus, visible){
 var registerVisible = false;
 function setRegisterVisible(visible){
     setModalVisible($('#register-box'), $('#register-username'), visible);
+    if(visible){  hideIgnores.registerModal = true; }
     registerVisible = visible;
 }
 
@@ -50,6 +50,7 @@ function setRegisterVisible(visible){
 var chpwVisible = false;
 function setChpwVisible(visible){
     setModalVisible($('#chpw-box'), $('#chpw-old-password'), visible);
+    if(visible){  hideIgnores.chpwModal = true; }
     chpwVisible = visible;
 }
 
@@ -106,6 +107,44 @@ function receiveMessages(msgs){
             $("#chat").scrollTop($("#chat")[0].scrollHeight);
         }
     }
+}
+
+//Register Valid
+function registerValid(){
+    var userLength = $('#register-username').val().length;
+    if(userLength < 2){
+        alert('The username is too short');
+        $('#register-username').focus();
+    } else if(userLength > 24){
+        alert('The username is too long');
+        $('#register-username').focus();
+    } else if($('#register-mail').val().length <= 0){
+        alert('A mail address is required');
+        $('#register-mail').focus();
+    } else if($('#register-password').val().length < 6){
+        alert('Password has to be longer than 6 characters');
+        $('#register-password').focus();
+    } else if($('#register-password').val() != $('#register-password-repeat').val()){
+        alert('Passwords have to be the same');
+        $('#register-password').focus();
+    } else {
+        return true;
+    }
+    return false;
+}
+
+//Change Password Valid
+function chpwValid(){
+    if($('#chpw-password').val().length < 6){
+        alert('Password has to be longer than 6 characters');
+        $('#chpw-password').focus();
+    } else if($('#chpw-password').val() != $('#chpw-password-repeat').val()){
+        alert('Passwords have to be the same');
+        $('#chpw-password').focus();
+    } else {
+        return true;
+    }
+    return false;
 }
 
 //Hide optional content
@@ -243,24 +282,7 @@ $(document).ready(function() {
     $('#register-modal-close').click(function(){ setRegisterVisible(false); });
     $('#register-cancel').click(function(){ setRegisterVisible(false); });
     $('#register-form').submit(function(){
-        //Check validity
-        var userLength = $('#register-username').val().length;
-        if(userLength < 2){
-            alert('The username is too short');
-            $('#register-username').focus();
-        } else if(userLength > 24){
-            alert('The username is too long');
-            $('#register-username').focus();
-        } else if($('#register-mail').val().length <= 0){
-            alert('A mail address is required');
-            $('#register-mail').focus();
-        } else if($('#register-password').val().length < 6){
-            alert('Password has to be longer than 6 characters');
-            $('#register-password').focus();
-        } else if($('#register-password').val() != $('#register-password-repeat').val()){
-            alert('Passwords have to be the same');
-            $('#register-password').focus();
-        } else {
+        if(registerValid()){
             //Valid: Register
             api.send(ApiRequest.Register, {
                 username: $('#register-username').val(),
@@ -275,6 +297,8 @@ $(document).ready(function() {
         if(data.s){
             setRegisterVisible(false);
             setLoginVisible(true);
+            $('#register-password').val('');
+            $('#register-password-repeat').val('');
         } else {
             alert(data.error_text);
         }
@@ -289,6 +313,27 @@ $(document).ready(function() {
     $('#chpw-modal').click(function(){
         hideIgnores.chpwModal = true;
         hideIgnores.grayScreen = true;
+    });
+    $('#chpw-form').submit(function(){
+        if(chpwValid()){
+            api.send(ApiRequest.ChangePassword, {
+                oldpw: $('#chpw-old-password').val(),
+                newpw: $('#chpw-password').val(),
+            });
+        }
+        return false; //Prevent native submit
+    });
+    //Change Password (callback)
+    api.register(ApiRequest.ChangePassword, function(data){
+        if(data.s){
+            alert('Password was successfully changed');
+            setChpwVisible(false);
+            $('#chpw-old-password').val('');
+            $('#chpw-password').val('');
+            $('#chpw-password-repeat').val('');
+        } else {
+            alert(data.error_text);
+        }
     });
 });
 $(window).on('beforeunload', function(){
