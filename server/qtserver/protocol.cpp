@@ -1,5 +1,6 @@
 #include "protocol.h"
 
+#include "msgs/changepassword.h"
 #include "msgs/continuesession.h"
 #include "msgs/empty.h"
 #include "msgs/getconversations.h"
@@ -23,6 +24,7 @@ QSharedPointer<IChatMsg> & Protocol::operator[](const int & index){
 }
 
 void Protocol::initDefault(){
+    set(RequestType::ChangePassword, QSharedPointer<IChatMsg>(new ChangePassword()));
     set(RequestType::ContinueSession, QSharedPointer<IChatMsg>(new ContinueSession()));
     set(RequestType::GetConversations, QSharedPointer<IChatMsg>(new GetConversations()));
     set(RequestType::Login, QSharedPointer<IChatMsg>(new Login()));

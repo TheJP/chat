@@ -21,6 +21,7 @@ private:
     QString applicationSalt;
     char * letters;
     QSharedPointer<QString> generateString(int length) const;
+    QSharedPointer<QString> generatePassword(const QString & password, const QString & salt) const;
 public:
     explicit UserService(ServiceManager * manager, const QString & applicationSalt, QObject *parent = 0);
     ~UserService();
@@ -28,6 +29,7 @@ public:
     QSharedPointer<IChatMsg> logout(const QString & sid) const;
     QSharedPointer<IChatMsg> continueSession(const QString & sid) const;
     QSharedPointer<IChatMsg> createUser(const QString & username, const QString & email, const QString & password) const;
+    QSharedPointer<IChatMsg> changePassword(quint32 userId, const QString & oldPassword, const QString & newPassword) const;
 signals:
 
 public slots:
