@@ -43,7 +43,6 @@ void Server::onNewConnection(){
 }
 
 void Server::onNewNotification(IChatMsg & msg, const QList<int> & sessions){
-    Q_UNUSED(sessions);
     if(sessions.empty()){
         //Try to send notification to each client
         for(QWebSocket * client : clients){

@@ -145,7 +145,8 @@ QSharedPointer<IChatMsg> UserService::createUser(const QString & username, const
     else if(query.next()){
         qDebug() << "Duplicate username or email";
         return manager->getProtocol().createResponse(RequestType::Register, ErrorType::Custom,
-            username == query.value(0).toString() ? QStringLiteral("Username is already used") : QStringLiteral("Mail is already used")
+            QString::compare(username, query.value(0).toString(), Qt::CaseInsensitive) == 0 ?
+            QStringLiteral("Username is already used") : QStringLiteral("Mail is already used")
         );
     }
 
