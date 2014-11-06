@@ -300,6 +300,7 @@ a.room:focus {
     color: #f9f9f9;
     background-color: #888;
     border-radius: 2px;
+    word-wrap: break-word;
 }
 .their {
     width: calc(85% - 30px); /* +30px padding */
