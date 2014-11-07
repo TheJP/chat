@@ -17,6 +17,7 @@ var rooms = [
 //Define if a notify blinker is running
 var notify = false;
 var notifyInterval;
+var notifyState = false;
 
 //Login show/hide
 var loginVisible = false;
@@ -94,6 +95,7 @@ function setUserMenuVisible(visible){
 
 //Display new messages
 function receiveMessages(msgs){
+    var newmsg = false;
     msgs.reverse(); //Order messages correct for view
     var key; for(key in msgs){
         var msg = msgs[key];
@@ -101,6 +103,7 @@ function receiveMessages(msgs){
             rooms[msg.c].msgs.push(msg);
         }
         if(msg.c == openRoom){
+            newmsg = true;
             var message = $('<div />', { id: 'message-' + msg.id, class: 'message' });
             message.append($('<span />').addClass('person').text(msg.username));
             message.append($('<span />').addClass('time').text(api.formatTime(msg.time)));
@@ -112,6 +115,14 @@ function receiveMessages(msgs){
             //Animation seems to bug out: $('#chat').animate({ scrollTop: $('#chat').prop("scrollHeight") }, 1000);
             $("#chat").scrollTop($("#chat")[0].scrollHeight);
         }
+    }
+    //Notify if in other tab
+    if(document.hidden && newmsg && !notify){
+        notifyInterval = setInterval(function(){
+            document.title = notifyState ? 'Chat' : '[+] Chat';
+            notifyState = !notifyState;
+        }, 400);
+        notify = true;
     }
 }
 
