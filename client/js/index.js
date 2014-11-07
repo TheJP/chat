@@ -1,4 +1,6 @@
+//Current main room
 var openRoom = 0;
+//User data
 var user = {
     id : 0,
     name : null
@@ -9,8 +11,12 @@ var hideIgnores = {
     registerModal : false,
     chpwModal : false
 };
+//Rooms and cached messages
 var rooms = [
 ];
+//Define if a notify blinker is running
+var notify = false;
+var notifyInterval;
 
 //Login show/hide
 var loginVisible = false;
@@ -170,6 +176,15 @@ $(document).ready(function() {
         //Get conversations
         api.send(ApiRequest.GetConversations);
     });
+    //Visibility changes
+    document.addEventListener('visibilitychange', function(){
+        //Clear notify blinker if active
+        if(!document.hidden && notify){
+            notify = false;
+            clearInterval(notifyInterval);
+            document.title = 'Chat';
+        }
+    }, false);
     //Continue Session (Handle Server Response)
     api.register(ApiRequest.ContinueSession, function(data){
         if(data.s){
