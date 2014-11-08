@@ -45,24 +45,25 @@ QSharedPointer<IChatMsg> UserService::login(const QString & username, const QStr
     //** Check authentification **//
     quint32 userId = 0, numSid = 0;
     QString dbUsername;
-    bool ok;
-    QSqlQuery query;
-    ok = query.prepare(
+    QSharedPointer<QSqlQuery> query = manager->getDbService().prepare(
         "SELECT id, username, salt, password "
         "FROM user "
         "WHERE username = :username OR email = :email");
-    query.bindValue(":username", username);
-    query.bindValue(":email", username);
-    ok = ok && query.exec();
-    if(!ok){ qDebug() << query.lastError(); return manager->getProtocol().createResponse(RequestType::Login, ErrorType::Internal, QStringLiteral("")); }
-    else if(!query.next()){
+    bool ok = false;
+    if(!query.isNull()){
+        query->bindValue(":username", username);
+        query->bindValue(":email", username);
+        ok = manager->getDbService().exec(query);
+    }
+    if(!ok){ return manager->getProtocol().createResponse(RequestType::Login, ErrorType::Internal, QStringLiteral("")); }
+    else if(!query->next()){
         qDebug() << "[wrong username]";
         ok = false; //Unkown username
     } else {
-        userId = query.value(0).toUInt();
-        dbUsername = query.value(1).toString();
-        QString dbSalt = query.value(2).toString();
-        QString dbPassword = query.value(3).toString();
+        userId = query->value(0).toUInt();
+        dbUsername = query->value(1).toString();
+        QString dbSalt = query->value(2).toString();
+        QString dbPassword = query->value(3).toString();
         QSharedPointer<QString> sha256 = generatePassword(password.toUtf8(), dbSalt.toUtf8());
         if(*sha256 == dbPassword){
             qDebug() << "[correct]";
@@ -74,21 +75,26 @@ QSharedPointer<IChatMsg> UserService::login(const QString & username, const QStr
 
     //** Create Session **//
     QSharedPointer<QString> sid(new QString());
-    if(!ok){ return manager->getProtocol().createResponse(RequestType::Login, ErrorType::Custom, QStringLiteral("Unkown username or password")); }
+    if(!ok){ return manager->getProtocol().createResponse(RequestType::Login, ErrorType::Custom, QStringLiteral("Wrong username or password")); }
     else {
         sid = this->generateString(USERSERVICE_SID_LENGTH);
         qDebug() << "session: " << *sid << endl;
-        QSqlQuery querySession;
-        ok = querySession.prepare(
+        QSharedPointer<QSqlQuery> querySession = manager->getDbService().prepare(
             "INSERT INTO session (`sid`, `expire`, `user_id`) "
             "VALUES (:sid, DATE_ADD(NOW(), INTERVAL 1 YEAR), :user_id);");
-        querySession.bindValue(":sid", *sid);
-        querySession.bindValue(":user_id", userId);
-        ok = ok && querySession.exec();
-        if(ok){ numSid = querySession.lastInsertId().toInt(); }
+        ok = false;
+        if(!querySession.isNull()){
+            querySession->bindValue(":sid", *sid);
+            querySession->bindValue(":user_id", userId);
+            ok = manager->getDbService().exec(querySession);
+        }
+        if(!ok){ return manager->getProtocol().createResponse(RequestType::Login, ErrorType::Internal, QStringLiteral("")); }
+        else {
+            numSid = querySession->lastInsertId().toInt();
+            return manager->getProtocol().createResponseSession(
+                RequestType::Login, true, numSid, sid, userId, QSharedPointer<QString>(new QString(dbUsername)));
+        }
     }
-    if(!ok){ qDebug() << query.lastError(); return manager->getProtocol().createResponse(RequestType::Login, ErrorType::Internal, QStringLiteral("")); }
-    else { return manager->getProtocol().createResponseSession(RequestType::Login, true, numSid, sid, userId, QSharedPointer<QString>(new QString(dbUsername))); }
 }
 
 QSharedPointer<IChatMsg> UserService::logout(const QString & sid) const {
@@ -99,23 +105,24 @@ QSharedPointer<IChatMsg> UserService::logout(const QString & sid) const {
 
 QSharedPointer<IChatMsg> UserService::continueSession(const QString & sid) const {
     qDebug() << "[UserService][continueSession]";
-    bool ok;
-    QSqlQuery query;
-    ok = query.prepare(
+    QSharedPointer<QSqlQuery> query = manager->getDbService().prepare(
         "SELECT user.id, username, session.id "
         "FROM session LEFT JOIN user ON session.user_id = user.id "
         "WHERE sid = :sid");
-    query.bindValue(":sid", sid);
-    ok = ok && query.exec();
-    if(!ok){ qDebug() << query.lastError(); return manager->getProtocol().createResponse(RequestType::ContinueSession, ErrorType::Internal, QStringLiteral("")); }
-    else if(!query.next()){
+    bool ok = false;
+    if(!query.isNull()){
+        query->bindValue(":sid", sid);
+        ok = manager->getDbService().exec(query);
+    }
+    if(!ok){ return manager->getProtocol().createResponse(RequestType::ContinueSession, ErrorType::Internal, QStringLiteral("")); }
+    else if(!query->next()){
         qDebug() << "[unkown sid]";
         //ok = false;
         return manager->getProtocol().createResponse(RequestType::ContinueSession, ErrorType::Custom, QStringLiteral("Unkown sid"));
     }else {
-        quint32 userId = query.value(0).toInt();
-        QSharedPointer<QString> username(new QString(query.value(1).toString()));
-        quint32 numSid = query.value(2).toInt();
+        quint32 userId = query->value(0).toInt();
+        QSharedPointer<QString> username(new QString(query->value(1).toString()));
+        quint32 numSid = query->value(2).toInt();
         qDebug() << "[success] add client to session. username: " << *username;
         return manager->getProtocol().createResponseSession(RequestType::ContinueSession, true, numSid, QSharedPointer<QString>(new QString(sid)), userId, username);
     }
@@ -132,20 +139,21 @@ QSharedPointer<IChatMsg> UserService::createUser(const QString & username, const
     }
 
     //Check for duplicates
-    bool ok;
-    QSqlQuery query;
-    ok = query.prepare(
+    QSharedPointer<QSqlQuery> query = manager->getDbService().prepare(
         "SELECT username, email "
         "FROM user "
         "WHERE username = :username OR email = :email");
-    query.bindValue(":username", username);
-    query.bindValue(":email", email);
-    ok = ok && query.exec();
-    if(!ok){ qDebug() << query.lastError(); return manager->getProtocol().createResponse(RequestType::Register, ErrorType::Internal, QStringLiteral("")); }
-    else if(query.next()){
+    bool ok = false;
+    if(!query.isNull()){
+        query->bindValue(":username", username);
+        query->bindValue(":email", email);
+        ok = manager->getDbService().exec(query);
+    }
+    if(!ok){ return manager->getProtocol().createResponse(RequestType::Register, ErrorType::Internal, QStringLiteral("")); }
+    else if(query->next()){
         qDebug() << "Duplicate username or email";
         return manager->getProtocol().createResponse(RequestType::Register, ErrorType::Custom,
-            QString::compare(username, query.value(0).toString(), Qt::CaseInsensitive) == 0 ?
+            QString::compare(username, query->value(0).toString(), Qt::CaseInsensitive) == 0 ?
             QStringLiteral("Username is already used") : QStringLiteral("Mail is already used")
         );
     }
@@ -155,17 +163,18 @@ QSharedPointer<IChatMsg> UserService::createUser(const QString & username, const
     QSharedPointer<QString> sha256 = generatePassword(password.toUtf8(), *salt);
 
     //Create user
-    QSqlQuery queryCreate;
-    ok = queryCreate.prepare(
+    QSharedPointer<QSqlQuery> queryCreate = manager->getDbService().prepare(
         "INSERT INTO user (`username`, `email`, `salt`, `password`) "
         "VALUES (:username, :email, :salt, :password);");
-    queryCreate.bindValue(":username", username);
-    queryCreate.bindValue(":email", email);
-    queryCreate.bindValue(":salt", *salt);
-    queryCreate.bindValue(":password", *sha256);
-    ok = ok && queryCreate.exec();
-    if(!ok){ qDebug() << query.lastError(); return manager->getProtocol().createResponse(RequestType::Register, ErrorType::Internal, QStringLiteral("")); }
-
+    ok = false;
+    if(!queryCreate.isNull()){
+        queryCreate->bindValue(":username", username);
+        queryCreate->bindValue(":email", email);
+        queryCreate->bindValue(":salt", *salt);
+        queryCreate->bindValue(":password", *sha256);
+        ok = manager->getDbService().exec(queryCreate);
+    }
+    if(!ok){ return manager->getProtocol().createResponse(RequestType::Register, ErrorType::Internal, QStringLiteral("")); }
     qDebug() << "[success]";
     return manager->getProtocol().createResponse(RequestType::Register, true);
 }
@@ -181,15 +190,19 @@ QSharedPointer<IChatMsg> UserService::changePassword(quint32 userId, const QStri
     }
 
     //Validate old Password
-    bool ok;
-    QSqlQuery query;
-    ok = query.prepare("SELECT salt, password FROM user WHERE id = :userid;");
-    query.bindValue(":userid", userId);
-    ok = ok && query.exec();
-    if(!ok || !query.next()){ qDebug() << query.lastError(); return manager->getProtocol().createResponse(RequestType::ChangePassword, ErrorType::Internal, QStringLiteral("")); }
+    QSharedPointer<QSqlQuery> query = manager->getDbService().prepare("SELECT salt, password FROM user WHERE id = :userid;");
+    bool ok = false;
+    if(!query.isNull()){
+        query->bindValue(":userid", userId);
+        ok = manager->getDbService().exec(query);
+    }
+    if(!ok || !query->next()){
+        qDebug() << "Could not find user, who logged in";
+        return manager->getProtocol().createResponse(RequestType::ChangePassword, ErrorType::Internal, QStringLiteral(""));
+    }
 
-    QString dbSalt = query.value(0).toString();
-    QString dbPassword = query.value(1).toString();
+    QString dbSalt = query->value(0).toString();
+    QString dbPassword = query->value(1).toString();
     QSharedPointer<QString> oldSha256 = generatePassword(oldPassword, dbSalt);
     if(*oldSha256 != dbPassword){
         qDebug() << "old password incorrect";
@@ -198,11 +211,13 @@ QSharedPointer<IChatMsg> UserService::changePassword(quint32 userId, const QStri
 
     //Generate and save new Password
     QSharedPointer<QString> newSha256 = generatePassword(newPassword, dbSalt);
-    QSqlQuery updateQuery;
-    ok = updateQuery.prepare("UPDATE user SET `password` = :newpassword;");
-    updateQuery.bindValue(":newpassword", *newSha256);
-    ok = ok && updateQuery.exec();
-    if(!ok){ qDebug() << query.lastError(); return manager->getProtocol().createResponse(RequestType::ChangePassword, ErrorType::Internal, QStringLiteral("")); }
+    QSharedPointer<QSqlQuery> updateQuery = manager->getDbService().prepare("UPDATE user SET `password` = :newpassword;");
+    ok = false;
+    if(!updateQuery.isNull()){
+        updateQuery->bindValue(":newpassword", *newSha256);
+        ok = manager->getDbService().exec(updateQuery);
+    }
+    if(!ok){ return manager->getProtocol().createResponse(RequestType::ChangePassword, ErrorType::Internal, QStringLiteral("")); }
 
     return manager->getProtocol().createResponse(RequestType::ChangePassword, true);
 }

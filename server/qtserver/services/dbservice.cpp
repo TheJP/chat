@@ -1,5 +1,8 @@
 #include "dbservice.h"
 
+//TODO: remove
+#include <QDebug>
+
 DbService::DbService(QObject *parent) :
     QObject(parent)
 {
@@ -27,10 +30,17 @@ bool DbService::reconnect() const {
 QSharedPointer<QSqlQuery> DbService::prepare(const QString & sql) const {
     QSharedPointer<QSqlQuery> result(new QSqlQuery());
     //Only execute reconnect if prepare fails
-    bool ok = result->prepare(sql) || (this->reconnect() && result->prepare(sql));
+    bool ok = result->prepare(sql);
+    if(!ok){ qDebug() << result->lastError() << QStringLiteral("Trying reconnect"); }
+    ok = ok || (this->reconnect() && result->prepare(sql));
+    if(!ok){ qDebug() << result->lastError(); }
     return ok ? result : QSharedPointer<QSqlQuery>();
 }
 
 bool DbService::exec(QSharedPointer<QSqlQuery> query) const {
-    return query->exec() || (this->reconnect() && query->exec());
+    bool ok = query->exec();
+    if(!ok){ qDebug() << query->lastError() << QStringLiteral("Trying reconnect"); }
+    ok = ok || (this->reconnect() && query->exec());
+    if(!ok){ qDebug() << query->lastError(); }
+    return ok;
 }
