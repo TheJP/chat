@@ -18,15 +18,15 @@ public:
                  const QString & hostname,
                  const QString & dbname,
                  const QString & user,
-                 const QString & password);
+                 const QString & password) const;
     //Reconnects to the database (using the same parameters as the last call to connect)
-    bool reconnect();
+    bool reconnect() const;
     //Prepares an QSqlQuery. Parameter can be binded to the resulting query instance
     //Returns a null pointer if the connection failed
-    QSharedPointer<QSqlQuery> prepare(const QString & sql);
+    QSharedPointer<QSqlQuery> prepare(const QString & sql) const;
     //Execute a query which was created over prepare
     //Returns if the execution was successfull
-    bool exec(QSharedPointer<QSqlQuery> query);
+    bool exec(QSharedPointer<QSqlQuery> query) const;
 signals:
 
 public slots:

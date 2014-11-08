@@ -6,7 +6,6 @@
 #include <QIODevice>
 #include <QSqlDatabase>
 #include <QSqlError>
-#include <QSqlDriver>
 #include <QTextStream>
 #include <QSharedPointer>
 #include <QObject>
@@ -48,17 +47,6 @@ int main(int argc, char *argv[])
     JsonReader reader(QSharedPointer<QJsonObject>(new QJsonObject(settingDoc.object())));
     cout << QStringLiteral("[success]") << endl;
 
-    //Initialize Database Connection
-    cout << QStringLiteral("Initializing database connection...\t");
-    QSqlDatabase db = QSqlDatabase::addDatabase(*reader.readString(QStringLiteral("driver")));
-    db.setHostName(*reader.readString(QStringLiteral("host")));
-    db.setDatabaseName(*reader.readString(QStringLiteral("db")));
-    db.setUserName(*reader.readString(QStringLiteral("user")));
-    db.setPassword(*reader.readString(QStringLiteral("password")));
-    bool ok = db.open();
-    cout << (ok ? QStringLiteral("[success]") : QStringLiteral("[failed]")) << endl;
-    if(!ok){ qFatal(db.lastError().text().toLatin1()); }
-
     //** Dependency Injection **//
 
     //Initialize Server Protocol
@@ -81,6 +69,18 @@ int main(int argc, char *argv[])
     cout << QStringLiteral("Initializing service manager...\t");
     QSharedPointer<ServiceManager> manager(new ServiceManager(notifier, protocol, *reader.readString(QStringLiteral("salt"))));
     cout << QStringLiteral("[success]") << endl;
+
+    //Initialize Database Connection
+    cout << QStringLiteral("Initializing database connection...\t");
+    bool ok = manager->getDbService().connect(
+        *reader.readString(QStringLiteral("driver")),
+        *reader.readString(QStringLiteral("host")),
+        *reader.readString(QStringLiteral("db")),
+        *reader.readString(QStringLiteral("user")),
+        *reader.readString(QStringLiteral("password"))
+    );
+    cout << (ok ? QStringLiteral("[success]") : QStringLiteral("[failed]")) << endl;
+    if(!ok){ qFatal(QSqlDatabase::database().lastError().text().toLatin1()); }
 
     //Initialize Websocket Server
     cout << QStringLiteral("Initializing websocket server...\t");

@@ -7,6 +7,7 @@
 #include <QSqlDriver>
 #include "userservice.h"
 #include "conversationservice.h"
+#include "dbservice.h"
 #include "../notificationsender.h"
 
 class Protocol; //resolve cyclic reference
@@ -22,10 +23,12 @@ private:
     //Services
     UserService user;
     ConversationService conversation;
+    DbService db;
 public:
     explicit ServiceManager(const QSharedPointer<NotificationSender> & sender, const QSharedPointer<Protocol> & protocol, const QString & applicationSalt, QObject *parent = 0);
     const UserService & getUserService() const;
     const ConversationService & getConversationService() const;
+    const DbService & getDbService() const;
     const NotificationSender & getNotificationSender() const;
     const Protocol & getProtocol() const;
     bool getSupportSize() const;
