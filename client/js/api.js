@@ -46,7 +46,8 @@ var api = {
     sid : null,
     ws : null,
     ready : false,
-    callbacks : []
+    callbacks : [],
+    errorcalback : null
 };
 api.setSid = function(sid){
     api.sid = sid;
@@ -72,13 +73,13 @@ api.getSid = function (){
     }
     return api.sid;
 };
-api.connect = function(callback){
+api.connect = function(callback, onerror){
     if(api.ws == null){
         api.ws = new WebSocket(api.wsUri);
         api.ws.onopen = function(evt){ api.ready = true; if(callback){ callback(); } };
         api.ws.onclose = function(evt){ api.ready = false; api.ws = null; };
         api.ws.onmessage = function(evt){ api.handle(evt) };
-        api.ws.onerror = function(evt){ alert('error: ' + evt.data); };
+        api.ws.onerror = function(evt){ api.onerror(evt, callback); if(onerror){ api.errorcalback = onerror; } };
     }
 };
 api.disconnect = function(){
@@ -90,16 +91,17 @@ api.disconnect = function(){
 };
 api.send = function(type, obj){
     if(!obj){ obj = {}; }
-    if(type != ApiRequest.Login){ obj.sid = api.getSid(); } //TODO: remove -> Not needed for websockets
+    //if(type != ApiRequest.Login){ obj.sid = api.getSid(); } //TODO: remove -> Not needed for websockets
     obj.t = type;
     if(api.ws != null && api.ready){
         var message = JSON.stringify(obj);
+        if(env.debug){ console.log('-> ' + message); }
         api.ws.send(message);
     }
 };
 api.handle = function(evt){
     if(evt.data){
-        if(env.debug){ console.log('message: ' + evt.data); }
+        if(env.debug){ console.log('<- ' + evt.data); }
         var obj = JSON.parse(evt.data);
         if(obj.r){
             var r = parseInt(obj.r);
@@ -113,12 +115,23 @@ api.handle = function(evt){
         }
     }
 };
+//Register api callback functions
 api.register = function(type, callback){
     if(type && callback){
         if(!(type in api.callbacks)){ api.callbacks[type] = [callback]; }
         else { api.callbacks[type].push(callback); }
     }
-}
+};
+//Handle connection errors
+api.onerror = function(evt, callback){
+    if(api.ready){
+        //Try one automatic reconnect
+        setTimeout(function(){ api.disconnect(); }, 2000);
+        setTimeout(function(){ api.connect(callback, api.errorcalback); }, 2500);
+    }
+    else if(api.errorcalback){ api.errorcalback(evt); }
+};
+//Format date and time for the chat
 api.formatTime = function(time){
     var now = new Date();
     var date = new Date(time*1000); //api delivers times in seconds
@@ -127,7 +140,7 @@ api.formatTime = function(time){
             now.getFullYear() != date.getFullYear() ?
         date.toLocaleDateString() + ' ' : '') +
         date.toLocaleTimeString();
-}
+};
 //Predefined callback handler
 api.callbacks[ApiRequest.Login] = [function(data){
     if(data.s){ api.setSid(data.sid); }

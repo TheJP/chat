@@ -186,6 +186,9 @@ $(document).ready(function() {
         }
         //Get conversations
         api.send(ApiRequest.GetConversations);
+    }, function(evt){
+        //Error handling
+        alert('Error: ' + evt);
     });
     //Visibility changes
     document.addEventListener('visibilitychange', function(){
