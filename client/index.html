@@ -9,14 +9,14 @@
         <script src="js/index.js"></script>
     </head>
     <body>
-        <section class="login">
+        <div class="login">
             <div class="content">
                 <form action="#" method="POST" id="login-form">
                 <div class="input-group">
-                    <label for="username">Username / Mail</label><input type="text" id="username" name="username" autocomplete="false" placeholder="Username" />
+                    <label for="username">Username / Mail</label><input type="text" id="username" name="username" autocomplete="off" placeholder="Username" />
                 </div>
                 <div class="input-group">
-                    <label for="password">Password</label><input type="password" id="password" name="password" autocomplete="false" placeholder="Password" />
+                    <label for="password">Password</label><input type="password" id="password" name="password" autocomplete="off" placeholder="Password" />
                 </div>
                 <div class="input-group command-group">
                     <button type="submit" id="login">Login</button>
@@ -25,7 +25,7 @@
                 </div>
                 </form>
             </div>
-        </section>
+        </div>
         <nav class="navigation">
             <div class="content">
                 <span class="brand">JP</span>
@@ -45,17 +45,17 @@
                 </div>
             </div>
         </nav>
-        <section class="content main">
+        <div class="content main">
             <div id="rooms">
                 <span class="rooms-title">Chat Rooms</span>
             </div>
             <div id="chat"></div>
             <div id="sender">
                 <form action="#" method="POST" id="sender-form">
-                    <input type="text" id="new-message" placeholder="Enter new message..." maxlength="500" autocomplete="false" /><button type="submit" id="send">Send</button>
+                    <input type="text" id="new-message" placeholder="Enter new message..." maxlength="500" autocomplete="off" /><button type="submit" id="send">Send</button>
                 </form>
             </div>
-        </section>
+        </div>
 
         <div id="grey-screen" class="hidden">&nbsp;</div>
         <!-- Register Modal -->
@@ -69,16 +69,16 @@
                 </div>
                 <form action="#" method="POST" id="register-form">
                 <div class="input-group">
-                    <label for="register-username">Username</label><input type="text" id="register-username" autocomplete="false" placeholder="Username" maxlength="24" />
+                    <label for="register-username">Username</label><input type="text" id="register-username" autocomplete="off" placeholder="Username" maxlength="24" />
                 </div>
                 <div class="input-group">
-                    <label for="register-mail">Mail</label><input type="email" id="register-mail" autocomplete="false" placeholder="Mail" maxlength="254" />
+                    <label for="register-mail">Mail</label><input type="email" id="register-mail" autocomplete="off" placeholder="Mail" maxlength="254" />
                 </div>
                 <div class="input-group">
-                    <label for="register-password">Password</label><input type="password" id="register-password" autocomplete="false" placeholder="Password" maxlength="256" />
+                    <label for="register-password">Password</label><input type="password" id="register-password" autocomplete="off" placeholder="Password" maxlength="256" />
                 </div>
                 <div class="input-group">
-                    <label for="register-password-repeat">Repeat Password</label><input type="password" id="register-password-repeat" autocomplete="false" placeholder="Repeat Password" maxlength="256" />
+                    <label for="register-password-repeat">Repeat Password</label><input type="password" id="register-password-repeat" autocomplete="off" placeholder="Repeat Password" maxlength="256" />
                 </div>
                 <div class="input-group command-group">
                     <button type="submit" id="register-submit">Register</button>
@@ -99,13 +99,13 @@
                 </div>
                 <form action="#" method="POST" id="chpw-form">
                 <div class="input-group">
-                    <label for="chpw-old-password">Old Password</label><input type="password" id="chpw-old-password" autocomplete="false" placeholder="Old Password" maxlength="256" />
+                    <label for="chpw-old-password">Old Password</label><input type="password" id="chpw-old-password" autocomplete="off" placeholder="Old Password" maxlength="256" />
                 </div>
                 <div class="input-group">
-                    <label for="chpw-password">Password</label><input type="password" id="chpw-password" autocomplete="false" placeholder="Password" maxlength="256" />
+                    <label for="chpw-password">Password</label><input type="password" id="chpw-password" autocomplete="off" placeholder="Password" maxlength="256" />
                 </div>
                 <div class="input-group">
-                    <label for="chpw-password-repeat">Repeat Password</label><input type="password" id="chpw-password-repeat" autocomplete="false" placeholder="Repeat Password" maxlength="256" />
+                    <label for="chpw-password-repeat">Repeat Password</label><input type="password" id="chpw-password-repeat" autocomplete="off" placeholder="Repeat Password" maxlength="256" />
                 </div>
                 <div class="input-group command-group">
                     <button type="submit" id="chpw-submit">Save</button>
