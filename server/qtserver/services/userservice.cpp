@@ -132,7 +132,8 @@ QSharedPointer<IChatMsg> UserService::createUser(const QString & username, const
     qDebug() << "[UserService][register] username: " << username << " email: " << email;
 
     //Validate inputs
-    int usernameLength = username.length();
+    QString usernameModified = username.trimmed();
+    int usernameLength = usernameModified.length();
     if(usernameLength < 2 || usernameLength > 24 || email.length() < 3 || password.length() < 6){
         //Should already be handled by client -> Probably someone testing out the system, who doesn't need an error message
         return manager->getProtocol().createResponse(RequestType::SendMessage, ErrorType::Custom, QStringLiteral("Invalid input"));
@@ -145,7 +146,7 @@ QSharedPointer<IChatMsg> UserService::createUser(const QString & username, const
         "WHERE username = :username OR email = :email");
     bool ok = false;
     if(!query.isNull()){
-        query->bindValue(":username", username);
+        query->bindValue(":username", usernameModified);
         query->bindValue(":email", email);
         ok = manager->getDbService().exec(query);
     }
@@ -153,7 +154,7 @@ QSharedPointer<IChatMsg> UserService::createUser(const QString & username, const
     else if(query->next()){
         qDebug() << "Duplicate username or email";
         return manager->getProtocol().createResponse(RequestType::Register, ErrorType::Custom,
-            QString::compare(username, query->value(0).toString(), Qt::CaseInsensitive) == 0 ?
+            QString::compare(usernameModified, query->value(0).toString(), Qt::CaseInsensitive) == 0 ?
             QStringLiteral("Username is already used") : QStringLiteral("Mail is already used")
         );
     }
@@ -168,7 +169,7 @@ QSharedPointer<IChatMsg> UserService::createUser(const QString & username, const
         "VALUES (:username, :email, :salt, :password);");
     ok = false;
     if(!queryCreate.isNull()){
-        queryCreate->bindValue(":username", username);
+        queryCreate->bindValue(":username", usernameModified);
         queryCreate->bindValue(":email", email);
         queryCreate->bindValue(":salt", *salt);
         queryCreate->bindValue(":password", *sha256);
