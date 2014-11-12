@@ -210,11 +210,14 @@ QSharedPointer<IChatMsg> UserService::changePassword(quint32 userId, const QStri
     }
 
     //Generate and save new Password
-    QSharedPointer<QString> newSha256 = generatePassword(newPassword, dbSalt);
-    QSharedPointer<QSqlQuery> updateQuery = manager->getDbService().prepare("UPDATE user SET `password` = :newpassword;");
+    QSharedPointer<QString> salt = this->generateString(USERSERVICE_SALT_LENGTH);
+    QSharedPointer<QString> newSha256 = generatePassword(newPassword, *salt);
+    QSharedPointer<QSqlQuery> updateQuery = manager->getDbService().prepare("UPDATE user SET `password` = :newpassword, `salt` = :newsalt WHERE `id` = :userid;");
     ok = false;
     if(!updateQuery.isNull()){
         updateQuery->bindValue(":newpassword", *newSha256);
+        updateQuery->bindValue(":newsalt", *salt);
+        updateQuery->bindValue(":userid", userId);
         ok = manager->getDbService().exec(updateQuery);
     }
     if(!ok){ return manager->getProtocol().createResponse(RequestType::ChangePassword, ErrorType::Internal, QStringLiteral("")); }
