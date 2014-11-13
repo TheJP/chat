@@ -74,6 +74,10 @@ function setErrorVisible(visible){
 //Change Profile Modal
 var profileVisible = false;
 function setProfileVisible(visible){
+    //Only allow editing, current profile was loaded
+    $('#profile-status').prop('disabled', true);
+    $('#profile-description').prop('disabled', true);
+    //Show / Hide Modal
     setModalVisible($('#profile-box'), $('#profile-status'), visible);
     if(visible){  hideIgnores.profileModal = true; }
     profileVisible = visible;
@@ -408,6 +412,8 @@ $(document).ready(function() {
     });
     //Change Profile
     $('#profile').click(function(){
+        if(user.id == 0){ return false; }
+        api.send(ApiRequest.GetUser, { userid: user.id });
         setUserMenuVisible(false);
         setProfileVisible(true);
     });
@@ -416,6 +422,31 @@ $(document).ready(function() {
     $('#profile-modal').click(function(){
         hideIgnores.profileModal = true;
         hideIgnores.greyScreen = true;
+    });
+    $('#profile-form').submit(function(){
+        api.send(ApiRequest.ChangeProfile, {
+            status: $('#profile-status').val(),
+            description: $('#profile-description').val(),
+        });
+        return false; //Prevent native submit
+    });
+    //Change Progile (callbacks)
+    api.register(ApiRequest.GetUser, function(data){
+        if(data.s && data.userid == user.id){
+            $('#profile-status').val(data.status);
+            $('#profile-description').val(data.description);
+            $('#profile-status').prop('disabled', false);
+            $('#profile-description').prop('disabled', false);
+            if(profileVisible){ $('#profile-status').focus(); }
+        }
+    });
+    api.register(ApiRequest.ChangeProfile, function(data){
+        if(data.s){
+            alert('Profile was successfully changed');
+            setProfileVisible(false);
+        } else {
+            alert(data.error);
+        }
     });
 });
 $(window).on('beforeunload', function(){
