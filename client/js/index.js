@@ -7,9 +7,10 @@ var user = {
 };
 var hideIgnores = {
     userMenu : false,
-    grayScreen : false,
+    greyScreen : false,
     registerModal : false,
-    chpwModal : false
+    chpwModal : false,
+    profileModal : false
 };
 //Rooms and cached messages
 var rooms = [
@@ -70,13 +71,21 @@ function setErrorVisible(visible){
     hideAll();
 }
 
-//Gray screen (used for modals)
+//Change Profile Modal
+var profileVisible = false;
+function setProfileVisible(visible){
+    setModalVisible($('#profile-box'), $('#profile-status'), visible);
+    if(visible){  hideIgnores.profileModal = true; }
+    profileVisible = visible;
+}
+
+//Grey screen (used for modals)
 var greyScreenVisible = false;
 function setGreyScreenVisible(visible){
-    if(hideIgnores.grayScreen){ return; }
+    if(hideIgnores.greyScreen){ return; }
     $('#grey-screen').stop();
     if(visible){
-        hideIgnores.grayScreen = true;
+        hideIgnores.greyScreen = true;
         if(!greyScreenVisible){ $('#grey-screen').css('opacity', 0); }
         $('#grey-screen').removeClass('hidden');
         $('#grey-screen').animate({ opacity: 0.6 }, 400);
@@ -175,8 +184,8 @@ function chpwValid(){
 
 //Hide optional content
 function hideAll() {
-    //Keep gray screen visible, if error message is visible
-    if(errorVisible){ hideIgnores.grayScreen = true; }
+    //Keep grey screen visible, if error message is visible
+    if(errorVisible){ hideIgnores.greyScreen = true; }
     //Hide user menu
     if(!hideIgnores.userMenu){ setUserMenuVisible(false); }
     hideIgnores.userMenu = false;
@@ -185,10 +194,17 @@ function hideAll() {
     hideIgnores.registerModal = false;
     if(!hideIgnores.chpwModal){ setChpwVisible(false); }
     hideIgnores.chpwModal = false;
-    hideIgnores.grayScreen = false;
+    if(!hideIgnores.profileModal){ setProfileVisible(false); }
+    hideIgnores.profileModal = false;
+    hideIgnores.greyScreen = false;
 }
 
 $(document).ready(function() {
+
+    /*******************/
+    /** General Setup **/
+    /*******************/
+
     //Register hide all listener
     $('html').click(function() { hideAll(); });
     //Open connection
@@ -205,6 +221,12 @@ $(document).ready(function() {
         //Error handling
         setErrorVisible(true);
     });
+    //Error Modal
+    $('#error-submit').click(function(){
+        $('#error-modal-load').removeClass('hidden');
+        openRoom = 0; //Reopen room if reconnect successful
+        api.reconnect();
+    });
     //Visibility changes
     document.addEventListener('visibilitychange', function(){
         //Clear notify blinker if active
@@ -214,6 +236,11 @@ $(document).ready(function() {
             document.title = 'Chat';
         }
     }, false);
+
+    /*************************/
+    /** Custom Api Handling **/
+    /*************************/
+
     //Continue Session (Handle Server Response)
     api.register(ApiRequest.ContinueSession, function(data){
         if(data.s){
@@ -321,7 +348,7 @@ $(document).ready(function() {
     });
     $('#register-modal').click(function(){
         hideIgnores.registerModal = true;
-        hideIgnores.grayScreen = true;
+        hideIgnores.greyScreen = true;
     });
     $('#register-modal-close').click(function(){ setRegisterVisible(false); });
     $('#register-cancel').click(function(){ setRegisterVisible(false); });
@@ -356,7 +383,7 @@ $(document).ready(function() {
     $('#chpw-cancel').click(function(){ setChpwVisible(false); });
     $('#chpw-modal').click(function(){
         hideIgnores.chpwModal = true;
-        hideIgnores.grayScreen = true;
+        hideIgnores.greyScreen = true;
     });
     $('#chpw-form').submit(function(){
         if(chpwValid()){
@@ -379,11 +406,16 @@ $(document).ready(function() {
             alert(data.error_text);
         }
     });
-    //Error Modal
-    $('#error-submit').click(function(){
-        $('#error-modal-load').removeClass('hidden');
-        openRoom = 0; //Reopen room if reconnect successful
-        api.reconnect();
+    //Change Profile
+    $('#profile').click(function(){
+        setUserMenuVisible(false);
+        setProfileVisible(true);
+    });
+    $('#profile-modal-close').click(function(){ setProfileVisible(false); });
+    $('#profile-cancel').click(function(){ setProfileVisible(false); });
+    $('#profile-modal').click(function(){
+        hideIgnores.profileModal = true;
+        hideIgnores.greyScreen = true;
     });
 });
 $(window).on('beforeunload', function(){

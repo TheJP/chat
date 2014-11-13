@@ -9,6 +9,7 @@ var ApiRequest = {
     ChangePassword : 14,
     ChangeProfile : 15,
     ContinueSession : 16,
+    GetUser: 17,
 
     //Chat Operations
     SendMessage : 31,

@@ -16,6 +16,7 @@
  *   08.02 Change Password
  *   08.03 Error
  *   08.04 Alert
+ *   08.05 Change Profile
  *
  */
 
@@ -72,21 +73,38 @@ a:hover, a:focus, a.active {
     color: #2C5700;
     font-size: 18px;
 }
-.input-group label{
+.input-area {
+    height: 100px;
+}
+.input-group label {
     display: inline-block;
     height: 100%;
     text-align: right;
     margin-right: 15px;
     vertical-align: middle;
 }
-.input-group input{
-    display: inline-block;
-    border-radius: 5px;
+.input-area label {
+    vertical-align: top;
+}
+.input-group input {
     height: 20px;
     padding: 3px 10px;
-    border: 1px solid #2C5700;
 }
-.input-group input:focus{
+.input-group textarea {
+    resize: none;
+    height: 86px;
+    padding: 5px 10px;
+}
+.input-group input,
+.input-group textarea {
+    display: inline-block;
+    border-radius: 5px;
+    border: 1px solid #2C5700;
+    font-family: inherit;
+    font-size: 14px;
+}
+.input-group input:focus,
+.input-group textarea:focus {
     border: 1px solid #50a200;
 }
 .input-group button {
@@ -178,10 +196,10 @@ a:hover, a:focus, a.active {
     right: 0;
     top: -140px;
 }
-.login .input-group label{
+.login .input-group label {
     width: 150px;
 }
-.login .input-group input{
+.login .input-group input {
     width: 200px;
 }
 .login .command-group {
@@ -426,7 +444,8 @@ a.room:focus {
 .modal .input-group label {
     width: 170px;
 }
-.modal .input-group input {
+.modal .input-group input,
+.modal .input-group textarea {
     width: 230px;
 }
 .modal p {
@@ -468,4 +487,8 @@ a.room:focus {
 /** 08.04 Alert **/
 #alert-box {
     top: -250px; /* visible: 110px; */
+}
+/** 08.05 Change Profile **/
+#profile-box {
+    top: -250px;
 }

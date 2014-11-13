@@ -39,7 +39,7 @@
         <nav class="second-navigation hidden">
             <div class="content">
                 <div class="down-menu pull-right" id="user-menu">
-                    <a href="#">Profile</a>
+                    <a href="#" id="profile">Profile</a>
                     <a href="#" id="chpw">Change Password</a>
                     <a href="#" id="logout">Logout</a>
                 </div>
@@ -129,6 +129,30 @@
                 </div>
                 <div class="input-group command-group">
                     <button type="button" id="error-submit">Reconnect</button>
+                </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Profile Modal -->
+        <div id="profile-box" class="box hidden">
+            <div id="profile-modal" class="modal">
+                <div class="modal-header">
+                    <span class="title">Change Profile</span>
+                    <span class="pull-right">
+                        <a href="#" id="profile-modal-close" class="modal-close">&times;</a>
+                    </span>
+                </div>
+                <form action="#" method="POST" id="profile-form">
+                <div class="input-group">
+                    <label for="profile-status">Status</label><input type="text" id="profile-status" autocomplete="off" placeholder="Status" maxlength="256" />
+                </div>
+                <div class="input-group input-area">
+                    <label for="profile-description">Description</label><textarea id="profile-description" autocomplete="off" placeholder="Description" maxlength="256"></textarea>
+                </div>
+                <div class="input-group command-group">
+                    <button type="submit" id="profile-submit">Save</button>
+                    <button type="button" id="profile-cancel">Cancel</button>
                 </div>
                 </form>
             </div>

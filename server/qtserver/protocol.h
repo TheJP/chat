@@ -19,6 +19,7 @@ enum class RequestType {
     ChangePassword = 14,
     ChangeProfile = 15,
     ContinueSession = 16, //Same as login, but sends sid to connect the client to the specified session
+    GetUser = 17, //Gets the profile information for a pecified user (identified with his id)
 
     //Chat Operations
     SendMessage = 31,
