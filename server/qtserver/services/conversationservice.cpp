@@ -25,7 +25,7 @@ QSharedPointer<IChatMsg> ConversationService::getPublicConversations() const {
     //* Potential performance improvement: */ int rows = ok ? (manager->getSupportSize() ? query->size() : 0) : -1; //Initial vector size
     int rows = 0;
     if(!ok || rows < 0){ return manager->getProtocol().createResponse(RequestType::GetConversations, ErrorType::Internal, QStringLiteral("")); }
-    ConversationsVector conversations(new QVector<IStreamable*>(rows));
+    StreamableVector conversations(new QVector<IStreamable*>(rows));
     while(query->next()){
         conversations->push_back(new Conversation());
         Conversation * con = static_cast<Conversation*>(conversations->last());
@@ -36,7 +36,7 @@ QSharedPointer<IChatMsg> ConversationService::getPublicConversations() const {
         con->root = query->value(4).toBool();
         con->parent_id = query->value(5).toInt();
     }
-    return manager->getProtocol().createResponseConversations(RequestType::GetConversations, true, conversations);
+    return manager->getProtocol().createResponseStreamables(RequestType::GetConversations, true, QSharedPointer<QString>(new QString("conversations")), conversations);
 }
 
 QSharedPointer<IChatMsg> ConversationService::getOwnedConversations() const {
@@ -60,7 +60,7 @@ QSharedPointer<IChatMsg> ConversationService::openConversation(quint32 conversat
         ok = manager->getDbService().exec(query);
     }
     if(!ok){ return manager->getProtocol().createResponse(RequestType::OpenConversation, ErrorType::Internal, QStringLiteral("")); }
-    MessagesVector messages(new QVector<IStreamable*>()); //Potential performance improvement: predefine row count
+    StreamableVector messages(new QVector<IStreamable*>()); //Potential performance improvement: predefine row count
     while(query->next()){
         messages->push_back(new Message());
         Message * msg = static_cast<Message*>(messages->last());
@@ -81,7 +81,7 @@ QSharedPointer<IChatMsg> ConversationService::sendMessage(quint32 conversationId
     if(userId <= 0){ return manager->getProtocol().createResponse(RequestType::SendMessage, ErrorType::Custom, QStringLiteral("You have to login, before sending messages")); }
 
     //Create new message
-    MessagesVector messages(new QVector<IStreamable*>());
+    StreamableVector messages(new QVector<IStreamable*>());
     messages->push_back(new Message());
     Message * msg = static_cast<Message*>(messages->last());
     msg->message = message;

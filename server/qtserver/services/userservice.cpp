@@ -1,6 +1,7 @@
 #include "userservice.h"
 #include "servicemanager.h"
 #include "../protocol.h"
+#include "../streamable/user.h"
 
 //TODO: remove
 #include <QDebug>
@@ -224,4 +225,28 @@ QSharedPointer<IChatMsg> UserService::changePassword(quint32 userId, const QStri
     if(!ok){ return manager->getProtocol().createResponse(RequestType::ChangePassword, ErrorType::Internal, QStringLiteral("")); }
 
     return manager->getProtocol().createResponse(RequestType::ChangePassword, true);
+}
+
+QSharedPointer<IChatMsg> UserService::getUserProfile(quint32 userId) const {
+    qDebug() << "[UserService][getUserProfile] from: " << userId;
+
+    //Read Profile Data
+    QSharedPointer<QSqlQuery> query = manager->getDbService().prepare("SELECT username, status, description FROM user WHERE id = :userid;");
+    bool ok = false;
+    if(!query.isNull()){
+        query->bindValue(":userid", userId);
+        ok = manager->getDbService().exec(query);
+    }
+    if(!ok){ return manager->getProtocol().createResponse(RequestType::GetUser, ErrorType::Internal, QStringLiteral("")); }
+    else if(!query->next()){ return manager->getProtocol().createResponse(RequestType::GetUser, ErrorType::Custom, QStringLiteral("User does not exist")); }
+    else {
+        StreamableVector users(new QVector<IStreamable*>(0));
+        users->push_back(new User());
+        User * user = static_cast<User*>(users->last());
+        user->id = userId;
+        user->username = QSharedPointer<QString>(new QString(query->value(0).toString()));
+        user->status = QSharedPointer<QString>(new QString(query->value(1).toString()));
+        user->description = QSharedPointer<QString>(new QString(query->value(2).toString()));
+        return manager->getProtocol().createResponseStreamables(RequestType::GetUser, true, QSharedPointer<QString>(new QString("users")), users);
+    }
 }

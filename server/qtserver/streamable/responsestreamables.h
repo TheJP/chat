@@ -10,20 +10,17 @@
 #include "../istreamable.h"
 #include "../services/servicemanager.h"
 
-class ResponseConversations final : public Response
+class ResponseStreamables final : public Response
 {
     Q_OBJECT
 private:
-    ConversationsVector conversations;
+    QSharedPointer<QString> type;
+    StreamableVector streamables;
 public:
-    explicit ResponseConversations(const ConversationsVector & conversations, RequestType request, bool success, QObject *parent = 0);
-    ~ResponseConversations();
+    explicit ResponseStreamables(const StreamableVector & streamables, const QSharedPointer<QString> & type, RequestType request, bool success, QObject *parent = 0);
+    ~ResponseStreamables();
     void read(IKeyValueReader & stream) override;
     void write(IKeyValueWriter & stream) override;
-signals:
-
-public slots:
-
 };
 
 #endif // RESPONSECONVERSATIONS_H

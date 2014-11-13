@@ -30,6 +30,7 @@ public:
     QSharedPointer<IChatMsg> continueSession(const QString & sid) const;
     QSharedPointer<IChatMsg> createUser(const QString & username, const QString & email, const QString & password) const;
     QSharedPointer<IChatMsg> changePassword(quint32 userId, const QString & oldPassword, const QString & newPassword) const;
+    QSharedPointer<IChatMsg> getUserProfile(quint32 userId) const;
 signals:
 
 public slots:

@@ -7,7 +7,8 @@ HEADERS += \
     $$PWD/openconversation.h \
     $$PWD/sendmessage.h \
     $$PWD/register.h \
-    $$PWD/changepassword.h
+    $$PWD/changepassword.h \
+    $$PWD/getuser.h
 
 SOURCES += \
     msgs/login.cpp \
@@ -18,4 +19,5 @@ SOURCES += \
     $$PWD/openconversation.cpp \
     $$PWD/sendmessage.cpp \
     $$PWD/register.cpp \
-    $$PWD/changepassword.cpp
+    $$PWD/changepassword.cpp \
+    $$PWD/getuser.cpp

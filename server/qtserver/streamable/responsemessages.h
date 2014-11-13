@@ -17,9 +17,9 @@ private:
     //Optional: Can be set, if every messages belongs to the same conversation
     //It will always be deliverd: The default (=optional) value is 0
     quint32 conversationId;
-    MessagesVector messages;
+    StreamableVector messages;
 public:
-    explicit ResponseMessages(const MessagesVector & messages, quint32 conversationId, RequestType request, bool success, QObject *parent = 0);
+    explicit ResponseMessages(const StreamableVector & messages, quint32 conversationId, RequestType request, bool success, QObject *parent = 0);
     ~ResponseMessages();
     void read(IKeyValueReader & stream) override;
     void write(IKeyValueWriter & stream) override;

@@ -432,9 +432,9 @@ $(document).ready(function() {
     });
     //Change Progile (callbacks)
     api.register(ApiRequest.GetUser, function(data){
-        if(data.s && data.userid == user.id){
-            $('#profile-status').val(data.status);
-            $('#profile-description').val(data.description);
+        if(data.s && data.users[0].id == user.id){
+            $('#profile-status').val(data.users[0].status);
+            $('#profile-description').val(data.users[0].description);
             $('#profile-status').prop('disabled', false);
             $('#profile-description').prop('disabled', false);
             if(profileVisible){ $('#profile-status').focus(); }

@@ -1,6 +1,6 @@
 #include "responsemessages.h"
 
-ResponseMessages::ResponseMessages(const MessagesVector & messages, quint32 conversationId, RequestType request, bool success, QObject *parent) :
+ResponseMessages::ResponseMessages(const StreamableVector & messages, quint32 conversationId, RequestType request, bool success, QObject *parent) :
     messages(messages), conversationId(conversationId), Response(request, success, parent)
 {
 }
