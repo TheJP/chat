@@ -65,7 +65,9 @@ function setChpwVisible(visible){
 var errorVisible = false;
 function setErrorVisible(visible){
     setModalVisible($('#error-box'), $('#error-modal'), visible);
+    if(visible){ $('#error-modal-load').addClass('hidden'); }
     errorVisible = visible;
+    hideAll();
 }
 
 //Gray screen (used for modals)
@@ -197,6 +199,8 @@ $(document).ready(function() {
         }
         //Get conversations
         api.send(ApiRequest.GetConversations);
+        //Error handling (hide if visible)
+        setErrorVisible(false);
     }, function(evt){
         //Error handling
         setErrorVisible(true);

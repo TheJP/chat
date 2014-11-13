@@ -455,9 +455,15 @@ a.room:focus {
 }
 #error-box #error-modal-load {
     float: left;
-    margin-top: 3px;
-    margin-bottom: 0;
+    margin: 3px 20px 0 20px;
     height: 27px;
+}
+#error-box #error-modal-load img {
+    float: left;
+}
+#error-box #error-modal-load p {
+    float: left;
+    margin: 0 15px;
 }
 /** 08.04 Alert **/
 #alert-box {
