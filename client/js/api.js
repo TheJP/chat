@@ -47,6 +47,7 @@ var api = {
     ws : null,
     ready : false,
     callbacks : [],
+    successcalback : null,
     errorcalback : null
 };
 api.setSid = function(sid){
@@ -74,12 +75,14 @@ api.getSid = function (){
     return api.sid;
 };
 api.connect = function(callback, onerror){
+    if(onerror){ api.errorcalback = onerror; }
+    if(callback){ api.successcalback = callback; }
     if(api.ws == null){
         api.ws = new WebSocket(api.wsUri);
         api.ws.onopen = function(evt){ api.ready = true; if(callback){ callback(); } };
         api.ws.onclose = function(evt){ api.ready = false; api.ws = null; };
         api.ws.onmessage = function(evt){ api.handle(evt) };
-        api.ws.onerror = function(evt){ api.onerror(evt, callback); if(onerror){ api.errorcalback = onerror; } };
+        api.ws.onerror = function(evt){ api.onerror(evt); };
     }
 };
 api.disconnect = function(){
@@ -89,6 +92,11 @@ api.disconnect = function(){
         api.ws = null;
     }
 };
+//Reconnect to the server (using original connecting callbacks)
+api.reconnect = function(){
+    api.disconnect();
+    setTimeout(function(){ api.connect(api.successcalback, api.errorcalback); }, 100);
+}
 api.send = function(type, obj){
     if(!obj){ obj = {}; }
     //if(type != ApiRequest.Login){ obj.sid = api.getSid(); } //TODO: remove -> Not needed for websockets
@@ -123,11 +131,11 @@ api.register = function(type, callback){
     }
 };
 //Handle connection errors
-api.onerror = function(evt, callback){
+api.onerror = function(evt){
     if(api.ready){
         //Try one automatic reconnect
         setTimeout(function(){ api.disconnect(); }, 2000);
-        setTimeout(function(){ api.connect(callback, api.errorcalback); }, 2500);
+        setTimeout(function(){ api.connect(api.successcalback, api.errorcalback); }, 2500);
     }
     else if(api.errorcalback){ api.errorcalback(evt); }
 };

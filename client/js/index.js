@@ -61,6 +61,13 @@ function setChpwVisible(visible){
     chpwVisible = visible;
 }
 
+//Error Modal
+var errorVisible = false;
+function setErrorVisible(visible){
+    setModalVisible($('#error-box'), $('#error-modal'), visible);
+    errorVisible = visible;
+}
+
 //Gray screen (used for modals)
 var greyScreenVisible = false;
 function setGreyScreenVisible(visible){
@@ -166,8 +173,12 @@ function chpwValid(){
 
 //Hide optional content
 function hideAll() {
+    //Keep gray screen visible, if error message is visible
+    if(errorVisible){ hideIgnores.grayScreen = true; }
+    //Hide user menu
     if(!hideIgnores.userMenu){ setUserMenuVisible(false); }
     hideIgnores.userMenu = false;
+    //Hide modals
     if(!hideIgnores.registerModal){ setRegisterVisible(false); }
     hideIgnores.registerModal = false;
     if(!hideIgnores.chpwModal){ setChpwVisible(false); }
@@ -188,7 +199,7 @@ $(document).ready(function() {
         api.send(ApiRequest.GetConversations);
     }, function(evt){
         //Error handling
-        alert('Error: ' + evt);
+        setErrorVisible(true);
     });
     //Visibility changes
     document.addEventListener('visibilitychange', function(){
@@ -223,7 +234,7 @@ $(document).ready(function() {
     $('#toggle-login').click(function(){ setLoginVisible(!loginVisible); });
     $('#cancel-login').click(function(){ setLoginVisible(false); });
     $('#login-form').submit(function(){
-        api.send(ApiRequest.Login, {username : $('#username').val(), password : $('#password').val()});
+        api.send(ApiRequest.Login, {username : $('#username').val().trim(), password : $('#password').val()});
         return false; //Prevent native submit
     });
     api.register(ApiRequest.Login, function(data){
@@ -314,8 +325,8 @@ $(document).ready(function() {
         if(registerValid()){
             //Valid: Register
             api.send(ApiRequest.Register, {
-                username: $('#register-username').val(),
-                email: $('#register-mail').val(),
+                username: $('#register-username').val().trim(),
+                email: $('#register-mail').val().trim(),
                 password: $('#register-password').val()
             });
         }
@@ -363,6 +374,12 @@ $(document).ready(function() {
         } else {
             alert(data.error_text);
         }
+    });
+    //Error Modal
+    $('#error-submit').click(function(){
+        $('#error-modal-load').removeClass('hidden');
+        openRoom = 0; //Reopen room if reconnect successful
+        api.reconnect();
     });
 });
 $(window).on('beforeunload', function(){

@@ -14,6 +14,8 @@
  * 08. Modal
  *   08.01 Register
  *   08.02 Change Password
+ *   08.03 Error
+ *   08.04 Alert
  *
  */
 
@@ -97,12 +99,10 @@ a:hover, a:focus, a.active {
     background-color: #408000;
     cursor: pointer;
 }
-.input-group button:focus {
+.input-group button:focus,
+.input-group button:hover {
     background-color: #50a200;
     background: linear-gradient(to bottom, #50a200 15%, #50a200 30%, #408000 100%);
-}
-.input-group button:hover {
-    background: linear-gradient(to bottom, #333 0%, #333 15%, #50a200 15%, #50a200 30%, #408000 100%);
 }
 .input-group button:active {
     background: linear-gradient(to bottom, #333 0%, #333 15%, #408000 15%, #408000 30%, #50a200 100%);
@@ -406,6 +406,7 @@ a.room:focus {
     margin-left: auto;
     margin-right: auto;
     border-radius: 8px 8px 5px 5px;
+    color: #2C5700;
 }
 .modal-header {
     color: #AFD775;
@@ -428,6 +429,11 @@ a.room:focus {
 .modal .input-group input {
     width: 230px;
 }
+.modal p {
+    font-size: 18px;
+    margin-left: 20px;
+    margin-right: 20px;
+}
 .modal .command-group {
     margin-left: 186px; /* 170px (label width) + 15px (margin) + 1px (input border) */
     width: 250px; /* 230px (input width) + 20px (padding) */
@@ -441,5 +447,19 @@ a.room:focus {
 }
 /** 08.02 Change Password **/
 #chpw-box {
+    top: -250px; /* visible: 110px; */
+}
+/** 08.03 Error **/
+#error-box {
+    top: -250px; /* visible: 110px; */
+}
+#error-box #error-modal-load {
+    float: left;
+    margin-top: 3px;
+    margin-bottom: 0;
+    height: 27px;
+}
+/** 08.04 Alert **/
+#alert-box {
     top: -250px; /* visible: 110px; */
 }

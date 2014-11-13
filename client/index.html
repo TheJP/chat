@@ -58,6 +58,7 @@
         </div>
 
         <div id="grey-screen" class="hidden">&nbsp;</div>
+
         <!-- Register Modal -->
         <div id="register-box" class="box hidden">
             <div id="register-modal" class="modal">
@@ -82,7 +83,7 @@
                 </div>
                 <div class="input-group command-group">
                     <button type="submit" id="register-submit">Register</button>
-                    <button type="button" id="register-cancel">Cancel</button><br />
+                    <button type="button" id="register-cancel">Cancel</button>
                 </div>
                 </form>
             </div>
@@ -109,10 +110,26 @@
                 </div>
                 <div class="input-group command-group">
                     <button type="submit" id="chpw-submit">Save</button>
-                    <button type="button" id="chpw-cancel">Cancel</button><br />
+                    <button type="button" id="chpw-cancel">Cancel</button>
                 </div>
                 </form>
             </div>
         </div>
+
+        <!-- Error Modal -->
+        <div id="error-box" class="box hidden">
+            <div id="error-modal" class="modal">
+                <div class="modal-header">
+                    <span class="title">Error</span>
+                </div>
+                <p id="error-modal-text">Lost connection to the server. The server might be down for maintenance. Please check if you are still connected to the internet.</p>
+                <p id="error-modal-load" class="hidden">Loading...</p>
+                <div class="input-group command-group">
+                    <button type="button" id="error-submit">Reconnect</button>
+                </div>
+                </form>
+            </div>
+        </div>
+
     </body>
 </html>
