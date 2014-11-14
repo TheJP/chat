@@ -166,7 +166,7 @@ QSharedPointer<IChatMsg> UserService::createUser(const QString & username, const
 
     //Create user
     QSharedPointer<QSqlQuery> queryCreate = manager->getDbService().prepare(
-        "INSERT INTO user (`username`, `email`, `salt`, `password`) "
+        "INSERT INTO user (username, email, salt, password) "
         "VALUES (:username, :email, :salt, :password);");
     ok = false;
     if(!queryCreate.isNull()){
@@ -249,4 +249,19 @@ QSharedPointer<IChatMsg> UserService::getUserProfile(quint32 userId) const {
         user->description = QSharedPointer<QString>(new QString(query->value(2).toString()));
         return manager->getProtocol().createResponseStreamables(RequestType::GetUser, true, QSharedPointer<QString>(new QString("users")), users);
     }
+}
+
+QSharedPointer<IChatMsg> UserService::changeProfile(quint32 userId, const QString & status, const QString & description) const {
+    qDebug() << "[UserService][changeProfile] u: " << userId << " status: " << status << " description " << description;
+
+    QSharedPointer<QSqlQuery> query = manager->getDbService().prepare("UPDATE user SET status = :newstatus, description = :newdesc WHERE id = :userid");
+    bool ok = false;
+    if(!query.isNull()){
+        query->bindValue(":newstatus", status);
+        query->bindValue(":newdesc", description);
+        query->bindValue(":userid", userId);
+        ok = manager->getDbService().exec(query);
+    }
+    if(!ok){ return manager->getProtocol().createResponse(RequestType::ChangeProfile, ErrorType::Internal, QStringLiteral("")); }
+    else { return manager->getProtocol().createResponse(RequestType::ChangeProfile, true); }
 }

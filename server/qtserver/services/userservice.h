@@ -31,6 +31,7 @@ public:
     QSharedPointer<IChatMsg> createUser(const QString & username, const QString & email, const QString & password) const;
     QSharedPointer<IChatMsg> changePassword(quint32 userId, const QString & oldPassword, const QString & newPassword) const;
     QSharedPointer<IChatMsg> getUserProfile(quint32 userId) const;
+    QSharedPointer<IChatMsg> changeProfile(quint32 userId, const QString & status, const QString & description) const;
 signals:
 
 public slots:

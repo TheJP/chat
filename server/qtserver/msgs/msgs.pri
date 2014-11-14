@@ -8,7 +8,8 @@ HEADERS += \
     $$PWD/sendmessage.h \
     $$PWD/register.h \
     $$PWD/changepassword.h \
-    $$PWD/getuser.h
+    $$PWD/getuser.h \
+    $$PWD/changeprofile.h
 
 SOURCES += \
     msgs/login.cpp \
@@ -20,4 +21,5 @@ SOURCES += \
     $$PWD/sendmessage.cpp \
     $$PWD/register.cpp \
     $$PWD/changepassword.cpp \
-    $$PWD/getuser.cpp
+    $$PWD/getuser.cpp \
+    $$PWD/changeprofile.cpp
