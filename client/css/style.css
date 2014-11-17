@@ -333,6 +333,14 @@ a.room:focus {
     float:left;
     font-size: 16px;
 }
+.person {
+    color: #f9f9f9;
+}
+.person:hover,
+.person:focus {
+    color: #f9f9f9;
+    text-decoration: underline;
+}
 .message .time {
     display: block;
     float: right;
@@ -491,4 +499,13 @@ a.room:focus {
 /** 08.05 Change Profile **/
 #profile-box {
     top: -250px;
+}
+
+
+#tooltip-profile {
+    background-color: green;
+    width: 200px;
+    height: 200px;
+    position: absolute;
+    z-index: 1060;
 }

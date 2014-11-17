@@ -127,11 +127,16 @@ function receiveMessages(msgs){
         if(msg.c == openRoom){
             newmsg = true;
             var message = $('<div />', { id: 'message-' + msg.id, class: 'message' });
-            message.append($('<span />').addClass('person').text(msg.username));
+            message.append($('<a />',
+                { id: 'person-' + msg.id, class: 'person', href: '#'}).text(msg.username));
             message.append($('<span />').addClass('time').text(api.formatTime(msg.time)));
             message.append($('<span />').addClass('message-content').text(msg.msg));
             message.addClass(user.id == msg.userid ? 'own' : 'their');
             $('#chat').append(message);
+            $('#person-' + msg.id).click(function(){
+                var pos = this.getBoundingClientRect();
+                $('#tooltip-profile').css({ top: pos.bottom, left: pos.left });
+            });
             //Scroll to bottom
             //TODO: disable, if user scrolled manually
             //Animation seems to bug out: $('#chat').animate({ scrollTop: $('#chat').prop("scrollHeight") }, 1000);
@@ -448,6 +453,7 @@ $(document).ready(function() {
             alert(data.error);
         }
     });
+    //Show profile
 });
 $(window).on('beforeunload', function(){
     api.disconnect(); //Not needed but good practice
