@@ -116,13 +116,14 @@ function setUserMenuVisible(visible){
     userMenuVisible = visible;
 }
 
+//Profile ToolTip
 var profileTipVisible = false;
 function setProfileTipVisible(visible){
+    $('#profile-tooltip').stop();
     if(visible){
-        $('#profile-tooltip').slideDown();
-        hideIgnores.profileTip = true;
+        $('#profile-tooltip').fadeIn(400);
     } else {
-        $('#profile-tooltip').slideUp();
+        $('#profile-tooltip').fadeOut(400);
     }
     profileTipVisible = visible;
 }
@@ -145,11 +146,12 @@ function receiveMessages(msgs){
             message.append($('<span />').addClass('message-content').text(msg.msg));
             message.addClass(user.id == msg.userid ? 'own' : 'their');
             $('#chat').append(message);
-            $('#person-' + msg.id).click(function(){
+            $('#person-' + msg.id).click(function(id){ return function(){
+                setProfileTipVisible(false);
                 var pos = this.getBoundingClientRect();
                 $('#profile-tooltip').css({ top: pos.bottom, left: pos.left });
-                setProfileTipVisible(true);
-            });
+                api.send(ApiRequest.GetUser, { userid: id });
+            } }(msg.userid));
             //Scroll to bottom
             //TODO: disable, if user scrolled manually
             //Animation seems to bug out: $('#chat').animate({ scrollTop: $('#chat').prop("scrollHeight") }, 1000);
@@ -471,10 +473,24 @@ $(document).ready(function() {
         }
     });
     //Profile Tooltip
+    api.register(ApiRequest.GetUser, function(data){
+        if(data.s && !profileVisible){
+            $('#profile-tooltip-name').text(data.users[0].username);
+            $('#profile-tooltip-status').text(!data.users[0].status ? 'No Status' : data.users[0].status);
+            $('#profile-tooltip-description').text(!data.users[0].description ? 'No Description' : data.users[0].description);
+            //Add line breaks
+            $('#profile-tooltip-description').html(
+                $('#profile-tooltip-description').html().replace(/\n/g, '<br />'));
+            setProfileTipVisible(true);
+        }
+    });
     $('#profile-tooltip').click(function(){
         hideIgnores.profileTip = true;
     });
     $('#profile-tooltip-close').click(function(){
+        setProfileTipVisible(false);
+    });
+    $('#chat').scroll(function(){
         setProfileTipVisible(false);
     });
 });

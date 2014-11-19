@@ -519,9 +519,10 @@ a.room:focus {
     display: none; /* Will be removed by the animation */
 }
 .tooltip-content {
-    padding: 10px 20px 20px 20px;
+    min-width: 200px;
+    padding: 10px 20px 0 20px;
     overflow: hidden;
-    max-height: 334px; /* 400px tooltip - 36px header - 30px padding */
+    max-height: 354px; /* 400px tooltip - 36px header - 10px padding */
 }
 .tooltip-content p {
     margin-top: 0;
@@ -544,5 +545,7 @@ a.room:focus {
 }
 /** 09.01 Profile **/
 #tooltip-profile {
-
+}
+#profile-tooltip-description {
+    margin-bottom: 0;
 }

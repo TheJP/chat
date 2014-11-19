@@ -254,6 +254,12 @@ QSharedPointer<IChatMsg> UserService::getUserProfile(quint32 userId) const {
 QSharedPointer<IChatMsg> UserService::changeProfile(quint32 userId, const QString & status, const QString & description) const {
     qDebug() << "[UserService][changeProfile] u: " << userId << " status: " << status << " description " << description;
 
+    //Validate inputs
+    if(status.length() > 256 || description.length() > 256){
+        //Should already be handled by client -> Probably someone testing out the system, who doesn't need an error message
+        return manager->getProtocol().createResponse(RequestType::ChangeProfile, ErrorType::Custom, QStringLiteral("Invalid input"));
+    }
+
     QSharedPointer<QSqlQuery> query = manager->getDbService().prepare("UPDATE user SET status = :newstatus, description = :newdesc WHERE id = :userid");
     bool ok = false;
     if(!query.isNull()){
