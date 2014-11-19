@@ -10,7 +10,8 @@ var hideIgnores = {
     greyScreen : false,
     registerModal : false,
     chpwModal : false,
-    profileModal : false
+    profileModal : false,
+    profileTip : false
 };
 //Rooms and cached messages
 var rooms = [
@@ -115,6 +116,17 @@ function setUserMenuVisible(visible){
     userMenuVisible = visible;
 }
 
+var profileTipVisible = false;
+function setProfileTipVisible(visible){
+    if(visible){
+        $('#profile-tooltip').slideDown();
+        hideIgnores.profileTip = true;
+    } else {
+        $('#profile-tooltip').slideUp();
+    }
+    profileTipVisible = visible;
+}
+
 //Display new messages
 function receiveMessages(msgs){
     var newmsg = false;
@@ -135,7 +147,8 @@ function receiveMessages(msgs){
             $('#chat').append(message);
             $('#person-' + msg.id).click(function(){
                 var pos = this.getBoundingClientRect();
-                $('#tooltip-profile').css({ top: pos.bottom, left: pos.left });
+                $('#profile-tooltip').css({ top: pos.bottom, left: pos.left });
+                setProfileTipVisible(true);
             });
             //Scroll to bottom
             //TODO: disable, if user scrolled manually
@@ -205,6 +218,10 @@ function hideAll() {
     hideIgnores.chpwModal = false;
     if(!hideIgnores.profileModal){ setProfileVisible(false); }
     hideIgnores.profileModal = false;
+    //Tooltips
+    if(!hideIgnores.profileTip){ setProfileTipVisible(false); }
+    hideIgnores.profileTip = false;
+    //GreyScreen
     hideIgnores.greyScreen = false;
 }
 
@@ -453,7 +470,13 @@ $(document).ready(function() {
             alert(data.error);
         }
     });
-    //Show profile
+    //Profile Tooltip
+    $('#profile-tooltip').click(function(){
+        hideIgnores.profileTip = true;
+    });
+    $('#profile-tooltip-close').click(function(){
+        setProfileTipVisible(false);
+    });
 });
 $(window).on('beforeunload', function(){
     api.disconnect(); //Not needed but good practice

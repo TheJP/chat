@@ -136,7 +136,7 @@ a:hover, a:focus, a.active {
     background-color: #2C5700;
     height: 60px;
     position: fixed;
-    z-index: 1030;
+    z-index: 1040;
     left: 0;
     right: 0;
     top: 0;
@@ -170,6 +170,7 @@ a:hover, a:focus, a.active {
 }
 .second-navigation .down-menu {
     background-color: #408000;
+    box-shadow: -3px 3px 10px rgba(0, 0, 0, 0.5);
     padding: 5px 0;
 }
 .second-navigation .down-menu a {
@@ -374,8 +375,8 @@ a.room:focus {
 }
 #new-message {
     height: 48px; /* +2px border */
-    width: calc(100% - 101px); /* +80px button, 20px padding, 1px border-left */
-    padding: 0 10px;
+    width: calc(100% - 111px); /* +80px button, 30px padding, 1px border-left */
+    padding: 0 15px;
     font-size: 18px;
     border-radius: 5px 0 0 5px;
     border: 1px solid #aaa;
@@ -388,7 +389,7 @@ a.room:focus {
 #new-message:focus + #send {
     border: 1px solid #50a200;
     border-left: none;
-    padding: 0 9px 0 10px; /* */
+    padding: 0 9px 0 10px;
 }
 #send {
     height: 50px;
@@ -501,11 +502,47 @@ a.room:focus {
     top: -250px;
 }
 
-
-#tooltip-profile {
-    background-color: green;
-    width: 200px;
-    height: 200px;
+/*****************/
+/** 09. Tooltip **/
+/*****************/
+.tooltip {
+    background-color: white;
+    border: thin solid #50a200;
+    border-radius: 6px;
+    word-wrap: break-word;
     position: absolute;
-    z-index: 1060;
+    z-index: 1300;
+    max-width: 400px;
+    max-height: 400px;
+    overflow: hidden;
+    padding-bottom: 15px;
+    display: none; /* Will be removed by the animation */
+}
+.tooltip-content {
+    padding: 10px 20px 20px 20px;
+    overflow: hidden;
+    max-height: 334px; /* 400px tooltip - 36px header - 30px padding */
+}
+.tooltip-content p {
+    margin-top: 0;
+}
+.tooltip-header {
+    color: #AFD775;
+    font-size: 18px;
+    background-color: #2C5700;
+    padding: 5px 20px;
+    border-radius: 5px 5px 0 0;
+    max-height: 26px;
+    overflow: hidden;
+}
+.tooltip-close {
+    color: #AFD775;
+}
+.tooltip-close:hover,
+.tooltip-close:focus {
+    color: #D0FF8B;
+}
+/** 09.01 Profile **/
+#tooltip-profile {
+
 }

@@ -58,8 +58,17 @@
         </div>
 
         <!-- Profile Tooltip -->
-        <div id="tooltip-profile">
-            &nbsp;
+        <div id="profile-tooltip" class="tooltip">
+            <div class="tooltip-header">
+                <span class="title">Name</span>
+                <span class="close-tooltip pull-right">
+                        <a href="#" id="profile-tooltip-close" class="tooltip-close">&times;</a>
+                </span>
+            </div>
+            <div class="tooltip-content">
+                <p id="profile-tooltip-status"></p>
+                <p id="profile-tooltip-description"></p>
+            </div>
         </div>
 
         <div id="grey-screen" class="hidden">&nbsp;</div>
