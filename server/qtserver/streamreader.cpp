@@ -25,5 +25,7 @@ QSharedPointer<QString> StreamReader::readString(const QString & key){
 }
 
 QVector<QSharedPointer<IChatMsg>> StreamReader::readArray(const QString &key, IChatMsg &replicator){
+    Q_UNUSED(key);
+    Q_UNUSED(replicator);
     return QVector<QSharedPointer<IChatMsg>>();
 }

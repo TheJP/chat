@@ -5,6 +5,7 @@
 #include <QObject>
 #include <QSharedPointer>
 #include <QVector>
+#include "ichatmsg.h"
 #include "ikeyvaluereader.h"
 
 class StreamReader final : public QObject, public IKeyValueReader
