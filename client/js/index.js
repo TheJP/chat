@@ -155,6 +155,12 @@ function receiveMessages(msgs, showNotification){
             } }(msg.userid));
             //Scroll to bottom
             $("#chat").scrollTop($("#chat")[0].scrollHeight);
+        } else {
+            //Show notification
+            if(msg.c in rooms){
+                ++rooms[msg.c].counter;
+                $('#room-counter-' + msg.c).text('[' + rooms[msg.c].counter + '] ');
+            }
         }
     }
     //Notify if in other tab
@@ -283,7 +289,7 @@ $(document).ready(function() {
             if(indexOfDash > 0){ openRoom = parseInt(window.location.hash.substring(indexOfDash+1)); }
             if(openRoom == NaN || !openRoom || openRoom < 0){ openRoom = 0; }
             if(openRoom > 0){
-                rooms[openRoom] = { msgs : [] };
+                rooms[openRoom] = { msgs : [], counter : 0 };
                 api.send(ApiRequest.OpenConversation, { c: openRoom });
             }
         }
@@ -330,14 +336,16 @@ $(document).ready(function() {
             var key; for(key in data.conversations){
                 var room = data.conversations[key];
                 //Show room
-                $('#rooms').append('<a class="room" id="room-' + room.id + '" href="#' + room.title + '-' + room.id + '"></a>');
-                $('#room-' + room.id).text(room.title);
+                $('#rooms').append('<a class="room" id="room-' + room.id + '" href="#' + room.title + '-' + room.id + '">' +
+                    '<span id="room-counter-' + room.id + '"></span><span id="room-title-' + room.id + '"></span></a>');
+                $('#room-title-' + room.id).text(room.title);
                 //Open Public Conversation
                 $('#room-' + room.id).click(function(inner){ return function(){
                     api.send(ApiRequest.OpenConversation, { c: inner.id });
                 }}(room));
                 //Add to internal data
                 room.msgs = [];
+                room.counter = 0;
                 rooms[room.id] = room;
                 //Open first conversation right away (Has to be done by separate request for now)
                 if(openConv) { openConv = false; //once
@@ -352,7 +360,9 @@ $(document).ready(function() {
             $('#chat').empty();
             //Clear msgs to prevent duplicates (for now; Later offline switching may be implemented)
             rooms[data.c].msgs = [];
+            rooms[data.c].counter = 0;
             openRoom = data.c;
+            $('#room-counter-' + data.c).text('');
             receiveMessages(data.msgs);
         }
     });
