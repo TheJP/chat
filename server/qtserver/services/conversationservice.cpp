@@ -5,7 +5,6 @@
 #include "../streamable/conversation.h"
 #include "../streamable/message.h"
 
-//TODO: remove
 #include <QDebug>
 
 ConversationService::ConversationService(ServiceManager * manager, QObject *parent) :

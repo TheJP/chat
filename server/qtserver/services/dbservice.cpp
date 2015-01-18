@@ -1,6 +1,5 @@
 #include "dbservice.h"
 
-//TODO: remove
 #include <QDebug>
 
 DbService::DbService(QObject *parent) :

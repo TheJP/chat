@@ -3,9 +3,7 @@
 #include "../protocol.h"
 #include "../streamable/user.h"
 
-//TODO: remove
 #include <QDebug>
-//TODO check permissions for different actions
 
 UserService::UserService(ServiceManager * manager, const QString & applicationSalt, QObject *parent) :
     manager(manager), applicationSalt(applicationSalt), QObject(parent)

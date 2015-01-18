@@ -302,7 +302,7 @@ $(document).ready(function() {
         return false; //Prevent native submit
     });
     api.register(ApiRequest.Login, function(data){
-        if(!data.s){ alert('Login failed: ' + data.error + ' ' + data.error_text); }
+        if(!data.s){ alert(data.error_text); }
         else {
             user.id = data.userid;
             user.name = data.username;
@@ -377,6 +377,7 @@ $(document).ready(function() {
     //Receive message notifications
     api.register(ApiRequest.SendMessage, function(data){
         if(data.s){ receiveMessages(data.msgs, true); }
+        else { alert(data.error_text); }
     });
     //Register
     $('#register').click(function(){
