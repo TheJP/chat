@@ -9,6 +9,8 @@ class Logout final : public QObject, public IChatMsg
 {
     Q_OBJECT
     Q_INTERFACES(IChatMsg)
+private:
+    QSharedPointer<QString> sid;
 public:
     explicit Logout(QObject *parent = 0);
     void read(IKeyValueReader & stream) override;

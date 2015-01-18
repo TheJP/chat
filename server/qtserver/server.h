@@ -32,6 +32,7 @@ private:
     QSharedPointer<Protocol> protocol;
     QSharedPointer<IFormat> format;
     QSharedPointer<ServiceManager> manager;
+    void sendNotification(IChatMsg & msg, QWebSocket * socket);
 public:
     explicit Server(const quint16 & port, const QSharedPointer<Protocol> & protocol, const QSharedPointer<IFormat> & format,
         const QSharedPointer<ServiceManager> & manager, QObject *parent = 0);

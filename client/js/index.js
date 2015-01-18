@@ -129,7 +129,8 @@ function setProfileTipVisible(visible){
 }
 
 //Display new messages
-function receiveMessages(msgs){
+function receiveMessages(msgs, showNotification){
+    if(!showNotification){ showNotification = false; } //Default value
     var newmsg = false;
     msgs.reverse(); //Order messages correct for view
     var key; for(key in msgs){
@@ -153,13 +154,11 @@ function receiveMessages(msgs){
                 api.send(ApiRequest.GetUser, { userid: id });
             } }(msg.userid));
             //Scroll to bottom
-            //TODO: disable, if user scrolled manually
-            //Animation seems to bug out: $('#chat').animate({ scrollTop: $('#chat').prop("scrollHeight") }, 1000);
             $("#chat").scrollTop($("#chat")[0].scrollHeight);
         }
     }
     //Notify if in other tab
-    if(document.hidden && newmsg && !notify){
+    if(showNotification && document.hidden && newmsg && !notify){
         notifyInterval = setInterval(function(){
             document.title = notifyState ? 'Chat' : '[+] Chat';
             notifyState = !notifyState;
@@ -316,7 +315,7 @@ $(document).ready(function() {
     $('#logout').click(function(){
         user.id = 0;
         user.name = null;
-        api.send(ApiRequest.Logout);
+        api.send(ApiRequest.Logout, { sid: api.getSid() });
         api.deleteSid();
         setUserMenuVisible(false);
         setTimeout(function(){ location.reload(); }, 300); //Reload if no answer after 300ms
@@ -367,7 +366,7 @@ $(document).ready(function() {
     });
     //Receive message notifications
     api.register(ApiRequest.SendMessage, function(data){
-        if(data.s){ receiveMessages(data.msgs); }
+        if(data.s){ receiveMessages(data.msgs, true); }
     });
     //Register
     $('#register').click(function(){

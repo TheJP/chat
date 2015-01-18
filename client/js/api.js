@@ -100,7 +100,6 @@ api.reconnect = function(){
 }
 api.send = function(type, obj){
     if(!obj){ obj = {}; }
-    //if(type != ApiRequest.Login){ obj.sid = api.getSid(); } //TODO: remove -> Not needed for websockets
     obj.t = type;
     if(api.ws != null && api.ready){
         var message = JSON.stringify(obj);

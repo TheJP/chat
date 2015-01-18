@@ -1,6 +1,5 @@
 #include "server.h"
 
-//TODO: remove
 #include <QDebug>
 
 Server::Server(const quint16 & port, const QSharedPointer<Protocol> & protocol, const QSharedPointer<IFormat> & format,
@@ -42,18 +41,29 @@ void Server::onNewConnection(){
     clients.append(pSocket);
 }
 
+void Server::sendNotification(IChatMsg & msg, QWebSocket * socket){
+    //Write to json
+    QSharedPointer<QJsonObject> json(new QJsonObject());
+    JsonWriter writer(json);
+    writer.write(KEY_MSG_TYPE, static_cast<int>(ResponseType::Notify));
+    msg.write(writer);
+    //Write to stream
+    QJsonDocument document(*json);
+    socket->sendTextMessage(QString::fromUtf8(document.toJson()));
+}
+
 void Server::onNewNotification(IChatMsg & msg, const QList<int> & sessions){
     if(sessions.empty()){
         //Try to send notification to each client
         for(QWebSocket * client : clients){
-            //Write to json
-            QSharedPointer<QJsonObject> json(new QJsonObject());
-            JsonWriter writer(json);
-            writer.write(KEY_MSG_TYPE, static_cast<int>(ResponseType::Notify));
-            msg.write(writer);
-            //Write to stream
-            QJsonDocument document(*json);
-            client->sendTextMessage(QString::fromUtf8(document.toJson()));
+            this->sendNotification(msg, client);
+        }
+    } else {
+        //Send notification only to given clients
+        for(int sessionId : sessions){
+            for(QWebSocket * client : this->sessions.values(sessionId)){
+                this->sendNotification(msg, client);
+            }
         }
     }
 }
@@ -87,7 +97,6 @@ void Server::processTextMessage(QString message){
             }
         }
     }
-    //I HATE THE PERSON WHO DID THIS: websocketServer->close();
 }
 
 void Server::processBinaryMessage(QByteArray message){
@@ -105,7 +114,6 @@ void Server::socketDisconnected(){
         clients.removeAll(pClient);
         userIds.remove(pClient);
         //Linear search to remove clients from sessions
-        //TODO: better performance
         auto itr = sessions.begin();
         while(itr != sessions.end()){
             if(pClient == itr.value()){ itr = sessions.erase(itr); }

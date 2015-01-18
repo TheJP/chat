@@ -99,9 +99,37 @@ QSharedPointer<IChatMsg> UserService::login(const QString & username, const QStr
 }
 
 QSharedPointer<IChatMsg> UserService::logout(const QString & sid) const {
-    //Undecided behaviour: What happens to clients with the same sessionid?
-    Q_UNUSED(sid);
-    return QSharedPointer<IChatMsg>();
+    qDebug() << "[UserService][logout]";
+    QSharedPointer<QSqlQuery> query = manager->getDbService().prepare(
+        "SELECT username, session.id "
+        "FROM session LEFT JOIN user ON session.user_id = user.id "
+        "WHERE sid = :sid");
+    bool ok = false;
+    if(!query.isNull()){
+        query->bindValue(":sid", sid);
+        ok = manager->getDbService().exec(query);
+    }
+    if(!ok){ return manager->getProtocol().createResponse(RequestType::Logout, ErrorType::Internal, QStringLiteral("")); }
+    else if(!query->next()){
+        qDebug() << "[unkown sid]";
+        return manager->getProtocol().createResponse(RequestType::Logout, ErrorType::Custom, QStringLiteral("Unkown sid"));
+    }else{
+        QSharedPointer<QString> username(new QString(query->value(0).toString()));
+        quint32 sessionId = query->value(1).toInt();
+        //Delete session (no longer used)
+        QSharedPointer<QSqlQuery> deleteQuery = manager->getDbService().prepare("DELETE FROM session WHERE id = :sessionId");
+        ok = false;
+        if(!deleteQuery.isNull()){
+            deleteQuery->bindValue(":sessionId", sessionId);
+            ok = manager->getDbService().exec(deleteQuery);
+        }
+        qDebug() << (ok ? "[success]" : "[fail]") << " logout username: " << *username;
+        //Send logout notification to all clients with the same session
+        QSharedPointer<IChatMsg> response = manager->getProtocol().createResponse(RequestType::Logout, ok);
+        manager->getNotificationSender().newNotification(*response, QList<int>({ static_cast<int>(sessionId) }));
+        //The calling socket receives a notification too.. no point in sending it twice:
+        return QSharedPointer<IChatMsg>();
+    }
 }
 
 QSharedPointer<IChatMsg> UserService::continueSession(const QString & sid) const {

@@ -6,11 +6,11 @@ Logout::Logout(QObject *parent) :
 }
 
 void Logout::read(IKeyValueReader & stream){
-    Q_UNUSED(stream);
+    sid = stream.readString(QStringLiteral("sid"));
 }
 
 void Logout::write(IKeyValueWriter & stream){
-    Q_UNUSED(stream);
+    stream.write(QStringLiteral("sid"), *sid);
 }
 
 QSharedPointer<IChatMsg> Logout::create(){
@@ -18,7 +18,5 @@ QSharedPointer<IChatMsg> Logout::create(){
 }
 
 QSharedPointer<IChatMsg> Logout::handle(const ServiceManager & manager){
-    //TODO: implement
-    Q_UNUSED(manager);
-    return QSharedPointer<Logout>();
+    return manager.getUserService().logout(*sid);
 }
