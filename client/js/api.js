@@ -43,7 +43,7 @@ var ErrorType = {
     Custom : 600
 };
 var api = {
-    wsUri : 'ws://' + window.location.host + '8080',
+    wsUri : 'ws://' + window.location.host + ':8080',
     sid : null,
     ws : null,
     ready : false,
